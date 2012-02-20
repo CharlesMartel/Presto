@@ -3,12 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presto", "Presto\Presto.csproj", "{E12BA28F-8F7E-453A-938A-E17F0248042A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrestoServer", "PrestoServer\PrestoServer.csproj", "{15E9A3EA-3353-436D-BEE4-1A15F27B9408}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrestoLib", "PrestoLib\PrestoLib.csproj", "{32249EF9-0A67-4FCF-8654-48124F1BD382}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presto.Common", "Presto.Common\Presto.Common.csproj", "{5CE03B15-134F-436C-9822-F41D889BBD3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15E9A3EA-3353-436D-BEE4-1A15F27B9408}.Debug|x86.ActiveCfg = Debug|x86
+		{15E9A3EA-3353-436D-BEE4-1A15F27B9408}.Debug|x86.Build.0 = Debug|x86
+		{15E9A3EA-3353-436D-BEE4-1A15F27B9408}.Release|x86.ActiveCfg = Release|x86
+		{15E9A3EA-3353-436D-BEE4-1A15F27B9408}.Release|x86.Build.0 = Release|x86
+		{32249EF9-0A67-4FCF-8654-48124F1BD382}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{32249EF9-0A67-4FCF-8654-48124F1BD382}.Debug|x86.Build.0 = Debug|Any CPU
+		{32249EF9-0A67-4FCF-8654-48124F1BD382}.Release|x86.ActiveCfg = Release|Any CPU
+		{32249EF9-0A67-4FCF-8654-48124F1BD382}.Release|x86.Build.0 = Release|Any CPU
+		{5CE03B15-134F-436C-9822-F41D889BBD3E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5CE03B15-134F-436C-9822-F41D889BBD3E}.Debug|x86.Build.0 = Debug|Any CPU
+		{5CE03B15-134F-436C-9822-F41D889BBD3E}.Release|x86.ActiveCfg = Release|Any CPU
+		{5CE03B15-134F-436C-9822-F41D889BBD3E}.Release|x86.Build.0 = Release|Any CPU
 		{E12BA28F-8F7E-453A-938A-E17F0248042A}.Debug|x86.ActiveCfg = Debug|x86
 		{E12BA28F-8F7E-453A-938A-E17F0248042A}.Debug|x86.Build.0 = Debug|x86
 		{E12BA28F-8F7E-453A-938A-E17F0248042A}.Release|x86.ActiveCfg = Release|x86
