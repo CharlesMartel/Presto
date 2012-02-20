@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 
 namespace Presto.Common
 {
@@ -9,9 +10,9 @@ namespace Presto.Common
 	public static class Log
 	{
 		//The log will be placed in the applications running directory
-		private const string LOG_URL = "presto.log";
+		private static const string LOG_URL = "presto.log";
 		//We need a lock object to synchronize the writes to the log
-		private Object syncLock = new Object ();
+		private static Object syncLock = new Object ();
 		
 		
 		/// <summary>
@@ -22,38 +23,52 @@ namespace Presto.Common
 		/// </param>
 		public static void error (string message)
 		{
-			string toWrite = "ERROR:" + Environment.NewLine + message + Environment.NewLine;e
+            string toWrite = "ERROR:" + Environment.NewLine + message + Environment.NewLine;
+            byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes(toWrite);
 			//lock for IO synchronization
 			lock (syncLock) {
-				FileStream fs = new FileStream (LOG_URL, FileMode.Append, FileAccess.Write);
+                FileStream fs = new FileStream (LOG_URL, FileMode.Append, FileAccess.Write);
+                fs.Write(bytesToWrite, 0, bytesToWrite.Length);
+                fs.Close();
+                fs.Dispose();
+			}			
+		}
+
+        /// <summary>
+        /// Log a warning.
+        /// </summary>
+        /// <param name='message'>
+        /// The warning message to be logged.
+        /// </param>
+        public static void warning(string message)
+		{
+            string toWrite = "WARNING:" + Environment.NewLine + message + Environment.NewLine;
+            byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes(toWrite);
+			//lock for IO synchronization
+			lock (syncLock) {
+                FileStream fs = new FileStream(LOG_URL, FileMode.Append, FileAccess.Write);
+                fs.Write(bytesToWrite, 0, bytesToWrite.Length);
+                fs.Close();
+                fs.Dispose();
 			}			
 		}
 		
 		/// <summary>
-		/// Log a warning.
+		/// Log a generic statement.
 		/// </summary>
 		/// <param name='message'>
-		/// The warning message to be logged.
+		/// The generic message to be logged.
 		/// </param>
-		public static void warning (string message)
+		public static void generic (string message)
 		{
+            string toWrite = "LOG:" + Environment.NewLine + message + Environment.NewLine;
+            byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes(toWrite);
 			//lock for IO synchronization
 			lock (syncLock) {
-				
-			}			
-		}
-		
-		/// <summary>
-		/// Log a generic debug statement.
-		/// </summary>
-		/// <param name='message'>
-		/// The debug message to be logged.
-		/// </param>
-		public static void debug (sting message)
-		{
-			//lock for IO synchronization
-			lock (syncLock) {
-				
+                FileStream fs = new FileStream(LOG_URL, FileMode.Append, FileAccess.Write);
+                fs.Write(bytesToWrite, 0, bytesToWrite.Length);
+                fs.Close();
+                fs.Dispose();
 			}			
 		}		
 	
