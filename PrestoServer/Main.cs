@@ -8,5 +8,10 @@ namespace PrestoServer
 		{
 			Console.WriteLine ("Hello World!");
 		}
+		
+		public static void configure ()
+		{
+			
+		}
 	}
 }
