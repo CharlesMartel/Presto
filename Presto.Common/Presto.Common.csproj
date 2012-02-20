@@ -35,8 +35,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Net\TCPServer.cs" />
     <Compile Include="Net\TCPClient.cs" />
-    <Compile Include="Net\FileServer.cs" />
-    <Compile Include="Net\FileClient.cs" />
     <Compile Include="Net\ServerState.cs" />
     <Compile Include="Log.cs" />
   </ItemGroup>

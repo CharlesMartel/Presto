@@ -29,9 +29,9 @@ namespace Presto.Common.Net
 			//try to bind the enpoint and start the listener
 			try {
 				listener.Bind (ipEndpoint);
-				listener.Listen (10); // the integer passed to listen specifies a maximum backlag size. Im not entirely sure what that actually means though. 
+				listener.Listen (10); // the integer passed to listen specifies a maximum backlag size. Im not entirely sure what that actually entails though. 
 			} catch (Exception e) {
-				//TODO: write exception to error log
+				Log.error (e.ToString ());
 			}			
 		}
 	}
