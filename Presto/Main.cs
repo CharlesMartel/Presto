@@ -39,7 +39,7 @@ namespace Presto
 		}		
 		
 		/// <summary>
-		/// Deploy the specefied assembly into the cluster. 
+		/// Deploy the specified assembly into the cluster. 
 		/// </summary>
 		/// <param name='assemblyURL'>
 		/// The url of the assembly to load and execute
