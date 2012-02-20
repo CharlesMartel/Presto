@@ -38,6 +38,7 @@
     <Compile Include="Net\FileServer.cs" />
     <Compile Include="Net\FileClient.cs" />
     <Compile Include="Net\ServerState.cs" />
+    <Compile Include="Log.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
