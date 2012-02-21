@@ -15,6 +15,7 @@ namespace Presto
 			//make sure we have at least one argument, if not, run usage
 			if (!(args.Length > 0)) {
 				usage ();
+                return;
 			}
 			//switch on the arguments 
 			switch (args [0]) {

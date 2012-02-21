@@ -4,6 +4,105 @@
         <name>Presto.Common</name>
     </assembly>
     <members>
+        <member name="T:Presto.Common.Net.TCPClient">
+            <summary>
+            A MessageType based Asynchronous TCP Client to interact with a corresponding MessageType based asynchronous Presto TCP Server.
+            Adapted from the MSDN example at http://msdn.microsoft.com/en-us/library/bew39x2a.aspx
+            
+            *Note The actual connection is left synchronous to avoid timing issues with the stream writes.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.#ctor(System.String,System.Int32)">
+            <summary>
+            Create the TCP Client with the specified host and port.
+            </summary>
+            <param name="host">String representation of the host on the network.</param>
+            <param name="port">The port to connect to on the host.</param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.#ctor(System.Net.IPEndPoint)">
+            <summary>
+            Create the TCP Client with the specified host IPEndpoint.
+            </summary>
+            <param name="host">IPEndpoint of the host.</param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.connect">
+            <summary>
+            Connect the client to the given host server.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.write(Presto.Common.Net.MessageType,System.String)">
+            <summary>
+            Write data to the socket stream according to the passed in Message Type and String message
+            </summary>
+            <param name="mType"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.write(Presto.Common.Net.MessageType,System.Byte[])">
+            <summary>
+            Write data to the socket stream according to the passed in message type and byte data array
+            </summary>
+            <param name="mType"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.write(System.Byte[])">
+            <summary>
+            Internal write function. Writes the passed in data to the socket stream.
+            </summary>
+            <param name="data">the byte data to be written</param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.writeCallback(System.IAsyncResult)">
+            <summary>
+            Internal asynchronous write callback method
+            </summary>
+            <param name="result"></param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.dispatch(Presto.Common.Net.ClientState)">
+            <summary>
+            Dispatches the recieved message to the appropriate object 
+            </summary>
+            <param name="state">The state object to be dispatched.</param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPClient.setDispatchAction(System.String,System.Action{Presto.Common.Net.ClientState})">
+            <summary>
+            Sets a dispatch action to the dispatch list and triggers that action according to the message type.
+            </summary>
+            <param name="messageType">The message type from the Presto.Common.Net.MessageType struct.</param>
+            <param name="dispatchAction">An Action that recieves a server state object as its only parameter.</param>
+        </member>
+        <member name="T:Presto.Common.Net.MessageType">
+            <summary>
+            A type safe enum holding all available message types.
+            Message types are an 8 character ASCII string passed as an identifier to the recieving end of the tcp connection as to what
+            to dispatch the request to. THe message type will be the first 8 characters of a message in ASCII. Consequently the message type
+            is the first 8 bytes.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.MessageType.#ctor(System.String)">
+            <summary>
+            Internal constructor for the type safe enum MessageType
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Presto.Common.Net.MessageType.ToString">
+            <summary>
+            Gives the chosen Message Type as a string value.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Presto.Common.Net.MessageType.op_Implicit(Presto.Common.Net.MessageType)~System.String">
+            <summary>
+            Implicit conversion from Message Type to String
+            </summary>
+            <param name="mtype"></param>
+            <returns>The string representation of the MessageType</returns>
+        </member>
+        <member name="M:Presto.Common.Net.MessageType.op_Implicit(System.String)~Presto.Common.Net.MessageType">
+            <summary>
+            Implicitly convert from string to MessageType
+            </summary>
+            <param name="mtype"></param>
+            <returns>Will return null if "mtype" matches no MessageType</returns>
+        </member>
         <member name="T:Presto.Common.Net.TCPServer">
             <summary>
             An asynchronous TCP server. 
@@ -111,16 +210,16 @@
             contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
             a check is simple.
             </summary>
-            <returns></returns>
+            <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.sendAndClose(System.String,System.Byte[])">
+        <member name="M:Presto.Common.Net.ServerState.sendAndClose(Presto.Common.Net.MessageType,System.Byte[])">
             <summary>
             Sends the passed in data as the passed in message type and closes the socket.
             </summary>
             <param name="messageType"></param>
             <param name="data"></param>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.sendData(System.String,System.Byte[])">
+        <member name="M:Presto.Common.Net.ServerState.sendData(Presto.Common.Net.MessageType,System.Byte[])">
             <summary>
             Sends the passed in data as the passed in message type
             </summary>
@@ -132,13 +231,29 @@
             Closes the ServerState's associated socket
             </summary>
         </member>
-        <member name="T:Presto.Common.Net.MessageType">
+        <member name="T:Presto.Common.Net.ClientState">
             <summary>
-            A structure holding all available message types.
-            Message types are an 8 character ASCII string passed as an identifier to the recieving end of the tcp connection as to what
-            to dispatch the request to. THe message type will be the first 8 characters of a message in ASCII. Consequently the message type
-            is the first 8 bytes.
+            ServerState is a state object that gets passed around as the holder for an asynchronous socket.
             </summary>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.#ctor(System.Net.Sockets.TcpClient)">
+            <summary>
+            Create a new server state object to manage a currently running connection
+            </summary>
+            <param name="socket">The sync socket associated with the state object.</param>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.purgeBuffer">
+            <summary>
+            Copies all remaining data in the buffer into the full data array and clears the buffer.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.getMessageType">
+            <summary>
+            Extracts the message type from the message and returns it as a string. If the message is not long enough to
+            contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
+            a check is simple.
+            </summary>
+            <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
         </member>
     </members>
 </doc>

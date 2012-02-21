@@ -46,18 +46,18 @@ namespace Presto.Common.Net
         /// contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
         /// a check is simple.
         /// </summary>
-        /// <returns></returns>
-        public string getMessageType() 
+        /// <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
+        public MessageType getMessageType() 
         {
             //make sure data is long enough to contain a message type
             if (!(data.Count > 7)) {
                 return null;
             }
 
-            //get the message segment from the transmission, convert to string and return
+            //get the message segment from the transmission, convert to string and convert the string to a message type
             List<byte> messageTypeByteList = data.GetRange(0, 8);
             Byte[] messageTypeByteArray = messageTypeByteList.ToArray();
-            return ASCIIEncoding.ASCII.GetString(messageTypeByteArray);
+            return ASCIIEncoding.ASCII.GetString(messageTypeByteArray); 
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Presto.Common.Net
         /// </summary>
         /// <param name="messageType"></param>
         /// <param name="data"></param>
-        public void sendAndClose(string messageType, byte[] data = null) 
+        public void sendAndClose(MessageType messageType, byte[] data = null) 
         {
             //make sure we have a real message type
             if (messageType == null) {
@@ -95,7 +95,7 @@ namespace Presto.Common.Net
         /// </summary>
         /// <param name="messageType"></param>
         /// <param name="data"></param>
-        public void sendData(string messageType, byte[] data = null) 
+        public void sendData(MessageType messageType, byte[] data = null) 
         {
             //make sure we have a real message type
             if (messageType == null) {

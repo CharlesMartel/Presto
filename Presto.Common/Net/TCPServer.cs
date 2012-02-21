@@ -25,7 +25,7 @@ namespace Presto.Common.Net
 		// Thread signal.
 		private ManualResetEvent allDone = new ManualResetEvent (false);
         // A hash table holding all dispatch references and pointer to their delegates
-        private Dictionary<string, Action<ServerState>> dispatchList = new Dictionary<string, Action<ServerState>>(); 
+        private Dictionary<MessageType, Action<ServerState>> dispatchList = new Dictionary<MessageType, Action<ServerState>>(); 
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Presto.Common.Net.TCPServer"/> class. 
