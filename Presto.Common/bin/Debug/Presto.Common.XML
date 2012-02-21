@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Presto.Common</name>
+    </assembly>
+    <members>
+        <member name="T:Presto.Common.Net.TCPServer">
+            <summary>
+            An asynchronous TCP server. 
+            Adapted from the MSDN example at  http://msdn.microsoft.com/en-us/library/fx6588te.aspx
+            
+            This server allows dispatching according to the included MessageTypes structure. By simply associating message types
+            with Actions that recieve the ServerState Object as their only paramater, we can leave the dispatching internal to the 
+            tcp server. The message types are the first 8 ASCII characters / First 8 bytes of the tcp transmission.
+            
+            The server is entirely asynchronous and all dispatched actions get thrown into the thread pool.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.TCPServer.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Presto.Common.Net.TCPServer"/> class. 
+            An asynchronous tcp socket bound to the specified port.
+            </summary>
+            <param name="port">
+            The port to bind to.
+            </param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPServer.start">
+            <summary>
+            Start up the tcp server and begin accepting clients.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.TCPServer.listen">
+            <summary>
+            Internal: starts up the listening loop
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.TCPServer.accept(System.IAsyncResult)">
+            <summary>
+            Internal: connect to the client and spin off a recieve callback
+            </summary>
+            <param name="ar"></param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPServer.read(System.IAsyncResult)">
+            <summary>
+            read data sent from the client, called recursively until all data is receieved
+            </summary>
+            <param name="ar"></param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPServer.dispatch(Presto.Common.Net.ServerState)">
+            <summary>
+            Dispatches the recieved message to the appropriate object 
+            </summary>
+            <param name="state">The state object to be dispatched.</param>
+        </member>
+        <member name="M:Presto.Common.Net.TCPServer.setDispatchAction(System.String,System.Action{Presto.Common.Net.ServerState})">
+            <summary>
+            Sets a dispatch action to the dispatch list and triggers that action according to the message type.
+            </summary>
+            <param name="messageType">The message type from the Presto.Common.Net.MessageType struct.</param>
+            <param name="dispatchAction">An Action that recieves a server state object as its only parameter.</param>
+        </member>
+        <member name="T:Presto.Common.Log">
+            <summary>
+            A common log for all program errors or debug statements to be written to
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Log.error(System.String)">
+            <summary>
+            Log an error.
+            </summary>
+            <param name='message'>
+            The error message to be logged.
+            </param>
+        </member>
+        <member name="M:Presto.Common.Log.warning(System.String)">
+            <summary>
+            Log a warning.
+            </summary>
+            <param name='message'>
+            The warning message to be logged.
+            </param>
+        </member>
+        <member name="M:Presto.Common.Log.generic(System.String)">
+            <summary>
+            Log a generic statement.
+            </summary>
+            <param name='message'>
+            The generic message to be logged.
+            </param>
+        </member>
+        <member name="T:Presto.Common.Net.ServerState">
+            <summary>
+            ServerState is a state object that gets passed around as the holder for an asynchronous socket.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.ServerState.#ctor(System.Net.Sockets.Socket)">
+            <summary>
+            Create a new server state object to manage a currently running connection
+            </summary>
+            <param name="socket">The sync socket associated with the state object.</param>
+        </member>
+        <member name="M:Presto.Common.Net.ServerState.purgeBuffer">
+            <summary>
+            Copies all remaining data in the buffer into the full data array and clears the buffer.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.ServerState.getMessageType">
+            <summary>
+            Extracts the message type from the message and returns it as a string. If the message is not long enough to
+            contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
+            a check is simple.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Presto.Common.Net.ServerState.sendAndClose(System.String,System.Byte[])">
+            <summary>
+            Sends the passed in data as the passed in message type and closes the socket.
+            </summary>
+            <param name="messageType"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:Presto.Common.Net.ServerState.sendData(System.String,System.Byte[])">
+            <summary>
+            Sends the passed in data as the passed in message type
+            </summary>
+            <param name="messageType"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:Presto.Common.Net.ServerState.closeSocket">
+            <summary>
+            Closes the ServerState's associated socket
+            </summary>
+        </member>
+        <member name="T:Presto.Common.Net.MessageType">
+            <summary>
+            A structure holding all available message types.
+            Message types are an 8 character ASCII string passed as an identifier to the recieving end of the tcp connection as to what
+            to dispatch the request to. THe message type will be the first 8 characters of a message in ASCII. Consequently the message type
+            is the first 8 bytes.
+            </summary>
+        </member>
+    </members>
+</doc>

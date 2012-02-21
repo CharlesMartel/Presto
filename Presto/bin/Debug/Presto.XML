@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Presto</name>
+    </assembly>
+    <members>
+        <member name="M:Presto.MainClass.Main(System.String[])">
+            <summary>
+            The entry point of the program, where the program control starts and ends.
+            </summary>
+            <param name='args'>
+            .
+            </param>
+        </member>
+        <member name="M:Presto.MainClass.exec(System.String)">
+            <summary>
+            Deploy the specified assembly into the cluster. 
+            </summary>
+            <param name='assemblyURL'>
+            The url of the assembly to load and execute
+            </param>
+        </member>
+        <member name="M:Presto.MainClass.status">
+            <summary>
+            Write the status of the cluster to the console.
+            </summary>
+        </member>
+        <member name="M:Presto.MainClass.usage">
+            <summary>
+            Displays the usage of the Presto commandline program.
+            </summary>
+        </member>
+    </members>
+</doc>

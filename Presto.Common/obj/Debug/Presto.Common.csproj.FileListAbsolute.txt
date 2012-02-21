@@ -1,0 +1,6 @@
+C:\GitHubProjects\Presto\Presto.Common\obj\Debug\ResolveAssemblyReference.cache
+C:\GitHubProjects\Presto\Presto.Common\bin\Debug\Presto.Common.dll
+C:\GitHubProjects\Presto\Presto.Common\bin\Debug\Presto.Common.pdb
+C:\GitHubProjects\Presto\Presto.Common\obj\Debug\Presto.Common.dll
+C:\GitHubProjects\Presto\Presto.Common\obj\Debug\Presto.Common.pdb
+C:\GitHubProjects\Presto\Presto.Common\bin\Debug\Presto.Common.XML
