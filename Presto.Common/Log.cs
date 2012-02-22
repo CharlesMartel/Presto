@@ -42,7 +42,7 @@ namespace Presto.Common
 		/// </param>
 		public static void Warning (string message)
 		{
-			string toWrite = "WARNING:" + Environment.NewLine + message + Environment.NewLine;
+            string toWrite = "WARNING:" + Environment.NewLine + message + Environment.NewLine;
 			byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes (toWrite);
 			//lock for IO synchronization
 			lock (syncLock) {
@@ -61,7 +61,7 @@ namespace Presto.Common
 		/// </param>
 		public static void Generic (string message)
 		{
-			string toWrite = "LOG:" + Environment.NewLine + message + Environment.NewLine;
+            string toWrite = "LOG:" + Environment.NewLine + message + Environment.NewLine;
 			byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes (toWrite);
 			//lock for IO synchronization
 			lock (syncLock) {

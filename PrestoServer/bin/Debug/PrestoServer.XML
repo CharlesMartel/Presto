@@ -4,5 +4,21 @@
         <name>PrestoServer</name>
     </assembly>
     <members>
+        <member name="T:Presto.Application">
+            <summary>
+            The static application class holds all top level and static instances for the application. This architecture is used to allow a very functional approach to the
+            application design.
+            </summary>
+        </member>
+        <member name="F:Presto.Application.ControlServer">
+            <summary>
+            The control server is the server that messaging, jobs, and file transfers occur on.
+            </summary>
+        </member>
+        <member name="M:Presto.Application.Initialize">
+            <summary>
+            Initializes the application.
+            </summary>
+        </member>
     </members>
 </doc>
