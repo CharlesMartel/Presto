@@ -1,7 +1,7 @@
 using System;
 using Presto.Common.Net;
 
-namespace PrestoServer
+namespace Presto
 {
 	class MainClass
 	{

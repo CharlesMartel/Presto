@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{15E9A3EA-3353-436D-BEE4-1A15F27B9408}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>PrestoServer</RootNamespace>
+    <RootNamespace>Presto</RootNamespace>
     <AssemblyName>PrestoServer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
