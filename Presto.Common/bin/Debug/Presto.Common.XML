@@ -87,9 +87,19 @@
             The given messange type was unknown or unparseable.
             </summary>
         </member>
-        <member name="F:Presto.Common.Net.MessageType.ASSEMBLY_INCOMING">
+        <member name="F:Presto.Common.Net.MessageType.ASSEMBLY_TRANSFER_MASTER">
             <summary>
-            AN assembly binary is attatched to this message.
+            An assembly binary is attatched to this message and the binary needs to be loaded by the recieving PrestoServer
+            </summary>
+        </member>
+        <member name="F:Presto.Common.Net.MessageType.ASSEMBLY_TRANSFER_SLAVE">
+            <summary>
+            An assembly binary is attatched to this message and the recieving slave server needs to load the binary and await instructions
+            </summary>
+        </member>
+        <member name="F:Presto.Common.Net.MessageType.ASSEMBLY_TRANSFER_COMPLETE">
+            <summary>
+            A response notifying the sending service of a succesfull assembly transfer.
             </summary>
         </member>
         <member name="M:Presto.Common.Net.MessageType.#cctor">
@@ -208,7 +218,7 @@
             </summary>
             <param name="state">The state object to be dispatched.</param>
         </member>
-        <member name="M:Presto.Common.Net.TCPServer.setDispatchAction(Presto.Common.Net.MessageType,System.Action{Presto.Common.Net.ServerState})">
+        <member name="M:Presto.Common.Net.TCPServer.registerDispatchAction(Presto.Common.Net.MessageType,System.Action{Presto.Common.Net.ServerState})">
             <summary>
             Sets a dispatch action to the dispatch list and triggers that action according to the message type.
             </summary>

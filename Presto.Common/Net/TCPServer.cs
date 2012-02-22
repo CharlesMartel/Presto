@@ -29,7 +29,7 @@ namespace Presto.Common.Net
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Presto.Common.Net.TCPServer"/> class. 
-		/// An asynchronous tcp socket bound to the specified port.
+		/// An asynchronous tcp Socket bound to the specified port.
 		/// </summary>
 		/// <param name='port'>
 		/// The port to bind to.
@@ -43,9 +43,9 @@ namespace Presto.Common.Net
         /// <summary>
         /// Start up the tcp server and begin accepting clients.
         /// </summary>
-		public void start ()
+		public void Start ()
 		{
-			//create a listening thread and start the listener
+			//create a listening thread and Start the listener
 			Thread listenThread = new Thread (listen);
 			listenThread.Start ();
 		}
@@ -55,7 +55,7 @@ namespace Presto.Common.Net
         /// </summary>
 		private void listen ()
 		{
-			//try to bind the enpoint and start the listener
+			//try to bind the enpoint and Start the listener
 			try {
 
 				listener.Bind (ipEndpoint);
@@ -72,13 +72,13 @@ namespace Presto.Common.Net
 				}
 
 			} catch (Exception e) {
-				Log.error (e.ToString ());
+				Log.Error (e.ToString ());
 			}
 		}
 
 
         /// <summary>
-        /// Internal: connect to the client and spin off a recieve callback
+        /// Internal: Connect to the Client and spin off a recieve callback
         /// </summary>
         /// <param name="ar"></param>
 		private void accept (IAsyncResult ar)
@@ -86,45 +86,45 @@ namespace Presto.Common.Net
 			// Signal the main thread to continue.
 			allDone.Set ();
 
-			// Get the socket that handles the client request.
+			// Get the Socket that handles the Client request.
 			Socket asyncListener = (Socket)ar.AsyncState;
 			Socket handler = asyncListener.EndAccept (ar);
 
 			//Create the state object
             ServerState state = new ServerState(handler);
             //begin recieving the data
-            state.socket.BeginReceive(state.buffer, 0, ServerState.bufferSize, 0, new AsyncCallback(read), state);
+            state.Socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
 		}
 
         /// <summary>
-        /// read data sent from the client, called recursively until all data is receieved
+        /// read data sent from the Client, called recursively until all data is receieved
         /// </summary>
         /// <param name="ar"></param>
         private void read(IAsyncResult ar) {
             //Get the Server State Object
             ServerState state = (ServerState)ar.AsyncState;
             
-            //read from the socket
-            int readCount = state.socket.EndReceive(ar);
+            //read from the Socket
+            int readCount = state.Socket.EndReceive(ar);
 
             //check if reading is done, move on if so. then trigger another read
             if (readCount > 0) {
-                //purge the buffer and start another read
-                state.purgeBuffer(readCount);
+                //purge the Buffer and Start another read
+                state.PurgeBuffer(readCount);
                 //check if the message is fully recieved, if it is, create a new state object and pass that to the read,
                 // if not, continue the read with the same state object
-                if (state.isFullyRecieved()) {
-                    ServerState newState = new ServerState(state.socket);
-                    newState.socket.BeginReceive(newState.buffer, 0, ServerState.bufferSize, 0, new AsyncCallback(read), newState);
+                if (state.IsFullyRecieved()) {
+                    ServerState newState = new ServerState(state.Socket);
+                    newState.Socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
                     dispatch(state);
                 }
                 else {
-                    state.socket.BeginReceive(state.buffer, 0, ServerState.bufferSize, 0, new AsyncCallback(read), state);
+                    state.Socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
                 }
             }
             else {
-                //socket has been closed... handle it
-                //TODO: handle socket close
+                //Socket has been closed... handle it
+                //TODO: handle Socket close
             }
         }
 
@@ -134,18 +134,18 @@ namespace Presto.Common.Net
         /// <param name="state">The state object to be dispatched.</param>
         private void dispatch(ServerState state) {
             //first extract the message type from the message
-            string messageType = state.getMessageType();
+            string messageType = state.GetMessageType();
 
             //if messageType is null we return the Unknowm message response
             if(messageType == null){
-                state.sendAndClose(MessageType.UNKOWN);
+                state.WriteAndClose(MessageType.UNKOWN);
             }
 
             //find the corresponding message type in the listing and dispatch accordingly, or return Unknown message response
             if(dispatchList.ContainsKey(messageType)){
                 dispatchList[messageType].BeginInvoke(state, null, null);
             }else{
-                state.sendAndClose(MessageType.UNKOWN);
+                state.WriteAndClose(MessageType.UNKOWN);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Presto.Common.Net
         /// </summary>
         /// <param name="messageType">The message type from the Presto.Common.Net.MessageType struct.</param>
         /// <param name="dispatchAction">An Action that recieves a server state object as its only parameter.</param>
-        public void setDispatchAction(MessageType messageType, Action<ServerState> dispatchAction)
+        public void RegisterDispatchAction(MessageType messageType, Action<ServerState> dispatchAction)
         {
             dispatchList[messageType] = dispatchAction;
         }

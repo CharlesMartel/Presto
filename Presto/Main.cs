@@ -55,7 +55,7 @@ namespace Presto
 		/// </summary>
 		public static void status ()
 		{
-			//TODO: get cluster status and write to console	
+			//TODO: get cluster status and Write to console	
 		}
 		
 		/// <summary>

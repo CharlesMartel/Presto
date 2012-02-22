@@ -41,15 +41,29 @@ namespace Presto.Common {
         /// <returns>
         /// The assembly.
         /// </returns>
-        public Assembly getAssembly() {
+        public Assembly GetAssembly() {
             return assembly;
         }
 
         /// <summary>
         /// Validate that the assembly is usable by Presto..
         /// </summary>
-        public bool validate() {
-            //TODO: validate assembly
+        public bool Validate() {
+            //get all types housed in the assembly
+            Type[] assemblyTypes = assembly.GetTypes();
+            //count the number of types that implement PrestoModule
+            int count = 0;
+            foreach(Type type in assemblyTypes)
+            {
+                if (type.GetInterface("IPrestoModule") != null)
+                {
+                    count++;
+                }
+            }
+            // if there is exactly one class that implements IPrestoModule then the assembly is valid
+            if(count == 1){
+                return true;
+            }
             return false;
         }
 

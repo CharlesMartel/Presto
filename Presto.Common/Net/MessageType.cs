@@ -17,9 +17,17 @@ namespace Presto.Common.Net {
 
         //--------Assembly transfer messages------------//
         /// <summary>
-        /// AN assembly binary is attatched to this message.
+        /// An assembly binary is attatched to this message and the binary needs to be loaded by the recieving PrestoServer
         /// </summary>
-        public static readonly MessageType ASSEMBLY_INCOMING;
+        public static readonly MessageType ASSEMBLY_TRANSFER_MASTER;
+        /// <summary>
+        /// An assembly binary is attatched to this message and the recieving slave server needs to load the binary and await instructions
+        /// </summary>
+        public static readonly MessageType ASSEMBLY_TRANSFER_SLAVE;
+        /// <summary>
+        /// A response notifying the sending service of a succesfull assembly transfer.
+        /// </summary>
+        public static readonly MessageType ASSEMBLY_TRANSFER_COMPLETE;
 
 
         /// <summary>
@@ -27,7 +35,9 @@ namespace Presto.Common.Net {
         /// </summary>
         static MessageType() {
             UNKOWN = new MessageType("99999999");
-            ASSEMBLY_INCOMING = new MessageType("10000000");
+            ASSEMBLY_TRANSFER_MASTER = new MessageType("10000000");
+            ASSEMBLY_TRANSFER_SLAVE = new MessageType("10000001");
+            ASSEMBLY_TRANSFER_COMPLETE = new MessageType("10000002");
         }
 
 
@@ -59,29 +69,29 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Implicit conversion from Message Type to String
         /// </summary>
-        /// <param name="mtype"></param>
+        /// <param name="messageType"></param>
         /// <returns>The string representation of the MessageType</returns>
-        public static implicit operator string(MessageType mtype)
+        public static implicit operator string(MessageType messageType)
         {
-            return mtype.ToString();
+            return messageType.ToString();
         }
 
         /// <summary>
         /// Implicitly convert from string to MessageType
         /// </summary>
-        /// <param name="mtype"></param>
-        /// <returns>Will return null if "mtype" matches no MessageType</returns>
-        public static implicit operator MessageType(string mtype)
+        /// <param name="messageType"></param>
+        /// <returns>Will return null if "messageType" matches no MessageType</returns>
+        public static implicit operator MessageType(string messageType)
         {
             //be sure that the string is not null
 
-            if (mtype == null)
+            if (messageType == null)
             {
                 return null;
             }
 
             MessageType result;
-            if (instance.TryGetValue(mtype, out result))
+            if (instance.TryGetValue(messageType, out result))
             {
                 return result;
             }

@@ -16,12 +16,12 @@ namespace Presto.Common
 		
 		
 		/// <summary>
-		/// Log an error.
+		/// Log an Error.
 		/// </summary>
 		/// <param name='message'>
-		/// The error message to be logged.
+		/// The Error message to be logged.
 		/// </param>
-		public static void error (string message)
+		public static void Error (string message)
 		{
 			string toWrite = "ERROR:" + Environment.NewLine + message + Environment.NewLine;
 			byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes (toWrite);
@@ -35,12 +35,12 @@ namespace Presto.Common
 		}
 
 		/// <summary>
-		/// Log a warning.
+		/// Log a Warning.
 		/// </summary>
 		/// <param name='message'>
-		/// The warning message to be logged.
+		/// The Warning message to be logged.
 		/// </param>
-		public static void warning (string message)
+		public static void Warning (string message)
 		{
 			string toWrite = "WARNING:" + Environment.NewLine + message + Environment.NewLine;
 			byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes (toWrite);
@@ -54,12 +54,12 @@ namespace Presto.Common
 		}
 		
 		/// <summary>
-		/// Log a generic statement.
+		/// Log a Generic statement.
 		/// </summary>
 		/// <param name='message'>
-		/// The generic message to be logged.
+		/// The Generic message to be logged.
 		/// </param>
-		public static void generic (string message)
+		public static void Generic (string message)
 		{
 			string toWrite = "LOG:" + Environment.NewLine + message + Environment.NewLine;
 			byte[] bytesToWrite = UTF8Encoding.UTF8.GetBytes (toWrite);

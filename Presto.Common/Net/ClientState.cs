@@ -8,47 +8,47 @@ using Presto.Common;
 namespace Presto.Common.Net
 {
 	/// <summary>
-	/// ServerState is a state object that gets passed around as the holder for an asynchronous socket.
+	/// ServerState is a state object that gets passed around as the holder for an asynchronous Socket.
 	/// </summary>
 	public class ClientState
 	{
-		//the internal socket
-		public TcpClient client;
-		// Size of receive buffer.
-		public const int bufferSize = 1024;
-		// Receive buffer.
-		public byte[] buffer = new byte[bufferSize];
-		//An appendable byte list that will hold data being flushed from the buffer
+		//the internal Socket
+		public TcpClient Client;
+		// Size of receive Buffer.
+		public const int BufferSize = 1024;
+		// Receive Buffer.
+		public byte[] Buffer = new byte[BufferSize];
+		//An appendable byte list that will hold data being flushed from the Buffer
         private List<byte> data = new List<byte>();
         //we keep the message size around
-        public long messageLength = 0;
+        public long MessageLength = 0;
         //a boolean to tell if the message is fully recieved
         private bool messageFullyRecieved = false;
 
 		/// <summary>
 		/// Create a new server state object to manage a currently running connection
 		/// </summary>
-		/// <param name="socket">The sync socket associated with the state object.</param>
+		/// <param name="Socket">The sync Socket associated with the state object.</param>
 		public ClientState (TcpClient client)
 		{
-			//set the working client
-			this.client = client;
+			//set the working Client
+			this.Client = client;
 		}
 
         /// <summary>
-        /// Copies all remaining data in the buffer into the full data array and clears the buffer.
+        /// Copies all remaining data in the Buffer into the full data array and clears the Buffer.
         /// </summary>
-        public void purgeBuffer(int bytesRead)
+        public void PurgeBuffer(int bytesRead)
         {
-            //we copy the bytes read out of the buffer and add it to the data list
-            data.AddRange(new List<byte>(buffer).GetRange(0, bytesRead));
-            buffer = new byte[bufferSize];
+            //we copy the bytes read out of the Buffer and add it to the data list
+            data.AddRange(new List<byte>(Buffer).GetRange(0, bytesRead));
+            Buffer = new byte[BufferSize];
 
             //see if the message is fully recieved and set the messageFullyRecieved boolean if so
             List<byte> messageLengthLongList = data.GetRange(0, 8);
             byte[] messageLengthLongArray = messageLengthLongList.ToArray();
-            messageLength = BitConverter.ToInt64(messageLengthLongArray, 0);
-            if (data.Count >= messageLength + 16) {
+            MessageLength = BitConverter.ToInt64(messageLengthLongArray, 0);
+            if (data.Count >= MessageLength + 16) {
                 messageFullyRecieved = true;
             }           
         }
@@ -59,7 +59,7 @@ namespace Presto.Common.Net
         /// a check is simple.
         /// </summary>
         /// <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
-        public MessageType getMessageType() 
+        public MessageType GetMessageType() 
         {
             //make sure data is long enough to contain a message type
             if (!(data.Count > 15)) {
@@ -77,7 +77,7 @@ namespace Presto.Common.Net
         /// internal property.
         /// </summary>
         /// <returns>boolean telling if the message has been fully recieved</returns>
-        public bool isFullyRecieved() 
+        public bool IsFullyRecieved() 
         {
             return messageFullyRecieved;
         }
@@ -86,7 +86,7 @@ namespace Presto.Common.Net
         /// Get the data portion of the message as a byte array
         /// </summary>
         /// <returns></returns>
-        public byte[] getDataArray() {
+        public byte[] GetDataArray() {
             List<byte> dataByteArray = data.GetRange(16, data.Count - 16);
             return dataByteArray.ToArray();
         }
@@ -95,7 +95,7 @@ namespace Presto.Common.Net
         /// Get the data portion of the message as an ASCII encoded string
         /// </summary>
         /// <returns></returns>
-        public string getDataASCIIString() {
+        public string GetDataASCIIString() {
             List<byte> dataByteArray = data.GetRange(16, data.Count - 16);
             return ASCIIEncoding.ASCII.GetString(dataByteArray.ToArray());
         }
