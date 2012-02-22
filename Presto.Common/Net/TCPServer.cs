@@ -107,15 +107,24 @@ namespace Presto.Common.Net
             //read from the socket
             int readCount = state.socket.EndReceive(ar);
 
-            //check if reading is done, move on if so, trigger another read if not
+            //check if reading is done, move on if so. then trigger another read
             if (readCount > 0) {
                 //purge the buffer and start another read
-                state.purgeBuffer();
-                state.socket.BeginReceive(state.buffer, 0, ServerState.bufferSize, 0, new AsyncCallback(read), state);
+                state.purgeBuffer(readCount);
+                //check if the message is fully recieved, if it is, create a new state object and pass that to the read,
+                // if not, continue the read with the same state object
+                if (state.isFullyRecieved()) {
+                    ServerState newState = new ServerState(state.socket);
+                    newState.socket.BeginReceive(newState.buffer, 0, ServerState.bufferSize, 0, new AsyncCallback(read), newState);
+                    dispatch(state);
+                }
+                else {
+                    state.socket.BeginReceive(state.buffer, 0, ServerState.bufferSize, 0, new AsyncCallback(read), state);
+                }
             }
             else {
-                //all bytes have been read, dispatch the message
-                dispatch(state);
+                //socket has been closed... handle it
+                //TODO: handle socket close
             }
         }
 
@@ -146,7 +155,7 @@ namespace Presto.Common.Net
         /// </summary>
         /// <param name="messageType">The message type from the Presto.Common.Net.MessageType struct.</param>
         /// <param name="dispatchAction">An Action that recieves a server state object as its only parameter.</param>
-        public void setDispatchAction(string messageType, Action<ServerState> dispatchAction)
+        public void setDispatchAction(MessageType messageType, Action<ServerState> dispatchAction)
         {
             dispatchList[messageType] = dispatchAction;
         }

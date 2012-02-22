@@ -17,7 +17,6 @@ namespace Presto.Common.Net
 	{
 
         private IPEndPoint serverEndpoint;
-        private int port;
         private TcpClient tcpClient;
 
         // A hash table holding all dispatch references and pointer to their delegates
@@ -107,10 +106,17 @@ namespace Presto.Common.Net
         /// <param name="data">the byte data to be written</param>
         private void write(byte[] data)
         {
+            //get the data length and append it to the beggining of the stream
+            long dataLength = data.Length;
+            byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
+            List<byte> tempByteArray = new List<byte>(dataLengthArray);
+            tempByteArray.AddRange(data);
+            data = tempByteArray.ToArray();
+
             //get the tcpClient network stream
             NetworkStream nStream = tcpClient.GetStream();
             //start the synchronous write
-            nStream.BeginWrite(data, 0, data.Length, writeCallback, null);
+            nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
         }
 
         /// <summary>
@@ -119,33 +125,53 @@ namespace Presto.Common.Net
         /// <param name="result"></param>
         private void writeCallback(IAsyncResult result)
         {
-            //get the tcpClient network stream
-            NetworkStream nStream = tcpClient.GetStream();
-            //finish the write
-            nStream.EndWrite(result);
+            try {
+                //get the tcpClient network stream
+                NetworkStream nStream = tcpClient.GetStream();
+                //finish the write
+                nStream.EndWrite(result);
+            }
+            catch (InvalidOperationException e) {
+                //if we get an invalid operation exception, the client has likely been disposed, we move on
+            }
         }
 
 
         private void readCallback(IAsyncResult result)
         {
-            int read;
-            //get the network stream
-            NetworkStream nStream = tcpClient.GetStream();
-            //end the read
-            read = nStream.EndRead(result);
+            int read = 0;
+            NetworkStream nStream = null;
+
+            try{
+                //get the network stream
+                nStream = tcpClient.GetStream();
+                //end the read
+                read = nStream.EndRead(result);
+            } catch (ObjectDisposedException e){
+                //if the client has been disposed, we set read to 0 to allow cleanup of the TCPClient
+                read = 0;
+            }
 
             //get the server state object
             ClientState state = (ClientState)result.AsyncState;
 
-            if (read != 0)
+            if (read > 0)
             {
-                //there is more data, keep reading
-                state.purgeBuffer();
-                nStream.BeginRead(state.buffer, 0, state.buffer.Length, readCallback, state);
+                state.purgeBuffer(read);
+                //check if the message is fully recieved, if it is, create a new state object and pass that to the read,
+                // if not, continue the read with the same state object
+                if (state.isFullyRecieved()) {
+                    ClientState newState = new ClientState(state.client);
+                    nStream.BeginRead(newState.buffer, 0, ClientState.bufferSize, readCallback, newState);
+                }
+                else {
+                    nStream.BeginRead(state.buffer, 0, ClientState.bufferSize, readCallback, state);
+                }
             }
             else
             {
-                dispatch(state);
+                //socket has been closed... handle it
+                //TODO: handle socket close
             }
         }
 
@@ -185,6 +211,13 @@ namespace Presto.Common.Net
         public void setDispatchAction(string messageType, Action<ClientState> dispatchAction)
         {
             dispatchList[messageType] = dispatchAction;
+        }
+
+        /// <summary>
+        /// Close the client.
+        /// </summary>
+        public void close() {
+            tcpClient.Close();
         }
         
 	}

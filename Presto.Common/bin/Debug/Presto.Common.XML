@@ -69,6 +69,11 @@
             <param name="messageType">The message type from the Presto.Common.Net.MessageType struct.</param>
             <param name="dispatchAction">An Action that recieves a server state object as its only parameter.</param>
         </member>
+        <member name="M:Presto.Common.Net.TCPClient.close">
+            <summary>
+            Close the client.
+            </summary>
+        </member>
         <member name="T:Presto.Common.Net.MessageType">
             <summary>
             A type safe enum holding all available message types.
@@ -77,17 +82,32 @@
             is the first 8 bytes.
             </summary>
         </member>
+        <member name="F:Presto.Common.Net.MessageType.UNKOWN">
+            <summary>
+            The given messange type was unknown or unparseable.
+            </summary>
+        </member>
+        <member name="F:Presto.Common.Net.MessageType.ASSEMBLY_INCOMING">
+            <summary>
+            AN assembly binary is attatched to this message.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.MessageType.#cctor">
+            <summary>
+            The static constructor for the MessageType enum.
+            </summary>
+        </member>
         <member name="M:Presto.Common.Net.MessageType.#ctor(System.String)">
             <summary>
             Internal constructor for the type safe enum MessageType
             </summary>
-            <param name="name"></param>
+            <param name="myName">The name of the message type.</param>
         </member>
         <member name="M:Presto.Common.Net.MessageType.ToString">
             <summary>
-            Gives the chosen Message Type as a string value.
+            Get the name of the enumeration as a string.
             </summary>
-            <returns></returns>
+            <returns>The string representation of the enumeration.</returns>
         </member>
         <member name="M:Presto.Common.Net.MessageType.op_Implicit(Presto.Common.Net.MessageType)~System.String">
             <summary>
@@ -152,7 +172,7 @@
             </summary>
             <param name="state">The state object to be dispatched.</param>
         </member>
-        <member name="M:Presto.Common.Net.TCPServer.setDispatchAction(System.String,System.Action{Presto.Common.Net.ServerState})">
+        <member name="M:Presto.Common.Net.TCPServer.setDispatchAction(Presto.Common.Net.MessageType,System.Action{Presto.Common.Net.ServerState})">
             <summary>
             Sets a dispatch action to the dispatch list and triggers that action according to the message type.
             </summary>
@@ -188,6 +208,49 @@
             The generic message to be logged.
             </param>
         </member>
+        <member name="T:Presto.Common.Net.ClientState">
+            <summary>
+            ServerState is a state object that gets passed around as the holder for an asynchronous socket.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.#ctor(System.Net.Sockets.TcpClient)">
+            <summary>
+            Create a new server state object to manage a currently running connection
+            </summary>
+            <param name="socket">The sync socket associated with the state object.</param>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.purgeBuffer(System.Int32)">
+            <summary>
+            Copies all remaining data in the buffer into the full data array and clears the buffer.
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.getMessageType">
+            <summary>
+            Extracts the message type from the message and returns it as a string. If the message is not long enough to
+            contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
+            a check is simple.
+            </summary>
+            <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.isFullyRecieved">
+            <summary>
+            When a message is fully recieved an internal boolean gets set to true. This is a way for outsiders to check on that
+            internal property.
+            </summary>
+            <returns>boolean telling if the message has been fully recieved</returns>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.getDataArray">
+            <summary>
+            Get the data portion of the message as a byte array
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Presto.Common.Net.ClientState.getDataASCIIString">
+            <summary>
+            Get the data portion of the message as an ASCII encoded string
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Presto.Common.Net.ServerState">
             <summary>
             ServerState is a state object that gets passed around as the holder for an asynchronous socket.
@@ -199,7 +262,7 @@
             </summary>
             <param name="socket">The sync socket associated with the state object.</param>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.purgeBuffer">
+        <member name="M:Presto.Common.Net.ServerState.purgeBuffer(System.Int32)">
             <summary>
             Copies all remaining data in the buffer into the full data array and clears the buffer.
             </summary>
@@ -226,34 +289,35 @@
             <param name="messageType"></param>
             <param name="data"></param>
         </member>
+        <member name="M:Presto.Common.Net.ServerState.write(System.Byte[])">
+            <summary>
+            Internal write function. Writes the passed in data to the socket stream.
+            </summary>
+            <param name="data">the byte data to be written</param>
+        </member>
         <member name="M:Presto.Common.Net.ServerState.closeSocket">
             <summary>
             Closes the ServerState's associated socket
             </summary>
         </member>
-        <member name="T:Presto.Common.Net.ClientState">
+        <member name="M:Presto.Common.Net.ServerState.isFullyRecieved">
             <summary>
-            ServerState is a state object that gets passed around as the holder for an asynchronous socket.
+            When a message is fully recieved an internal boolean gets set to true. This is a way for outsiders to check on that
+            internal property.
             </summary>
+            <returns>boolean telling if the message has been fully recieved</returns>
         </member>
-        <member name="M:Presto.Common.Net.ClientState.#ctor(System.Net.Sockets.TcpClient)">
+        <member name="M:Presto.Common.Net.ServerState.getDataArray">
             <summary>
-            Create a new server state object to manage a currently running connection
+            Get the data portion of the message as a byte array
             </summary>
-            <param name="socket">The sync socket associated with the state object.</param>
+            <returns></returns>
         </member>
-        <member name="M:Presto.Common.Net.ClientState.purgeBuffer">
+        <member name="M:Presto.Common.Net.ServerState.getDataASCIIString">
             <summary>
-            Copies all remaining data in the buffer into the full data array and clears the buffer.
+            Get the data portion of the message as an ASCII encoded string
             </summary>
-        </member>
-        <member name="M:Presto.Common.Net.ClientState.getMessageType">
-            <summary>
-            Extracts the message type from the message and returns it as a string. If the message is not long enough to
-            contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
-            a check is simple.
-            </summary>
-            <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
+            <returns></returns>
         </member>
     </members>
 </doc>
