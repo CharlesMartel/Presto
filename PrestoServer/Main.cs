@@ -1,4 +1,5 @@
 using System;
+using Presto.Common.Net;
 
 namespace PrestoServer
 {
@@ -6,12 +7,12 @@ namespace PrestoServer
 	{
 		public static void Main (string[] args)
 		{
-			Console.WriteLine ("Hello World!");
+
 		}
 		
-		public static void configure ()
+		public static void configure (ServerState state)
 		{
-			
+
 		}
 	}
 }

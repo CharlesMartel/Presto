@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Presto.Common.Net {
     /// <summary>
@@ -10,38 +8,51 @@ namespace Presto.Common.Net {
     /// to dispatch the request to. THe message type will be the first 8 characters of a message in ASCII. Consequently the message type
     /// is the first 8 bytes.
     /// </summary>
-    public sealed class MessageType {
+    public class MessageType {
 
-        //The given message was unkown or unparsable
-        public static readonly MessageType UNKOWN = new MessageType("99999999");
+        /// <summary>
+        /// The given messange type was unknown or unparseable.
+        /// </summary>
+        public static readonly MessageType UNKOWN;
 
         //--------Assembly transfer messages------------//
-        public static readonly MessageType ASSEMBLY_INCOMING = new MessageType("10000000");
+        /// <summary>
+        /// AN assembly binary is attatched to this message.
+        /// </summary>
+        public static readonly MessageType ASSEMBLY_INCOMING;
+
+
+        /// <summary>
+        /// The static constructor for the MessageType enum.
+        /// </summary>
+        static MessageType() {
+            UNKOWN = new MessageType("99999999");
+            ASSEMBLY_INCOMING = new MessageType("10000000");
+        }
 
 
 
         /* Beneath is entirely internal to the type safe enum pattern used for the MessageType class
          * Not to be changed. 
          */
-        private readonly string name;
-        private static readonly Dictionary<string, MessageType> instance = new Dictionary<string, MessageType>();
+        private string name;
+        private static Dictionary<string, MessageType> instance = new Dictionary<string, MessageType>();
 
         /// <summary>
         /// Internal constructor for the type safe enum MessageType
         /// </summary>
-        /// <param name="name"></param>
-        private MessageType(string name)
+        /// <param name="myName">The name of the message type.</param>
+        private MessageType(string myName)
         {
-            this.name = name;
+            name = myName;
             instance[name] = this;
         }
 
         /// <summary>
-        /// Gives the chosen Message Type as a string value.
+        /// Get the name of the enumeration as a string.
         /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
+        /// <returns>The string representation of the enumeration.</returns>
+        public override string ToString() {
             return name;
         }
 
@@ -52,7 +63,7 @@ namespace Presto.Common.Net {
         /// <returns>The string representation of the MessageType</returns>
         public static implicit operator string(MessageType mtype)
         {
-            return mtype.name;
+            return mtype.ToString();
         }
 
         /// <summary>
