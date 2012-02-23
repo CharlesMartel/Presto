@@ -1,9 +1,0 @@
-C:\GitHubProjects\Presto\PrestoServer\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\GitHubProjects\Presto\PrestoServer\bin\Debug\PrestoServer.exe
-C:\GitHubProjects\Presto\PrestoServer\bin\Debug\PrestoServer.pdb
-C:\GitHubProjects\Presto\PrestoServer\bin\Debug\Presto.Common.dll
-C:\GitHubProjects\Presto\PrestoServer\bin\Debug\Presto.Common.pdb
-C:\GitHubProjects\Presto\PrestoServer\obj\x86\Debug\PrestoServer.exe
-C:\GitHubProjects\Presto\PrestoServer\obj\x86\Debug\PrestoServer.pdb
-C:\GitHubProjects\Presto\PrestoServer\bin\Debug\PrestoServer.XML
-C:\GitHubProjects\Presto\PrestoServer\bin\Debug\Presto.Common.xml
