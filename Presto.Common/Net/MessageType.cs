@@ -29,6 +29,31 @@ namespace Presto.Common.Net {
         /// </summary>
         public static readonly MessageType ASSEMBLY_TRANSFER_COMPLETE;
 
+        //---------Process Execution messages-----------//
+        /// <summary>
+        /// An error response indicating that the Execution cannot be processed as the recieving server does not have 
+        /// the assembly to execute in.
+        /// </summary>
+        public static readonly MessageType MISSING_ASSEMBLY;
+        /// <summary>
+        /// Signals the recieving server to carryout an execution according to the serialized ExecutionContext object 
+        /// carried in with the message.
+        /// </summary>
+        public static readonly MessageType EXECUTION_BEGIN;
+        /// <summary>
+        /// A return signal giving back the processed data from a completed execution in the form of
+        /// a serialized ExecutionResult object.
+        /// </summary>
+        public static readonly MessageType EXECUTION_FINISHED;
+        /// <summary>
+        /// In Presto, a recieving server has the authority to deny an execution. This result tells the signaling server
+        /// that the execution has been denied.
+        /// </summary>
+        public static readonly MessageType EXECUTION_DENIED;
+
+
+
+
 
         /// <summary>
         /// The static constructor for the MessageType enum.
@@ -38,6 +63,10 @@ namespace Presto.Common.Net {
             ASSEMBLY_TRANSFER_MASTER = new MessageType("10000000");
             ASSEMBLY_TRANSFER_SLAVE = new MessageType("10000001");
             ASSEMBLY_TRANSFER_COMPLETE = new MessageType("10000002");
+            MISSING_ASSEMBLY = new MessageType("20000000");
+            EXECUTION_BEGIN = new MessageType("20000001");
+            EXECUTION_FINISHED = new MessageType("20000002");
+            EXECUTION_DENIED = new MessageType("20000003");
         }
 
 
