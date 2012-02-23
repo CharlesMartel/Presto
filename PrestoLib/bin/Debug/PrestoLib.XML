@@ -10,14 +10,14 @@
             execution and will be instantiated upon execution of the module.
             </summary>
         </member>
-        <member name="M:Presto.IPrestoModule.load">
+        <member name="M:Presto.IPrestoModule.Load">
             <summary>
-            After a new instance of the module is created. The load method is immediately called to begin processing.
+            After a new instance of the module is created. The Load method is immediately called to begin processing.
             </summary>
         </member>
-        <member name="M:Presto.IPrestoModule.unload">
+        <member name="M:Presto.IPrestoModule.Unload">
             <summary>
-            After the module has finished executing, the unload method gets called to allow the module to clean up behind itself before being destroyed.
+            After the module has finished executing, the Unload method gets called to allow the module to clean up behind itself before being destroyed.
             </summary>
         </member>
     </members>

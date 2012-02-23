@@ -133,6 +133,36 @@
             <param name="messageType"></param>
             <returns>Will return null if "messageType" matches no MessageType</returns>
         </member>
+        <member name="T:Presto.Common.Machine.CPU">
+            <summary>
+            Offers details about the cpu a current presto intance is running on.
+            </summary>
+        </member>
+        <member name="F:Presto.Common.Machine.CPU.cpuCounter">
+            <summary>
+            The performance counter that will deliver performance information on the cpu
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Machine.CPU.GetUsage">
+            <summary>
+            Get the total cpu usage percentage.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Presto.Common.Machine.CPU.GetCPURating">
+            <summary>
+            Because all cpus are different, we cannot simply rely on percentage to decide use, so we generate a rating
+            based on processor capability, this method returns that rating.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Presto.Common.Machine.CPU.GetDPI">
+            <summary>
+            The DPI (Distribution Performance Indicator) is number representing what the current machine has left to offer
+            to the cluster. It is an absolute number based on the relative cpu rating that gives a standard value to base
+            distribution decisions on. This method returns that value.
+            </summary>
+        </member>
         <member name="T:Presto.Common.AssemblyWrapper">
             <summary>
             The assembly wrapper provides basic functionality for loading, managing, and verifying assemblies.
@@ -365,15 +395,27 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:Presto.Common.Machine.CPU">
+        <member name="T:Presto.Common.Machine.Memory">
             <summary>
-            Offers details about the cpu a current presto intance is running on.
+            Offers details about the memory a current presto intance is running in.
             </summary>
         </member>
-        <member name="F:Presto.Common.Machine.CPU.cpuCounter">
+        <member name="F:Presto.Common.Machine.Memory.ramCounter">
             <summary>
-            The performance counter that will deliver performance information on the cpu
+            Internal counter for ram
             </summary>
+        </member>
+        <member name="M:Presto.Common.Machine.Memory.GetTotalMemory">
+            <summary>
+            Get the total size of the memory in the computer the Presto instance is running on.
+            </summary>
+            <returns>The total size of the memory.</returns>
+        </member>
+        <member name="M:Presto.Common.Machine.Memory.GetAvailableMemory">
+            <summary>
+            Get the size of the available memory in the computer the Presto instance is running on.
+            </summary>
+            <returns>The amount of available memory.</returns>
         </member>
     </members>
 </doc>

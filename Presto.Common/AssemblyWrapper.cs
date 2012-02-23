@@ -18,8 +18,9 @@ namespace Presto.Common {
         /// </param>
         public AssemblyWrapper(string assemblyURL) {
             //TODO: Account for bad assemblies or unreachable files
-            //load the assembly into the assembly  internal assembly instance
+            //load the assembly into the assembly internal assembly instance
             assembly = Assembly.LoadFrom(assemblyURL);
+            //TODO: load the assembly into the appdomain
         }
 
         /// <summary>
@@ -33,6 +34,7 @@ namespace Presto.Common {
             //TODO: Account for bad assemblies
             //load the assembly into the internal assembly instance
             assembly = Assembly.Load(assemblyBinaryArray);
+            //TODO: load the assembly into the appdomain
         }
 
         /// <summary>

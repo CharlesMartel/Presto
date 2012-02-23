@@ -36,6 +36,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AssemblyWrapper.cs" />
     <Compile Include="Machine\CPU.cs" />
+    <Compile Include="Machine\Memory.cs" />
     <Compile Include="Net\ClientState.cs" />
     <Compile Include="Net\MessageType.cs" />
     <Compile Include="Net\TCPServer.cs" />

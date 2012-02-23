@@ -21,6 +21,10 @@ namespace Presto
         /// </summary>
         public static void Initialize()
         {
+            //Initialize subsystems
+            Loader.Initialize();
+            Executor.Initialize();
+            //Start the server listening thread
             ControlServer.Start();
         }
 

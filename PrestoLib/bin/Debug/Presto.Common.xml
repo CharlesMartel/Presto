@@ -17,7 +17,7 @@
             Create the TCP Client with the specified host and port.
             </summary>
             <param name="host">String representation of the host on the network.</param>
-            <param name="port">The port to connect to on the host.</param>
+            <param name="port">The port to Connect to on the host.</param>
         </member>
         <member name="M:Presto.Common.Net.TCPClient.#ctor(System.Net.IPEndPoint)">
             <summary>
@@ -25,34 +25,34 @@
             </summary>
             <param name="host">IPEndpoint of the host.</param>
         </member>
-        <member name="M:Presto.Common.Net.TCPClient.connect">
+        <member name="M:Presto.Common.Net.TCPClient.Connect">
             <summary>
-            Connect the client to the given host server.
+            Connect the Client to the given host server.
             </summary>
         </member>
-        <member name="M:Presto.Common.Net.TCPClient.write(Presto.Common.Net.MessageType,System.String)">
+        <member name="M:Presto.Common.Net.TCPClient.Write(Presto.Common.Net.MessageType,System.String)">
             <summary>
-            Write data to the socket stream according to the passed in Message Type and String message
+            Write data to the Socket stream according to the passed in Message Type and String message
             </summary>
             <param name="mType"></param>
             <param name="message"></param>
         </member>
-        <member name="M:Presto.Common.Net.TCPClient.write(Presto.Common.Net.MessageType,System.Byte[])">
+        <member name="M:Presto.Common.Net.TCPClient.Write(Presto.Common.Net.MessageType,System.Byte[])">
             <summary>
-            Write data to the socket stream according to the passed in message type and byte data array
+            Write data to the Socket stream according to the passed in message type and byte data array
             </summary>
             <param name="mType"></param>
             <param name="data"></param>
         </member>
         <member name="M:Presto.Common.Net.TCPClient.write(System.Byte[])">
             <summary>
-            Internal write function. Writes the passed in data to the socket stream.
+            Internal Write function. Writes the passed in data to the Socket stream.
             </summary>
             <param name="data">the byte data to be written</param>
         </member>
         <member name="M:Presto.Common.Net.TCPClient.writeCallback(System.IAsyncResult)">
             <summary>
-            Internal asynchronous write callback method
+            Internal asynchronous Write callback method
             </summary>
             <param name="result"></param>
         </member>
@@ -71,7 +71,7 @@
         </member>
         <member name="M:Presto.Common.Net.TCPClient.close">
             <summary>
-            Close the client.
+            Close the Client.
             </summary>
         </member>
         <member name="T:Presto.Common.Net.MessageType">
@@ -123,15 +123,45 @@
             <summary>
             Implicit conversion from Message Type to String
             </summary>
-            <param name="mtype"></param>
+            <param name="messageType"></param>
             <returns>The string representation of the MessageType</returns>
         </member>
         <member name="M:Presto.Common.Net.MessageType.op_Implicit(System.String)~Presto.Common.Net.MessageType">
             <summary>
             Implicitly convert from string to MessageType
             </summary>
-            <param name="mtype"></param>
-            <returns>Will return null if "mtype" matches no MessageType</returns>
+            <param name="messageType"></param>
+            <returns>Will return null if "messageType" matches no MessageType</returns>
+        </member>
+        <member name="T:Presto.Common.Machine.CPU">
+            <summary>
+            Offers details about the cpu a current presto intance is running on.
+            </summary>
+        </member>
+        <member name="F:Presto.Common.Machine.CPU.cpuCounter">
+            <summary>
+            The performance counter that will deliver performance information on the cpu
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Machine.CPU.GetUsage">
+            <summary>
+            Get the total cpu usage percentage.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Presto.Common.Machine.CPU.GetCPURating">
+            <summary>
+            Because all cpus are different, we cannot simply rely on percentage to decide use, so we generate a rating
+            based on processor capability, this method returns that rating.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Presto.Common.Machine.CPU.GetDPI">
+            <summary>
+            The DPI (Distribution Performance Indicator) is number representing what the current machine has left to offer
+            to the cluster. It is an absolute number based on the relative cpu rating that gives a standard value to base
+            distribution decisions on. This method returns that value.
+            </summary>
         </member>
         <member name="T:Presto.Common.AssemblyWrapper">
             <summary>
@@ -156,7 +186,7 @@
             Assembly byte array.
             </param>
         </member>
-        <member name="M:Presto.Common.AssemblyWrapper.getAssembly">
+        <member name="M:Presto.Common.AssemblyWrapper.GetAssembly">
             <summary>
             Gets the assembly.that this assembly wrapper wraps.
             </summary>
@@ -164,7 +194,7 @@
             The assembly.
             </returns>
         </member>
-        <member name="M:Presto.Common.AssemblyWrapper.validate">
+        <member name="M:Presto.Common.AssemblyWrapper.Validate">
             <summary>
             Validate that the assembly is usable by Presto..
             </summary>
@@ -184,13 +214,13 @@
         <member name="M:Presto.Common.Net.TCPServer.#ctor(System.Int32)">
             <summary>
             Initializes a new instance of the <see cref="T:Presto.Common.Net.TCPServer"/> class. 
-            An asynchronous tcp socket bound to the specified port.
+            An asynchronous tcp Socket bound to the specified port.
             </summary>
             <param name="port">
             The port to bind to.
             </param>
         </member>
-        <member name="M:Presto.Common.Net.TCPServer.start">
+        <member name="M:Presto.Common.Net.TCPServer.Start">
             <summary>
             Start up the tcp server and begin accepting clients.
             </summary>
@@ -202,13 +232,13 @@
         </member>
         <member name="M:Presto.Common.Net.TCPServer.accept(System.IAsyncResult)">
             <summary>
-            Internal: connect to the client and spin off a recieve callback
+            Internal: Connect to the Client and spin off a recieve callback
             </summary>
             <param name="ar"></param>
         </member>
         <member name="M:Presto.Common.Net.TCPServer.read(System.IAsyncResult)">
             <summary>
-            read data sent from the client, called recursively until all data is receieved
+            read data sent from the Client, called recursively until all data is receieved
             </summary>
             <param name="ar"></param>
         </member>
@@ -218,7 +248,7 @@
             </summary>
             <param name="state">The state object to be dispatched.</param>
         </member>
-        <member name="M:Presto.Common.Net.TCPServer.registerDispatchAction(Presto.Common.Net.MessageType,System.Action{Presto.Common.Net.ServerState})">
+        <member name="M:Presto.Common.Net.TCPServer.RegisterDispatchAction(Presto.Common.Net.MessageType,System.Action{Presto.Common.Net.ServerState})">
             <summary>
             Sets a dispatch action to the dispatch list and triggers that action according to the message type.
             </summary>
@@ -230,47 +260,47 @@
             A common log for all program errors or debug statements to be written to
             </summary>
         </member>
-        <member name="M:Presto.Common.Log.error(System.String)">
+        <member name="M:Presto.Common.Log.Error(System.String)">
             <summary>
-            Log an error.
+            Log an Error.
             </summary>
             <param name='message'>
-            The error message to be logged.
+            The Error message to be logged.
             </param>
         </member>
-        <member name="M:Presto.Common.Log.warning(System.String)">
+        <member name="M:Presto.Common.Log.Warning(System.String)">
             <summary>
-            Log a warning.
+            Log a Warning.
             </summary>
             <param name='message'>
-            The warning message to be logged.
+            The Warning message to be logged.
             </param>
         </member>
-        <member name="M:Presto.Common.Log.generic(System.String)">
+        <member name="M:Presto.Common.Log.Generic(System.String)">
             <summary>
-            Log a generic statement.
+            Log a Generic statement.
             </summary>
             <param name='message'>
-            The generic message to be logged.
+            The Generic message to be logged.
             </param>
         </member>
         <member name="T:Presto.Common.Net.ClientState">
             <summary>
-            ServerState is a state object that gets passed around as the holder for an asynchronous socket.
+            ServerState is a state object that gets passed around as the holder for an asynchronous Socket.
             </summary>
         </member>
         <member name="M:Presto.Common.Net.ClientState.#ctor(System.Net.Sockets.TcpClient)">
             <summary>
             Create a new server state object to manage a currently running connection
             </summary>
-            <param name="socket">The sync socket associated with the state object.</param>
+            <param name="Socket">The sync Socket associated with the state object.</param>
         </member>
-        <member name="M:Presto.Common.Net.ClientState.purgeBuffer(System.Int32)">
+        <member name="M:Presto.Common.Net.ClientState.PurgeBuffer(System.Int32)">
             <summary>
-            Copies all remaining data in the buffer into the full data array and clears the buffer.
+            Copies all remaining data in the Buffer into the full data array and clears the Buffer.
             </summary>
         </member>
-        <member name="M:Presto.Common.Net.ClientState.getMessageType">
+        <member name="M:Presto.Common.Net.ClientState.GetMessageType">
             <summary>
             Extracts the message type from the message and returns it as a string. If the message is not long enough to
             contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
@@ -278,20 +308,20 @@
             </summary>
             <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
         </member>
-        <member name="M:Presto.Common.Net.ClientState.isFullyRecieved">
+        <member name="M:Presto.Common.Net.ClientState.IsFullyRecieved">
             <summary>
             When a message is fully recieved an internal boolean gets set to true. This is a way for outsiders to check on that
             internal property.
             </summary>
             <returns>boolean telling if the message has been fully recieved</returns>
         </member>
-        <member name="M:Presto.Common.Net.ClientState.getDataArray">
+        <member name="M:Presto.Common.Net.ClientState.GetDataArray">
             <summary>
             Get the data portion of the message as a byte array
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Presto.Common.Net.ClientState.getDataASCIIString">
+        <member name="M:Presto.Common.Net.ClientState.GetDataASCIIString">
             <summary>
             Get the data portion of the message as an ASCII encoded string
             </summary>
@@ -299,21 +329,21 @@
         </member>
         <member name="T:Presto.Common.Net.ServerState">
             <summary>
-            ServerState is a state object that gets passed around as the holder for an asynchronous socket.
+            ServerState is a state object that gets passed around as the holder for an asynchronous Socket.
             </summary>
         </member>
         <member name="M:Presto.Common.Net.ServerState.#ctor(System.Net.Sockets.Socket)">
             <summary>
             Create a new server state object to manage a currently running connection
             </summary>
-            <param name="socket">The sync socket associated with the state object.</param>
+            <param name="Socket">The sync Socket associated with the state object.</param>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.purgeBuffer(System.Int32)">
+        <member name="M:Presto.Common.Net.ServerState.PurgeBuffer(System.Int32)">
             <summary>
-            Copies all remaining data in the buffer into the full data array and clears the buffer.
+            Copies all remaining data in the Buffer into the full data array and clears the Buffer.
             </summary>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.getMessageType">
+        <member name="M:Presto.Common.Net.ServerState.GetMessageType">
             <summary>
             Extracts the message type from the message and returns it as a string. If the message is not long enough to
             contain a message type, null is returned. The message type is the first 8 characters of the message in ASCII so
@@ -321,14 +351,14 @@
             </summary>
             <returns>Will return the MessageType of the request, or null if the message type could not be parsed.</returns>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.sendAndClose(Presto.Common.Net.MessageType,System.Byte[])">
+        <member name="M:Presto.Common.Net.ServerState.WriteAndClose(Presto.Common.Net.MessageType,System.Byte[])">
             <summary>
-            Sends the passed in data as the passed in message type and closes the socket.
+            Sends the passed in data as the passed in message type and closes the Socket.
             </summary>
             <param name="messageType"></param>
             <param name="data"></param>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.sendData(Presto.Common.Net.MessageType,System.Byte[])">
+        <member name="M:Presto.Common.Net.ServerState.Write(Presto.Common.Net.MessageType,System.Byte[])">
             <summary>
             Sends the passed in data as the passed in message type
             </summary>
@@ -337,33 +367,55 @@
         </member>
         <member name="M:Presto.Common.Net.ServerState.write(System.Byte[])">
             <summary>
-            Internal write function. Writes the passed in data to the socket stream.
+            Internal Write function. Writes the passed in data to the Socket stream.
             </summary>
             <param name="data">the byte data to be written</param>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.closeSocket">
+        <member name="M:Presto.Common.Net.ServerState.CloseSocket">
             <summary>
-            Closes the ServerState's associated socket
+            Closes the ServerState's associated Socket
             </summary>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.isFullyRecieved">
+        <member name="M:Presto.Common.Net.ServerState.IsFullyRecieved">
             <summary>
             When a message is fully recieved an internal boolean gets set to true. This is a way for outsiders to check on that
             internal property.
             </summary>
             <returns>boolean telling if the message has been fully recieved</returns>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.getDataArray">
+        <member name="M:Presto.Common.Net.ServerState.GetDataArray">
             <summary>
             Get the data portion of the message as a byte array
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Presto.Common.Net.ServerState.getDataASCIIString">
+        <member name="M:Presto.Common.Net.ServerState.GetDataASCIIString">
             <summary>
             Get the data portion of the message as an ASCII encoded string
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:Presto.Common.Machine.Memory">
+            <summary>
+            Offers details about the memory a current presto intance is running in.
+            </summary>
+        </member>
+        <member name="F:Presto.Common.Machine.Memory.ramCounter">
+            <summary>
+            Internal counter for ram
+            </summary>
+        </member>
+        <member name="M:Presto.Common.Machine.Memory.GetTotalMemory">
+            <summary>
+            Get the total size of the memory in the computer the Presto instance is running on.
+            </summary>
+            <returns>The total size of the memory.</returns>
+        </member>
+        <member name="M:Presto.Common.Machine.Memory.GetAvailableMemory">
+            <summary>
+            Get the size of the available memory in the computer the Presto instance is running on.
+            </summary>
+            <returns>The amount of available memory.</returns>
         </member>
     </members>
 </doc>
