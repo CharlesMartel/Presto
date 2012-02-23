@@ -48,5 +48,9 @@
       <Project>{5CE03B15-134F-436C-9822-F41D889BBD3E}</Project>
       <Name>Presto.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PrestoLib\LibPresto.csproj">
+      <Project>{32249EF9-0A67-4FCF-8654-48124F1BD382}</Project>
+      <Name>LibPresto</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

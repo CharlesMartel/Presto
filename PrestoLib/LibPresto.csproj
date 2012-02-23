@@ -35,7 +35,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Cluster.cs" />
     <Compile Include="IPrestoModule.cs" />
+    <Compile Include="IPrestoParameter.cs" />
+    <Compile Include="IPrestoResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Presto.Common\Presto.Common.csproj">
