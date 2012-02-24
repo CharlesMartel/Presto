@@ -45,5 +45,10 @@
     <Compile Include="Log.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\PrestoLib\LibPresto.csproj">
+      <Project>{32249EF9-0A67-4FCF-8654-48124F1BD382}</Project>
+      <Name>LibPresto</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

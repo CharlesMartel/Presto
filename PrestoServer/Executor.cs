@@ -25,6 +25,9 @@ namespace Presto {
         /// <param name="assemblyWrapper">An AssemblyWrapper around the assembly of the module to be executed.</param>
         public static void ExecuteModule(AssemblyWrapper assemblyWrapper) {
             //TODO: finally execute the user module
+            //Instantiate Module
+            //Asign Cluster Instance to Module Cluster Instance
+            //Run Load
         }
 
         /// <summary>

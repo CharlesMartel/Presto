@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Presto;
 
 namespace Presto.Common {
     /// <summary>
@@ -20,7 +21,6 @@ namespace Presto.Common {
             //TODO: Account for bad assemblies or unreachable files
             //load the assembly into the assembly internal assembly instance
             assembly = Assembly.LoadFrom(assemblyURL);
-            //TODO: load the assembly into the appdomain
         }
 
         /// <summary>
@@ -34,7 +34,6 @@ namespace Presto.Common {
             //TODO: Account for bad assemblies
             //load the assembly into the internal assembly instance
             assembly = Assembly.Load(assemblyBinaryArray);
-            //TODO: load the assembly into the appdomain
         }
 
         /// <summary>
@@ -53,16 +52,16 @@ namespace Presto.Common {
         public bool Validate() {
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
-            //count the number of types that implement PrestoModule
+            //count the number of types that derive from PrestoModule
             int count = 0;
             foreach(Type type in assemblyTypes)
             {
-                if (type.GetInterface("IPrestoModule") != null)
+                if (type.IsSubclassOf(typeof(PrestoModule)))
                 {
                     count++;
                 }
             }
-            // if there is exactly one class that implements IPrestoModule then the assembly is valid
+            // if there is exactly one class that derives PrestoModule then the assembly is valid
             if(count == 1){
                 return true;
             }
