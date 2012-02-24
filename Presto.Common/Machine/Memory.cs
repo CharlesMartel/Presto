@@ -17,10 +17,10 @@ namespace Presto.Common.Machine {
         /// Get the total size of the memory in the computer the Presto instance is running on.
         /// </summary>
         /// <returns>The total size of the memory.</returns>
-        public static long GetTotalMemory()
+        public static long GetTotalSize()
         {
             //Not really sure yet how to implement this cross platform...
-            //TODO: Implement GetTotalMemory
+            //TODO: Implement GetTotalSize
             throw new NotImplementedException();
             //return 0;
         }
@@ -29,7 +29,7 @@ namespace Presto.Common.Machine {
         /// Get the size of the available memory in the computer the Presto instance is running on.
         /// </summary>
         /// <returns>The amount of available memory.</returns>
-        public static float GetAvailableMemory() 
+        public static float GetAvailable() 
         {
             return ramCounter.NextValue();
         }

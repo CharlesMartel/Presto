@@ -9,10 +9,11 @@ namespace Presto
 	{
 		public static void Main (string[] args)
 		{
-            for (int i = 0; i < 10; i++) {
+            /*for (int i = 0; i < 10; i++) {
                 Console.WriteLine(Presto.Common.Machine.CPU.GetUsage());
                 System.Threading.Thread.Sleep(1000);
             }
+             
             /*
             TCPServer serv = new TCPServer(2500);
             serv.Start();
@@ -26,6 +27,7 @@ namespace Presto
             cli.Write(MessageType.ASSEMBLY_TRANSFER_MASTER, bytes);
             cli.close();
              * */
+            Application.Initialize();
 		}
 
         public static void configure(ServerState state)

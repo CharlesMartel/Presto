@@ -1,6 +1,7 @@
 ﻿using System;
 using Presto.Common;
 using Presto.Common.Net;
+using Presto.Common.Machine;
 
 namespace Presto
 {
@@ -27,8 +28,12 @@ namespace Presto
         public static void Initialize()
         {
             //Initialize subsystems
+            Config.Initialize();
             Loader.Initialize();
             Executor.Initialize();
+            //Initialize Counters
+            CPU.GetUsage();
+            Memory.GetAvailable();
             //Start the server listening thread
             ControlServer.Start();
         }
