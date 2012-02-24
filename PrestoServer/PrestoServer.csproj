@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="AssemblyStore.cs" />
     <Compile Include="Executor.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />

@@ -69,6 +69,14 @@ namespace Presto.Common {
             return false;
         }
 
+        /// <summary>
+        /// Get the name of the assembly.
+        /// </summary>
+        /// <returns></returns>
+        public string GetAssemblyName() {
+            return assembly.GetName().FullName;
+        }
+
     }
 }
 

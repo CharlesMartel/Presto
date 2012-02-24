@@ -29,8 +29,8 @@ namespace Presto {
             state.WriteAndClose(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
             //Instantiate a new assembly wrapper
             AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray());
-            //TODO: add assembly to assembly cache
-
+            //add assembly to assembly store
+            AssemblyStore.Add(assemblyWrapper);
             //push assembly onto executor to be executed
             Executor.ExecuteModule(assemblyWrapper);
         }
@@ -46,8 +46,8 @@ namespace Presto {
             state.Write(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
             //Instantiate a new assembly wrapper
             AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray());
-            //TODO: add assembly to assembly cache
-
+            //add assembly to assembly store
+            AssemblyStore.Add(assemblyWrapper);
         }
     }
 }

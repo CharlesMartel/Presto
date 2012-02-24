@@ -11,5 +11,12 @@ namespace Presto
     public static class Cluster
     {
 
+        /// <summary>
+        /// Deploys an execution job into the cluster.
+        /// </summary>
+        /// <param name="function">The function to be executed.</param>
+        public static void Execute(Func<IPrestoParameter, IPrestoResult> function){
+            
+        }
     }
 }
