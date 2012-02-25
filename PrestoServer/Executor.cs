@@ -28,6 +28,7 @@ namespace Presto {
         public static void ExecuteModule(AssemblyWrapper assemblyWrapper) {
             //finally execute the user module
             PrestoModule module = assemblyWrapper.GetModuleInstance();
+            System.Threading.Thread.Sleep(5000);
             module.Load();
         }
 
