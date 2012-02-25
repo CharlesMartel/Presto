@@ -6,6 +6,7 @@ namespace Presto
     /// All modules that plug in to Presto must have one and only one class that implements the IPrestoModule interface. This interface serves as the starting point for
     /// execution and will be instantiated upon execution of the module.
     /// </summary>
+    [Serializable()]
     public abstract class PrestoModule
     {
         /// <summary>

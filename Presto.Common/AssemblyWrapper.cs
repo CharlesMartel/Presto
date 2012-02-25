@@ -9,6 +9,7 @@ namespace Presto.Common {
     public class AssemblyWrapper {
         //The internal assembly
         private Assembly assembly;
+        private PrestoModule module;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Presto.Common.AssemblyWrapper"/> class.
@@ -17,10 +18,11 @@ namespace Presto.Common {
         /// <param name='assemblyURL'>
         /// The assembl's file system URL
         /// </param>
-        public AssemblyWrapper(string assemblyURL) {
+        public AssemblyWrapper(string assemblyURL, ICluster clusterInstance) {
             //TODO: Account for bad assemblies or unreachable files
             //load the assembly into the assembly internal assembly instance
-            assembly = Assembly.LoadFrom(assemblyURL);
+            assembly = Assembly.Load(assemblyURL);
+            createModuleInstance(clusterInstance);
         }
 
         /// <summary>
@@ -30,10 +32,11 @@ namespace Presto.Common {
         /// <param name='assemblyBinaryArray'>
         /// Assembly byte array.
         /// </param>
-        public AssemblyWrapper(byte[] assemblyBinaryArray) {
+        public AssemblyWrapper(byte[] assemblyBinaryArray, ICluster clusterInstance) {
             //TODO: Account for bad assemblies
             //load the assembly into the internal assembly instance
             assembly = Assembly.Load(assemblyBinaryArray);
+            createModuleInstance(clusterInstance);
         }
 
         /// <summary>
@@ -49,7 +52,7 @@ namespace Presto.Common {
         /// <summary>
         /// Validate that the assembly is usable by Presto..
         /// </summary>
-        public bool Validate() {
+        public static bool Validate(Assembly assembly) {
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
             //count the number of types that derive from PrestoModule
@@ -74,6 +77,32 @@ namespace Presto.Common {
         /// <returns></returns>
         public string GetAssemblyName() {
             return assembly.GetName().FullName;
+        }
+
+        /// <summary>
+        /// Get the PrestoModule instance associated with this assembly
+        /// </summary>
+        /// <returns></returns>
+        public PrestoModule GetModuleInstance() 
+        {
+            return module;
+        }
+
+        /// <summary>
+        /// Initializes the presto module instance 
+        /// </summary>
+        /// <param name="clusterInstance"></param>
+        private void createModuleInstance(ICluster clusterInstance){
+            //get all types housed in the assembly
+            Type[] assemblyTypes = assembly.GetTypes();
+            //create an instance of the PrestoModule
+            foreach (Type type in assemblyTypes) {
+                if (type.IsSubclassOf(typeof(PrestoModule))) {
+                    module = (PrestoModule)Activator.CreateInstance(type);
+                    module.Cluster = clusterInstance;
+                    break;
+                }
+            }
         }
 
     }

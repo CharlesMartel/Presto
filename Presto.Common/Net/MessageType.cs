@@ -44,7 +44,7 @@ namespace Presto.Common.Net {
         /// A return signal giving back the processed data from a completed execution in the form of
         /// a serialized ExecutionResult object.
         /// </summary>
-        public static readonly MessageType EXECUTION_FINISHED;
+        public static readonly MessageType EXECUTION_COMPLETE;
         /// <summary>
         /// In Presto, a recieving server has the authority to deny an execution. This result tells the signaling server
         /// that the execution has been denied.
@@ -65,7 +65,7 @@ namespace Presto.Common.Net {
             ASSEMBLY_TRANSFER_COMPLETE = new MessageType("10000002");
             MISSING_ASSEMBLY = new MessageType("20000000");
             EXECUTION_BEGIN = new MessageType("20000001");
-            EXECUTION_FINISHED = new MessageType("20000002");
+            EXECUTION_COMPLETE = new MessageType("20000002");
             EXECUTION_DENIED = new MessageType("20000003");
         }
 

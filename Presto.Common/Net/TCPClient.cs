@@ -106,17 +106,22 @@ namespace Presto.Common.Net
         /// <param name="data">the byte data to be written</param>
         private void write(byte[] data)
         {
-            //get the data length and append it to the beggining of the stream
-            long dataLength = data.Length;
-            byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
-            List<byte> tempByteArray = new List<byte>(dataLengthArray);
-            tempByteArray.AddRange(data);
-            data = tempByteArray.ToArray();
+            try {
+                //get the data length and append it to the beggining of the stream
+                long dataLength = data.Length;
+                byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
+                List<byte> tempByteArray = new List<byte>(dataLengthArray);
+                tempByteArray.AddRange(data);
+                data = tempByteArray.ToArray();
 
-            //get the tcpClient network stream
-            NetworkStream nStream = tcpClient.GetStream();
-            //Start the synchronous Write
-            nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
+                //get the tcpClient network stream
+                NetworkStream nStream = tcpClient.GetStream();
+                //Start the synchronous Write
+                nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
+            }
+            catch (Exception e) {
+                //it is likely that the socket was closed
+            }
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using Presto.Common;
 using Presto.Common.Net;
 
@@ -24,10 +26,9 @@ namespace Presto {
         /// </summary>
         /// <param name="assemblyWrapper">An AssemblyWrapper around the assembly of the module to be executed.</param>
         public static void ExecuteModule(AssemblyWrapper assemblyWrapper) {
-            //TODO: finally execute the user module
-            //Instantiate Module
-            //Asign Cluster Instance to Module Cluster Instance
-            //Run Load
+            //finally execute the user module
+            PrestoModule module = assemblyWrapper.GetModuleInstance();
+            module.Load();
         }
 
         /// <summary>
@@ -36,7 +37,15 @@ namespace Presto {
         /// <param name="state">The server state object of the request</param>
         public static void ExecutionBegin(ServerState state) 
         {
-            //TODO: finally execute the function defined in the transfer
+            //finally execute the function defined in the transfer
+            //get the execution context
+            BinaryFormatter soap = new BinaryFormatter();            
+            ExecutionContext context = (ExecutionContext)soap.Deserialize(state.GetDataMemoryStream());
+            IPrestoResult res = context.Function.Invoke(context.Parameter);
+            ExecutionResult result = new ExecutionResult(res);
+            MemoryStream stream = new MemoryStream();
+            soap.Serialize(stream, result);
+            state.WriteAndClose(MessageType.EXECUTION_COMPLETE, stream.ToArray());
         }
     }
 }

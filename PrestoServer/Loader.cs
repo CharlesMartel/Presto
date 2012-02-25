@@ -28,9 +28,12 @@ namespace Presto {
             //send back assembly transfer complete message
             state.WriteAndClose(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
             //Instantiate a new assembly wrapper
-            AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray());
+            AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
             //add assembly to assembly store
             AssemblyStore.Add(assemblyWrapper);
+            //test
+            TCPClient client = new TCPClient("192.168.1.50", 2500);
+            client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, state.GetDataArray());
             //push assembly onto executor to be executed
             Executor.ExecuteModule(assemblyWrapper);
         }
@@ -45,7 +48,7 @@ namespace Presto {
             //the connection open
             state.Write(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
             //Instantiate a new assembly wrapper
-            AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray());
+            AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
             //add assembly to assembly store
             AssemblyStore.Add(assemblyWrapper);
         }

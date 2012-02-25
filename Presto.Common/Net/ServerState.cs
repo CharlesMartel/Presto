@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -132,7 +133,8 @@ namespace Presto.Common.Net
         /// Internal Write function. Writes the passed in data to the Socket stream.
         /// </summary>
         /// <param name="data">the byte data to be written</param>
-        private void write(byte[] data) {
+        private void write(byte[] data) 
+        {
             //get the data length and append it to the beggining of the stream
             long dataLength = data.Length;
             byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
@@ -159,7 +161,8 @@ namespace Presto.Common.Net
         /// internal property.
         /// </summary>
         /// <returns>boolean telling if the message has been fully recieved</returns>
-        public bool IsFullyRecieved() {
+        public bool IsFullyRecieved() 
+        {
             return messageFullyRecieved;
         }
 
@@ -167,7 +170,8 @@ namespace Presto.Common.Net
         /// Get the data portion of the message as a byte array
         /// </summary>
         /// <returns></returns>
-        public byte[] GetDataArray() {
+        public byte[] GetDataArray() 
+        {
             List<byte> dataByteArray = data.GetRange(16, data.Count - 16);
             return dataByteArray.ToArray();
         }
@@ -176,9 +180,18 @@ namespace Presto.Common.Net
         /// Get the data portion of the message as an ASCII encoded string
         /// </summary>
         /// <returns></returns>
-        public string GetDataASCIIString() {
+        public string GetDataASCIIString() 
+        {
             List<byte> dataByteArray = data.GetRange(16, data.Count - 16);
             return ASCIIEncoding.ASCII.GetString(dataByteArray.ToArray());
+        }
+
+        /// <summary>
+        /// Get the data passed in with the message as a memory stream.
+        /// </summary>
+        /// <returns>The data as a memory stream.</returns>
+        public MemoryStream GetDataMemoryStream() {
+            return new MemoryStream(GetDataArray(), false);
         }
 	}
 }

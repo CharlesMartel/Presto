@@ -9,8 +9,8 @@ namespace Presto
     /// </summary>
     public static class Config
     {
-        private static string hostsFile = "conf\\hosts.conf";
-        private static string configFile = "conf\\presto.conf";
+        private static string hostsFile = "hosts.conf";
+        private static string configFile = "presto.conf";
         private static Dictionary<string, string> configEntries = new Dictionary<string, string>();
         private static List<string> hostEntries = new List<string>();
 
@@ -19,14 +19,14 @@ namespace Presto
         /// </summary>
         public static void Initialize()
         {
-            getConfig();
-            getHosts();
+            loadConfig();
+            loadHosts();
         }
 
         /// <summary>
         /// load all config parameters into an internal dictionary
         /// </summary>
-        private static void getConfig()
+        private static void loadConfig()
         {
             //A pretty cool little config file reader procedure I found on stack overflow, edited for my needs
             //http://stackoverflow.com/questions/485659/can-net-load-and-parse-a-properties-file-equivalent-to-java-properties-class
@@ -57,7 +57,7 @@ namespace Presto
         /// <summary>
         /// load all other hosts into a host array
         /// </summary>
-        private static void getHosts()
+        private static void loadHosts()
         {
             foreach (string line in File.ReadAllLines(hostsFile))
             {
@@ -71,6 +71,14 @@ namespace Presto
                     hostEntries.Add(line.Trim());
                 }
             }
+        }
+
+        /// <summary>
+        /// Get the list of cluster hosts.
+        /// </summary>
+        /// <returns>A string array of cluster hosts</returns>
+        public static string[] GetHosts() {
+            return hostEntries.ToArray();
         }
 
     }

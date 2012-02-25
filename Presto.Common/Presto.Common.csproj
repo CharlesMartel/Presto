@@ -53,11 +53,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="conf\hosts.conf">
+    <None Include="hosts.conf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="conf\presto.conf">
+    <None Include="presto.conf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
 </Project>

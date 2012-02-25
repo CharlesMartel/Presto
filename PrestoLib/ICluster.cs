@@ -14,6 +14,6 @@ namespace Presto
         /// Deploys an execution job into the cluster.
         /// </summary>
         /// <param name="function">The function to be executed.</param>
-        void Execute(Func<IPrestoParameter, IPrestoResult> function);
+        void Execute(Func<IPrestoParameter, IPrestoResult> function, IPrestoParameter parameter);
     }
 }

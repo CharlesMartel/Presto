@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using Presto.Common.Net;
+
 
 namespace Presto
 {
@@ -47,7 +50,15 @@ namespace Presto
 		/// </param>
 		public static void exec (string assemblyURL)
 		{
-			//TODO:	Set up execution for new assembly
+            TCPClient cli = new TCPClient("localhost", 2500);
+            cli.Connect();
+            FileStream fs = File.OpenRead(assemblyURL);
+            byte[] bytes = new byte[fs.Length];
+            fs.Read(bytes, 0, Convert.ToInt32(fs.Length));
+            fs.Close();
+            cli.Write(MessageType.ASSEMBLY_TRANSFER_MASTER, bytes);
+            cli.close();
+
 		}
 		
 		/// <summary>
