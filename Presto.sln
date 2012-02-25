@@ -9,12 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibPresto", "PrestoLib\LibP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presto.Common", "Presto.Common\Presto.Common.csproj", "{5CE03B15-134F-436C-9822-F41D889BBD3E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C280B4A5-C2D5-40F7-8CA1-DEF3B2AAE07C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{B1ABBB0F-94FC-4E66-A74A-D94D86965A4C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4E5A416F-C28A-442B-890F-DDAED08E4D6A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,12 +66,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{15E9A3EA-3353-436D-BEE4-1A15F27B9408} = {C280B4A5-C2D5-40F7-8CA1-DEF3B2AAE07C}
-		{5CE03B15-134F-436C-9822-F41D889BBD3E} = {C280B4A5-C2D5-40F7-8CA1-DEF3B2AAE07C}
-		{E12BA28F-8F7E-453A-938A-E17F0248042A} = {C280B4A5-C2D5-40F7-8CA1-DEF3B2AAE07C}
-		{32249EF9-0A67-4FCF-8654-48124F1BD382} = {C280B4A5-C2D5-40F7-8CA1-DEF3B2AAE07C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Presto\Presto.csproj
