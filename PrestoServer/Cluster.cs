@@ -1,6 +1,7 @@
 ﻿using System;
 using Presto.Common.Net;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Reflection;
 using System.IO;
 
 namespace Presto
@@ -17,11 +18,12 @@ namespace Presto
         /// </summary>
         /// <param name="function">The function to be executed.</param>
         /// <param name="parameter">The parameter to be passed to the function.</param>
-        void ICluster.Execute(Delegate function, IPrestoParameter parameter){
+        void ICluster.Execute(Func<IPrestoParameter, IPrestoResult> function, IPrestoParameter parameter){
             //a test
             string  host1 = Config.GetHosts()[0];            
             TCPClient cli = new TCPClient(host1, 2500);
-            ExecutionContext context = new ExecutionContext(function, parameter);
+            MethodInfo method = function.Method;
+            ExecutionContext context = new ExecutionContext(method, parameter);
             cli.Connect();
             SoapFormatter soap = new SoapFormatter();
             MemoryStream stream = new MemoryStream();

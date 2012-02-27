@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Reflection;
 using Presto.Common;
 using Presto.Common.Net;
 
@@ -28,7 +29,6 @@ namespace Presto {
         public static void ExecuteModule(AssemblyWrapper assemblyWrapper) {
             //finally execute the user module
             PrestoModule module = assemblyWrapper.GetModuleInstance();
-            System.Threading.Thread.Sleep(5000);
             module.Load();
         }
 
@@ -42,7 +42,7 @@ namespace Presto {
             //get the execution context
             SoapFormatter soap = new SoapFormatter();            
             ExecutionContext context = (ExecutionContext)soap.Deserialize(state.GetDataMemoryStream());
-            IPrestoResult res = context.Function.D Function(context.Parameter);
+            IPrestoResult res = (IPrestoResult)context.Function.Invoke(null, new object[] { context.Parameter });
             ExecutionResult result = new ExecutionResult(res);
             MemoryStream stream = new MemoryStream();
             soap.Serialize(stream, result);

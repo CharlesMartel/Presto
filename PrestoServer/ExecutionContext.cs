@@ -6,11 +6,10 @@ namespace Presto {
     [Serializable()]
     public class ExecutionContext {
 
-        public delegate IPrestoResult ExecutionDelegate(IPrestoParameter param);
-        ExecutionDelegate Function;
+        public MethodInfo Function;
         public IPrestoParameter Parameter;
 
-        public ExecutionContext(ExecutionDelegate function, IPrestoParameter param) 
+        public ExecutionContext(MethodInfo function, IPrestoParameter param) 
         {
             Function = function;
             Parameter = param;
