@@ -1,6 +1,6 @@
 ﻿using System;
 using Presto.Common.Net;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
 using System.IO;
 
 namespace Presto
@@ -17,13 +17,13 @@ namespace Presto
         /// </summary>
         /// <param name="function">The function to be executed.</param>
         /// <param name="parameter">The parameter to be passed to the function.</param>
-        void ICluster.Execute(Func<IPrestoParameter, IPrestoResult> function, IPrestoParameter parameter){
+        void ICluster.Execute(Delegate function, IPrestoParameter parameter){
             //a test
             string  host1 = Config.GetHosts()[0];            
             TCPClient cli = new TCPClient(host1, 2500);
             ExecutionContext context = new ExecutionContext(function, parameter);
             cli.Connect();
-            BinaryFormatter soap = new BinaryFormatter();
+            SoapFormatter soap = new SoapFormatter();
             MemoryStream stream = new MemoryStream();
             soap.Serialize(stream, context);
             cli.setDispatchAction(MessageType.EXECUTION_COMPLETE, recieve);
@@ -31,7 +31,7 @@ namespace Presto
         }
 
         private void recieve(ClientState state) {
-            BinaryFormatter soap = new BinaryFormatter();
+            SoapFormatter soap = new SoapFormatter();
             ExecutionResult er = (ExecutionResult)soap.Deserialize(new MemoryStream(state.GetDataArray()));
             IPrestoResult result = er.Result;
             Console.WriteLine("Returned");

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
 using Presto.Common;
 using Presto.Common.Net;
 
@@ -40,9 +40,9 @@ namespace Presto {
         {
             //finally execute the function defined in the transfer
             //get the execution context
-            BinaryFormatter soap = new BinaryFormatter();            
+            SoapFormatter soap = new SoapFormatter();            
             ExecutionContext context = (ExecutionContext)soap.Deserialize(state.GetDataMemoryStream());
-            IPrestoResult res = context.Function.Invoke(context.Parameter);
+            IPrestoResult res = context.Function.D Function(context.Parameter);
             ExecutionResult result = new ExecutionResult(res);
             MemoryStream stream = new MemoryStream();
             soap.Serialize(stream, result);

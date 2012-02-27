@@ -4,12 +4,13 @@ using System.Reflection;
 namespace Presto {
 
     [Serializable()]
-    struct ExecutionContext {
+    public class ExecutionContext {
 
-        public Func<IPrestoParameter, IPrestoResult> Function;
+        public delegate IPrestoResult ExecutionDelegate(IPrestoParameter param);
+        ExecutionDelegate Function;
         public IPrestoParameter Parameter;
 
-        public ExecutionContext(Func<IPrestoParameter, IPrestoResult> function, IPrestoParameter param) 
+        public ExecutionContext(ExecutionDelegate function, IPrestoParameter param) 
         {
             Function = function;
             Parameter = param;
