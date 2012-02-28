@@ -19,6 +19,10 @@ namespace Presto {
         /// <param name="assemblyWrapper">The assembly wrapper for the assembly.</param>
         public static void Add(AssemblyWrapper assemblyWrapper)
         {
+            if(assemblies.ContainsKey(assemblyWrapper.GetAssemblyName()){
+                assemblies[assemblyWrapper.GetAssemblyName()] = assemblyWrapper;
+                return;
+            }
             assemblies.Add(assemblyWrapper.GetAssemblyName(), assemblyWrapper);
         }
 

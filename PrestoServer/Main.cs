@@ -11,9 +11,5 @@ namespace Presto
 		{
             Application.Initialize();
 		}
-
-        public static void configure(ServerState state)
-		{
-		}
 	}
 }
