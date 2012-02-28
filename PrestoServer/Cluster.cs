@@ -2,6 +2,7 @@
 using Presto.Common.Net;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.IO;
 
 namespace Presto
@@ -29,6 +30,7 @@ namespace Presto
             MemoryStream stream = new MemoryStream();
             soap.Serialize(stream, context);
             cli.setDispatchAction(MessageType.EXECUTION_COMPLETE, recieve);
+            System.Threading.Thread.Sleep(3000);
             cli.Write(MessageType.EXECUTION_BEGIN, stream.ToArray());
         }
 

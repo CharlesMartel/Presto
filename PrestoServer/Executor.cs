@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Reflection;
+using System.Reflection.Emit;
 using Presto.Common;
 using Presto.Common.Net;
 
@@ -42,7 +43,18 @@ namespace Presto {
             //get the execution context
             SoapFormatter soap = new SoapFormatter();            
             ExecutionContext context = (ExecutionContext)soap.Deserialize(state.GetDataMemoryStream());
-            IPrestoResult res = (IPrestoResult)context.Function.Invoke(null, new object[] { context.Parameter });
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            Assembly[] assemblies = currentDomain.GetAssemblies();
+            Type type = null;
+            MethodInfo method = null;
+            foreach(Assembly a in assemblies){
+                if(a.FullName == context.AssemblyName){
+                    type = a.GetType(context.TypeName, false, true);
+                    method = type.GetMethod(context.MethodName);
+                    break;
+                }
+            }
+            IPrestoResult res = (IPrestoResult)method.Invoke(null, new object[] { context.Parameter });
             ExecutionResult result = new ExecutionResult(res);
             MemoryStream stream = new MemoryStream();
             soap.Serialize(stream, result);

@@ -4,14 +4,18 @@ using System.Reflection;
 namespace Presto {
 
     [Serializable()]
-    public class ExecutionContext {
+    struct ExecutionContext {
 
-        public MethodInfo Function;
+        public string AssemblyName;
+        public string TypeName;
+        public string MethodName;
         public IPrestoParameter Parameter;
 
-        public ExecutionContext(MethodInfo function, IPrestoParameter param) 
+        public ExecutionContext(MethodInfo method, IPrestoParameter param) 
         {
-            Function = function;
+            AssemblyName = method.DeclaringType.Assembly.FullName;
+            TypeName = method.DeclaringType.FullName;
+            MethodName = method.Name;
             Parameter = param;
         }
     }
