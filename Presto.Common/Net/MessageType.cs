@@ -15,6 +15,20 @@ namespace Presto.Common.Net {
         /// </summary>
         public static readonly MessageType UNKOWN;
 
+        //--------Server Startup and Connect------------//
+        /// <summary>
+        /// The server wishes to connect, sent from client
+        /// </summary>
+        public static readonly MessageType CONNECT;
+        /// <summary>
+        /// The recieving server has accepted the connection and is ready to recieve requests
+        /// </summary>
+        public static readonly MessageType CONNECTION_ACCEPTED;
+        /// <summary>
+        /// An existing connection exists between the two servers
+        /// </summary>
+        public static readonly MessageType CONNECTION_EXISTS;
+
         //--------Assembly transfer messages------------//
         /// <summary>
         /// An assembly binary is attatched to this message and the binary needs to be loaded by the recieving PrestoServer
@@ -60,6 +74,9 @@ namespace Presto.Common.Net {
         /// </summary>
         static MessageType() {
             UNKOWN = new MessageType("99999999");
+            CONNECT = new MessageType("00000001");
+            CONNECTION_ACCEPTED = new MessageType("00000002");
+            CONNECTION_EXISTS = new MessageType("00000003");
             ASSEMBLY_TRANSFER_MASTER = new MessageType("10000000");
             ASSEMBLY_TRANSFER_SLAVE = new MessageType("10000001");
             ASSEMBLY_TRANSFER_COMPLETE = new MessageType("10000002");

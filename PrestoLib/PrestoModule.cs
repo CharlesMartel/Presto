@@ -13,7 +13,7 @@ namespace Presto
         /// The cluster that allows for interaction with the Presto cluster. When the PrstoModule is loaded, the PrestoServer assigns its internal cluster instance to this object. It is advised 
         /// to not override or overwrite this object.
         /// </summary>
-        public ICluster Cluster = null;
+        public ClusterBase Cluster = null;
         /// <summary>
         /// After a new instance of the module is created. The Load method is immediately called to begin processing.
         /// </summary>

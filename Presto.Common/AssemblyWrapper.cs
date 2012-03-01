@@ -10,15 +10,14 @@ namespace Presto.Common {
         //The internal assembly
         private Assembly assembly;
         private PrestoModule module;
+        private byte[] assemblyArray;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Presto.Common.AssemblyWrapper"/> class.
         /// Initializes with an assembly URL which is the assemblys location on the file system.
         /// </summary>
-        /// <param name='assemblyURL'>
-        /// The assembl's file system URL
-        /// </param>
-        public AssemblyWrapper(string assemblyURL, ICluster clusterInstance) {
+        /// <param name='assemblyURL'>The assembly's file system URL</param>
+        public AssemblyWrapper(string assemblyURL, ClusterBase clusterInstance) {
             //TODO: Account for bad assemblies or unreachable files
             //load the assembly into the assembly internal assembly instance
             assembly = Assembly.Load(assemblyURL);
@@ -32,10 +31,11 @@ namespace Presto.Common {
         /// <param name='assemblyBinaryArray'>
         /// Assembly byte array.
         /// </param>
-        public AssemblyWrapper(byte[] assemblyBinaryArray, ICluster clusterInstance) {
+        public AssemblyWrapper(byte[] assemblyBinaryArray, ClusterBase clusterInstance) {
             //TODO: Account for bad assemblies
             //load the assembly into the internal assembly instance
             assembly = Assembly.Load(assemblyBinaryArray);
+            assemblyArray = assemblyBinaryArray;
             createModuleInstance(clusterInstance);
         }
 
@@ -92,7 +92,7 @@ namespace Presto.Common {
         /// Initializes the presto module instance 
         /// </summary>
         /// <param name="clusterInstance"></param>
-        private void createModuleInstance(ICluster clusterInstance){
+        private void createModuleInstance(ClusterBase clusterInstance){
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
             //create an instance of the PrestoModule
@@ -103,6 +103,14 @@ namespace Presto.Common {
                     break;
                 }
             }
+        }
+
+        /// <summary>
+        /// Get the byte array of the assembly.
+        /// </summary>
+        /// <returns>The byte array of the assembly.</returns>
+        public byte[] GetAssemblyArray() {
+            return assemblyArray;
         }
 
     }

@@ -6,9 +6,10 @@ using System.Text;
 namespace Presto
 {
     /// <summary>
-    /// All parameter objects to be passed around the cluster must implment this interface.
+    /// All returning data to be passed around the cluster must inherit from PrestoResult
     /// </summary>
-    public interface IPrestoParameter
+    [Serializable()]
+    public abstract class PrestoResult
     {
     }
 }

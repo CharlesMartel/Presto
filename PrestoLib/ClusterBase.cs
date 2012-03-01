@@ -6,10 +6,23 @@ using System.Text;
 namespace Presto
 {
     /// <summary>
-    /// A defining interface for the PrestoServer internal cluster object. 
+    /// A defining class for the PrestoServer internal cluster object. 
     /// </summary>
-    public interface ICluster
+    public abstract class ClusterBase
     {
+        //------------Properties--------------------//
+
+        /// <summary>
+        /// CDPI or "Cluster Distribution Performance Indicator" is the total distribution performance for the entire cluster.
+        /// This value is not relative, it is based on the individual DPI of each node, the total processing power of the cluster, the number of individual
+        /// processes runnable, and the performance of the clusters communications channel. It is a "score" for the cluster as 
+        /// a whole.
+        /// </summary>
+        public long CDPI;
+
+
+        //------------Methods-----------------------//
+        
         /// <summary>
         /// Deploys an execution job into the cluster. 
         /// 
@@ -21,7 +34,8 @@ namespace Presto
         /// unless those variables are declared constant.
         /// </summary>
         /// <param name="function">The function to be executed.</param>
-        void Execute(Func<IPrestoParameter, IPrestoResult> function, IPrestoParameter parameter, Action<IPrestoResult> callback);
+        public abstract void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback);
 
+        
     }
 }

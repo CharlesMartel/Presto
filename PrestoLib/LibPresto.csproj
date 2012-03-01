@@ -35,10 +35,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ICluster.cs" />
+    <Compile Include="ClusterBase.cs" />
     <Compile Include="PrestoModule.cs" />
-    <Compile Include="IPrestoParameter.cs" />
-    <Compile Include="IPrestoResult.cs" />
+    <Compile Include="PrestoParameter.cs" />
+    <Compile Include="PrestoResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -31,10 +31,6 @@ namespace Presto {
             AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
             //add assembly to assembly store
             AssemblyStore.Add(assemblyWrapper);
-            //test
-            TCPClient client = new TCPClient("192.168.1.50", 2500);
-            client.Connect();
-            client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, state.GetDataArray());
             //push assembly onto executor to be executed
             Executor.ExecuteModule(assemblyWrapper);
         }

@@ -81,5 +81,14 @@ namespace Presto
             return hostEntries.ToArray();
         }
 
+        /// <summary>
+        /// Retrieve a parameter from the application configuration.
+        /// </summary>
+        /// <param name="paramName">The parameter name.</param>
+        /// <returns>The parameter value.</returns>
+        public static string GetParameter(string paramName) {
+            return configEntries[paramName];
+        }
+
     }
 }

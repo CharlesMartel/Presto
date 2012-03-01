@@ -19,7 +19,8 @@ namespace Presto {
         /// <param name="assemblyWrapper">The assembly wrapper for the assembly.</param>
         public static void Add(AssemblyWrapper assemblyWrapper)
         {
-            if(assemblies.ContainsKey(assemblyWrapper.GetAssemblyName()){
+            //make sure assembly does not already exist, we overwrite if it does
+            if(assemblies.ContainsKey(assemblyWrapper.GetAssemblyName())){
                 assemblies[assemblyWrapper.GetAssemblyName()] = assemblyWrapper;
                 return;
             }

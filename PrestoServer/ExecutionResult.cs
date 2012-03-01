@@ -5,9 +5,9 @@ namespace Presto {
     [Serializable()]
     struct ExecutionResult {
         
-        public IPrestoResult Result;
+        public PrestoResult Result;
 
-        public ExecutionResult(IPrestoResult result) 
+        public ExecutionResult(PrestoResult result) 
         {
             Result = result;
         }

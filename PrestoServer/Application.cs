@@ -27,15 +27,17 @@ namespace Presto
         /// </summary>
         public static void Initialize()
         {
+            //Initialize Counters
+            CPU.GetUsage();
+            Memory.GetAvailable();
             //Initialize subsystems
             Config.Initialize();
             Loader.Initialize();
             Executor.Initialize();
-            //Initialize Counters
-            CPU.GetUsage();
-            Memory.GetAvailable();
             //Start the server listening thread
             ControlServer.Start();
+            //Initialize the Node Listing
+            Nodes.Initialize();
         }
 
     }

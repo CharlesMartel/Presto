@@ -54,7 +54,7 @@ namespace Presto {
                     break;
                 }
             }
-            IPrestoResult res = (IPrestoResult)method.Invoke(null, new object[] { context.Parameter });
+            PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { context.Parameter });
             ExecutionResult result = new ExecutionResult(res);
             MemoryStream stream = new MemoryStream();
             soap.Serialize(stream, result);

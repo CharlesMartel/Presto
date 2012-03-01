@@ -47,17 +47,24 @@ namespace Presto.Common.Net
         /// <summary>
         /// Connect the Client to the given host server.
         /// </summary>
-        public void Connect()
+        public bool Connect()
         {
             //Set the internal tcpClient object
             tcpClient = new TcpClient();
-            //we leave the Client connection synchronous, to avoid timing issue with writes
-            tcpClient.Connect(serverEndpoint);
-            //get the network stream
-            NetworkStream nStream = tcpClient.GetStream();
-            //asynchronously read data
-            ClientState state = new ClientState(tcpClient);
-            nStream.BeginRead(state.Buffer, 0, state.Buffer.Length, readCallback, state);
+            try {
+                //we leave the Client connection synchronous, to avoid timing issue with writes
+                tcpClient.Connect(serverEndpoint);
+                //get the network stream
+                NetworkStream nStream = tcpClient.GetStream();
+                //asynchronously read data
+                ClientState state = new ClientState(tcpClient);
+                nStream.BeginRead(state.Buffer, 0, state.Buffer.Length, readCallback, state);
+                return true;
+            }
+            catch {
+                //there was a problem connecting
+                return false;
+            }
         }
 
         /// <summary>
@@ -106,22 +113,17 @@ namespace Presto.Common.Net
         /// <param name="data">the byte data to be written</param>
         private void write(byte[] data)
         {
-            try {
-                //get the data length and append it to the beggining of the stream
-                long dataLength = data.Length;
-                byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
-                List<byte> tempByteArray = new List<byte>(dataLengthArray);
-                tempByteArray.AddRange(data);
-                data = tempByteArray.ToArray();
+            //get the data length and append it to the beggining of the stream
+            long dataLength = data.Length;
+            byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
+            List<byte> tempByteArray = new List<byte>(dataLengthArray);
+            tempByteArray.AddRange(data);
+            data = tempByteArray.ToArray();
 
-                //get the tcpClient network stream
-                NetworkStream nStream = tcpClient.GetStream();
-                //Start the synchronous Write
-                nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
-            }
-            catch (Exception e) {
-                //it is likely that the socket was closed
-            }
+            //get the tcpClient network stream
+            NetworkStream nStream = tcpClient.GetStream();
+            //Start the synchronous Write
+            nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
         }
 
         /// <summary>
@@ -130,15 +132,10 @@ namespace Presto.Common.Net
         /// <param name="result"></param>
         private void writeCallback(IAsyncResult result)
         {
-            try {
-                //get the tcpClient network stream
-                NetworkStream nStream = tcpClient.GetStream();
-                //finish the Write
-                nStream.EndWrite(result);
-            }
-            catch (InvalidOperationException e) {
-                //if we get an invalid operation exception, the Client has likely been disposed, we move on
-            }
+            //get the tcpClient network stream
+            NetworkStream nStream = tcpClient.GetStream();
+            //finish the Write
+            nStream.EndWrite(result);
         }
 
 
