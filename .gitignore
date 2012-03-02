@@ -41,3 +41,5 @@ PrestoServer/bin/
 PrestoServer/obj/
 PrestoLib/bin/
 PrestoLib/obj/
+#for those stupid suo files
+*.suo
