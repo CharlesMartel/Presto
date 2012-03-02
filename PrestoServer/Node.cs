@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Timers;
 using Presto.Common.Net;
+using Presto.Common;
 
 namespace Presto {
     /// <summary>
@@ -20,6 +21,8 @@ namespace Presto {
         private TCPClient client;
         private string address;
         private Timer pingTimer;
+        private List<ExecutionContext> waitingJobs = new List<ExecutionContext>();
+        private bool loadInProgress = false;
 
         /// <summary>
         /// Instantiate a new Node object with the connection to the specefied address
@@ -36,6 +39,7 @@ namespace Presto {
             client.setDispatchAction(MessageType.EXECUTION_COMPLETE, returnExecution);
             client.setDispatchAction(MessageType.EXECUTION_DENIED, deniedExecution);
             client.setDispatchAction(MessageType.CONNECTION_ACCEPTED, connectionAccept);
+            client.setDispatchAction(MessageType.ASSEMBLY_TRANSFER_COMPLETE, assemblyLoaded);
 
             //connect
             client.Connect();     
@@ -62,6 +66,7 @@ namespace Presto {
         public void DeliverAssembly(string assemblyFullName, byte[] assemblyArray) {
             client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, assemblyArray);
             loadedAssemblies.Add(assemblyFullName);
+            loadInProgress = true;
         }
 
         /// <summary>
@@ -69,6 +74,21 @@ namespace Presto {
         /// </summary>
         /// <param name="executionContext">The execution context of the job.</param>
         public bool Execute(ExecutionContext executionContext) {
+            //check if an assembly load is in progress and simply add the context to the list if so
+            if (loadInProgress) {
+                waitingJobs.Add(executionContext);
+                return true;
+            }
+            //first be sure that this node has the appropriate assembly loaded
+            if(!loadedAssemblies.Contains(executionContext.AssemblyName)){
+                //get the assembly
+                AssemblyWrapper assembly = AssemblyStore.Get(executionContext.AssemblyName);
+                DeliverAssembly(assembly.GetAssemblyName(), assembly.GetAssemblyArray());
+                //add to the list of waiting jobs
+                waitingJobs.Add(executionContext);
+                return true;
+            }
+            //since we know that the other machine has the assembly loaded we can 
             //serialize the execution context and transport
             MemoryStream stream = new MemoryStream();
             SoapFormatter serializer = new SoapFormatter();
@@ -86,12 +106,20 @@ namespace Presto {
             return loadedAssemblies.Contains(assemblyFullName);
         }
 
+        /// <summary>
+        /// Will remove an assembly from the node according to the assmebly name.
+        /// </summary>
+        /// <param name="assemblyFullName">The full name of the assembly.</param>
+        public void UnloadAssembly(string assemblyFullName) {
+            //TODO: remove an assembly by name
+        }
+
 
         /// <summary>
         /// Internal function to ping the recieving server and verify that there is an active connection to it.
         /// </summary>
         private void verify() {
-            
+            //TODO write verification method for nodes
         }
 
         /// <summary>
@@ -111,6 +139,18 @@ namespace Presto {
         private void returnExecution(ClientState state) {
         }
         private void deniedExecution(ClientState state) {
+        }
+
+        /// <summary>
+        /// called when an assembly load message is returned
+        /// </summary>
+        /// <param name="state"></param>
+        private void assemblyLoaded(ClientState state) {
+            loadInProgress = false;
+            foreach (ExecutionContext context in waitingJobs) {
+                waitingJobs.Remove(context);
+                Execute(context);
+            }
         }
     }
 }

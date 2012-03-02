@@ -14,6 +14,8 @@ namespace Presto
         private static Dictionary<string, string> configEntries = new Dictionary<string, string>();
         private static List<string> hostEntries = new List<string>();
 
+        public static ExecutionPlatform Platform;
+
         /// <summary>
         /// Loads and reads the configuration file into the Configuration properties
         /// </summary>
@@ -21,6 +23,14 @@ namespace Presto
         {
             loadConfig();
             loadHosts();
+            
+            //discover platform
+            if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix) {
+                Platform = ExecutionPlatform.MONO;
+            }
+            else {
+                Platform = ExecutionPlatform.DOTNET;
+            }
         }
 
         /// <summary>
@@ -90,5 +100,10 @@ namespace Presto
             return configEntries[paramName];
         }
 
+    }
+
+    public enum ExecutionPlatform {        
+        DOTNET,
+        MONO
     }
 }

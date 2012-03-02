@@ -33,11 +33,12 @@ namespace Presto {
         /// Recalculates the CDPI of the cluster.
         /// </summary>
         public static void RecalculateCDPI() {
-
+           
         }
 
         /// <summary>
-        /// Gets the node that is best for a new cluster job.
+        /// Gets the node that is best for a new cluster job. If there are no other nodes, or all other nodes are not available
+        /// or possibly even not connected, then the default self node is returned.
         /// </summary>
         /// <returns></returns>
         public static Node BestNode() {

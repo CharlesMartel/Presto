@@ -44,5 +44,14 @@ namespace Presto {
         {
             assemblies.Remove(assemblyWrapper.GetAssemblyName());
         }
+
+        /// <summary>
+        /// Get an assembly wrapper for an assembly using the assembl full name as the index
+        /// </summary>
+        /// <param name="assemblyFullName">The full name of the assembly.</param>
+        /// <returns>The assembly wrapper instance for that assembly.</returns>
+        public static AssemblyWrapper Get(string assemblyFullName) {
+            return assemblies[assemblyFullName];
+        }
     }
 }

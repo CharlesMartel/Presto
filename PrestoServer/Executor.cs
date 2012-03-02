@@ -54,11 +54,16 @@ namespace Presto {
                     break;
                 }
             }
+            
             PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { context.Parameter });
             ExecutionResult result = new ExecutionResult(res);
             MemoryStream stream = new MemoryStream();
             soap.Serialize(stream, result);
             state.WriteAndClose(MessageType.EXECUTION_COMPLETE, stream.ToArray());
+        }
+
+        private static void asyncExecute(ServerState state, ExecutionContext context) {
+
         }
     }
 }
