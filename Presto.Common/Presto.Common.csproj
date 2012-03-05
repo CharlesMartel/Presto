@@ -37,6 +37,7 @@
     <Compile Include="AssemblyWrapper.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Machine\CPU.cs" />
+    <Compile Include="Machine\DPI.cs" />
     <Compile Include="Machine\Memory.cs" />
     <Compile Include="Net\ClientState.cs" />
     <Compile Include="Net\MessageType.cs" />

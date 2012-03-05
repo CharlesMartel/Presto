@@ -21,24 +21,5 @@ namespace Presto.Common.Machine {
         {
             return cpuCounter.NextValue();
         }
-
-        /// <summary>
-        /// Because all cpus are different, we cannot simply rely on percentage to decide use, so we generate a rating
-        /// based on processor capability, this method returns that rating.
-        /// </summary>
-        /// <returns></returns>
-        public static int GetCPURating() 
-        {
-            return 0;
-        }
-
-        /// <summary>
-        /// The DPI (Distribution Performance Indicator) is number representing what the current machine has left to offer
-        /// to the cluster. It is an absolute number based on the relative cpu rating that gives a standard value to base
-        /// distribution decisions on. This method returns that value.
-        /// </summary>
-        public static float GetDPI(){
-            return 0;
-        }
     }
 }

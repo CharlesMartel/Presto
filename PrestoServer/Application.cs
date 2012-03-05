@@ -27,11 +27,13 @@ namespace Presto
         /// </summary>
         public static void Initialize()
         {
+            //Initialize configuration
+            Config.Initialize();
             //Initialize Counters
             CPU.GetUsage();
-            Memory.GetAvailable();
+            Memory.GetTotalSize();
+            DPI.CalculateDPI();
             //Initialize subsystems
-            Config.Initialize();
             Loader.Initialize();
             Executor.Initialize();
             //Start the server listening thread

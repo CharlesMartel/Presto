@@ -11,7 +11,8 @@ namespace Presto.Common.Machine {
         /// <summary>
         /// Internal counter for ram
         /// </summary>
-        private static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+        private static PerformanceCounter ramCounter = null;
+
 
         /// <summary>
         /// Get the total size of the memory in the computer the Presto instance is running on.
@@ -19,19 +20,16 @@ namespace Presto.Common.Machine {
         /// <returns>The total size of the memory.</returns>
         public static long GetTotalSize()
         {
-            //Not really sure yet how to implement this cross platform...
-            //TODO: Implement GetTotalSize
-            throw new NotImplementedException();
-            //return 0;
-        }
+            if (ramCounter == null) {
+                if (Config.Platform == ExecutionPlatform.DOTNET) {
+                    ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+                }
+                else if (Config.Platform == ExecutionPlatform.MONO) {
+                    ramCounter = new PerformanceCounter("Mono Memory", "Total Physical Memory");
+                }
+            }
 
-        /// <summary>
-        /// Get the size of the available memory in the computer the Presto instance is running on.
-        /// </summary>
-        /// <returns>The amount of available memory.</returns>
-        public static float GetAvailable() 
-        {
-            return ramCounter.NextValue();
+            return (long)ramCounter.NextValue();
         }
     }
 }

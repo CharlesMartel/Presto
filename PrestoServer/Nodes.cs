@@ -26,14 +26,6 @@ namespace Presto {
                 nodes.Add(new Node(host));
                 Count++;
             }
-            RecalculateCDPI();
-        }
-
-        /// <summary>
-        /// Recalculates the CDPI of the cluster.
-        /// </summary>
-        public static void RecalculateCDPI() {
-           
         }
 
         /// <summary>
