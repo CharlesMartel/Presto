@@ -3,7 +3,7 @@
 namespace Presto {
 
     [Serializable()]
-    struct ExecutionResult {
+    public struct ExecutionResult {
 
         public PrestoResult Result;
         public string ContextID;
