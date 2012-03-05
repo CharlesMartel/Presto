@@ -1,5 +1,4 @@
-﻿using System;
-using Presto.Common;
+﻿using Presto.Common;
 using Presto.Common.Net;
 
 namespace Presto {
@@ -13,8 +12,7 @@ namespace Presto {
         /// <summary>
         /// Initializes the Loader and attatches it to the TCPServer.
         /// </summary>
-        public static void Initialize()
-        {
+        public static void Initialize() {
             Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_TRANSFER_MASTER, recieveAssemblyMaster);
             Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_TRANSFER_SLAVE, recieveAssemblySlave);
         }
@@ -23,8 +21,7 @@ namespace Presto {
         /// A dispatch event to be rasied upon reception of an assembly from the Presto client application.
         /// </summary>
         /// <param name="state">The server state object recieved along with this event.</param>
-        private static void recieveAssemblyMaster(ServerState state)
-        {
+        private static void recieveAssemblyMaster(ServerState state) {
             //send back assembly transfer complete message
             state.WriteAndClose(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
             //Instantiate a new assembly wrapper
@@ -39,8 +36,7 @@ namespace Presto {
         /// A dispatch event to be rasied upon reception of an assembly from another Presto server..
         /// </summary>
         /// <param name="state">The server state object recieved along with this event.</param>
-        private static void recieveAssemblySlave(ServerState state) 
-        {
+        private static void recieveAssemblySlave(ServerState state) {
             //Instantiate a new assembly wrapper
             AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
             //add assembly to assembly store

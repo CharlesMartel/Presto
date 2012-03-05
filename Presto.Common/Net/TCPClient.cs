@@ -1,45 +1,44 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
-using System.Collections.Generic;
-using Presto.Common;
 
-namespace Presto.Common.Net
-{
+namespace Presto.Common.Net {
     /// <summary>
     /// A MessageType based Asynchronous TCP Client to interact with a corresponding MessageType based asynchronous Presto TCP Server.
     /// Adapted from the MSDN example at http://msdn.microsoft.com/en-us/library/bew39x2a.aspx
     /// 
     /// *Note The actual connection is left synchronous to avoid timing issues with the stream writes.
     /// </summary>
-	public class TCPClient
-	{
+    public class TCPClient {
 
         private IPEndPoint serverEndpoint;
         private TcpClient tcpClient;
+        //an internal soap serializer
+        private SoapFormatter serializer = new SoapFormatter();
 
         // A hash table holding all dispatch references and pointer to their delegates
-        private Dictionary<MessageType, Action<ClientState>> dispatchList = new Dictionary<MessageType, Action<ClientState>>(); 
-        
+        private Dictionary<MessageType, Action<ClientState>> dispatchList = new Dictionary<MessageType, Action<ClientState>>();
+
         /// <summary>
         /// Create the TCP Client with the specified host and port.
         /// </summary>
         /// <param name="host">String representation of the host on the network.</param>
         /// <param name="port">The port to Connect to on the host.</param>
-		public TCPClient (string host, int port)
-		{
+        public TCPClient(string host, int port) {
             //Get the endpoint from DNS and set it as the serverEnpoint
             IPAddress[] addresses = Dns.GetHostAddresses(host);
             serverEndpoint = new IPEndPoint(addresses[0], port);
-		}
+        }
 
         /// <summary>
         /// Create the TCP Client with the specified host IPEndpoint.
         /// </summary>
         /// <param name="host">IPEndpoint of the host.</param>
-        public TCPClient(IPEndPoint host)
-        {
+        public TCPClient(IPEndPoint host) {
             //set the internal serverEnpoint to the provided one.
             serverEndpoint = host;
         }
@@ -47,8 +46,7 @@ namespace Presto.Common.Net
         /// <summary>
         /// Connect the Client to the given host server.
         /// </summary>
-        public bool Connect()
-        {
+        public bool Connect() {
             //Set the internal tcpClient object
             tcpClient = new TcpClient();
             try {
@@ -60,8 +58,7 @@ namespace Presto.Common.Net
                 ClientState state = new ClientState(tcpClient);
                 nStream.BeginRead(state.Buffer, 0, state.Buffer.Length, readCallback, state);
                 return true;
-            }
-            catch {
+            } catch {
                 //there was a problem connecting
                 return false;
             }
@@ -72,15 +69,11 @@ namespace Presto.Common.Net
         /// </summary>
         /// <param name="mType"></param>
         /// <param name="message"></param>
-        public void Write(MessageType mType, string message = null)
-        {
-            if (message != null)
-            {
+        public void Write(MessageType mType, string message = null) {
+            if (message != null) {
                 byte[] bytes = ASCIIEncoding.ASCII.GetBytes(message);
                 Write(mType, bytes);
-            }
-            else
-            {
+            } else {
                 Write(mType, new byte[0]);
             }
         }
@@ -90,16 +83,14 @@ namespace Presto.Common.Net
         /// </summary>
         /// <param name="mType"></param>
         /// <param name="data"></param>
-        public void Write(MessageType mType, byte[] data)
-        {
+        public void Write(MessageType mType, byte[] data) {
             //get the message type in bytes
             byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(mType);
 
             //combine the messagetype and data byte arrays
             List<byte> output = new List<byte>();
             output.AddRange(messageTypeEncoded);
-            if (data != null && data.Length != 0)
-            {
+            if (data != null && data.Length != 0) {
                 output.AddRange(data);
             }
 
@@ -108,11 +99,21 @@ namespace Presto.Common.Net
         }
 
         /// <summary>
+        /// Serialize an object and write it to the stream.
+        /// </summary>
+        /// <param name="messageType">The message type of the request.</param>
+        /// <param name="toBeSerialized">The object to be serialized and written.</param>
+        public void SerializeAndWrite(MessageType messageType, Object toBeSerialized) {
+            MemoryStream stream = new MemoryStream();
+            serializer.Serialize(stream, toBeSerialized);
+            Write(messageType, stream.ToArray());
+        }
+
+        /// <summary>
         /// Internal Write function. Writes the passed in data to the Socket stream.
         /// </summary>
         /// <param name="data">the byte data to be written</param>
-        private void write(byte[] data)
-        {
+        private void write(byte[] data) {
             //get the data length and append it to the beggining of the stream
             long dataLength = data.Length;
             byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
@@ -130,8 +131,7 @@ namespace Presto.Common.Net
         /// Internal asynchronous Write callback method
         /// </summary>
         /// <param name="result"></param>
-        private void writeCallback(IAsyncResult result)
-        {
+        private void writeCallback(IAsyncResult result) {
             //get the tcpClient network stream
             NetworkStream nStream = tcpClient.GetStream();
             //finish the Write
@@ -139,17 +139,16 @@ namespace Presto.Common.Net
         }
 
 
-        private void readCallback(IAsyncResult result)
-        {
+        private void readCallback(IAsyncResult result) {
             int read = 0;
             NetworkStream nStream = null;
 
-            try{
+            try {
                 //get the network stream
                 nStream = tcpClient.GetStream();
                 //end the read
                 read = nStream.EndRead(result);
-            } catch (ObjectDisposedException e){
+            } catch (ObjectDisposedException e) {
                 //if the Client has been disposed, we set read to 0 to allow cleanup of the TCPClient
                 read = 0;
             }
@@ -157,21 +156,17 @@ namespace Presto.Common.Net
             //get the server state object
             ClientState state = (ClientState)result.AsyncState;
 
-            if (read > 0)
-            {
+            if (read > 0) {
                 state.PurgeBuffer(read);
                 //check if the message is fully recieved, if it is, create a new state object and pass that to the read,
                 // if not, continue the read with the same state object
                 if (state.IsFullyRecieved()) {
                     ClientState newState = new ClientState(state.Client);
                     nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
-                }
-                else {
+                } else {
                     nStream.BeginRead(state.Buffer, 0, ClientState.BufferSize, readCallback, state);
                 }
-            }
-            else
-            {
+            } else {
                 //Socket has been closed... handle it
                 //TODO: handle Socket close
             }
@@ -182,24 +177,19 @@ namespace Presto.Common.Net
         /// Dispatches the recieved message to the appropriate object 
         /// </summary>
         /// <param name="state">The state object to be dispatched.</param>
-        private void dispatch(ClientState state)
-        {
+        private void dispatch(ClientState state) {
             //first extract the message type from the message
             string messageType = state.GetMessageType();
 
             //if messageType is null we return the Unknowm message response
-            if (messageType == null)
-            {
+            if (messageType == null) {
                 Write(MessageType.UNKOWN);
             }
 
             //find the corresponding message type in the listing and dispatch accordingly, or return Unknown message response
-            if (dispatchList.ContainsKey(messageType))
-            {
+            if (dispatchList.ContainsKey(messageType)) {
                 dispatchList[messageType].BeginInvoke(state, null, null);
-            }
-            else
-            {
+            } else {
                 Write(MessageType.UNKOWN);
             }
         }
@@ -210,8 +200,7 @@ namespace Presto.Common.Net
         /// </summary>
         /// <param name="messageType">The message type from the Presto.Common.Net.MessageType struct.</param>
         /// <param name="dispatchAction">An Action that recieves a server state object as its only parameter.</param>
-        public void setDispatchAction(string messageType, Action<ClientState> dispatchAction)
-        {
+        public void setDispatchAction(string messageType, Action<ClientState> dispatchAction) {
             dispatchList[messageType] = dispatchAction;
         }
 
@@ -221,7 +210,7 @@ namespace Presto.Common.Net
         public void close() {
             tcpClient.Close();
         }
-        
-	}
+
+    }
 }
 

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Presto.Common.Machine {
-    
+
     /// <summary>
     /// Offers details about the memory a current presto intance is running in.
     /// </summary>
@@ -18,13 +17,11 @@ namespace Presto.Common.Machine {
         /// Get the total size of the memory in the computer the Presto instance is running on.
         /// </summary>
         /// <returns>The total size of the memory.</returns>
-        public static long GetTotalSize()
-        {
+        public static long GetTotalSize() {
             if (ramCounter == null) {
                 if (Config.Platform == ExecutionPlatform.DOTNET) {
                     ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-                }
-                else if (Config.Platform == ExecutionPlatform.MONO) {
+                } else if (Config.Platform == ExecutionPlatform.MONO) {
                     ramCounter = new PerformanceCounter("Mono Memory", "Total Physical Memory");
                 }
             }

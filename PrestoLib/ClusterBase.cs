@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Presto
-{
+namespace Presto {
     /// <summary>
     /// A defining class for the PrestoServer internal cluster object. 
     /// </summary>
-    public abstract class ClusterBase
-    {
+    public abstract class ClusterBase {
         //------------Properties--------------------//
 
         /// <summary>
@@ -22,7 +17,7 @@ namespace Presto
 
 
         //------------Methods-----------------------//
-        
+
         /// <summary>
         /// Deploys an execution job into the cluster. 
         /// 
@@ -34,8 +29,10 @@ namespace Presto
         /// unless those variables are declared constant.
         /// </summary>
         /// <param name="function">The function to be executed.</param>
+        /// <param name="parameter">The parameter to be passed into the executed function.</param>
+        /// <param name="callback">The callback to be executed when the function completes.</param>
         public abstract void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback);
 
-        
+
     }
 }

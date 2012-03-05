@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Presto;
 
 namespace Presto.Common {
     /// <summary>
@@ -57,15 +56,13 @@ namespace Presto.Common {
             Type[] assemblyTypes = assembly.GetTypes();
             //count the number of types that derive from PrestoModule
             int count = 0;
-            foreach(Type type in assemblyTypes)
-            {
-                if (type.IsSubclassOf(typeof(PrestoModule)))
-                {
+            foreach (Type type in assemblyTypes) {
+                if (type.IsSubclassOf(typeof(PrestoModule))) {
                     count++;
                 }
             }
             // if there is exactly one class that derives PrestoModule then the assembly is valid
-            if(count == 1){
+            if (count == 1) {
                 return true;
             }
             return false;
@@ -83,8 +80,7 @@ namespace Presto.Common {
         /// Get the PrestoModule instance associated with this assembly
         /// </summary>
         /// <returns></returns>
-        public PrestoModule GetModuleInstance() 
-        {
+        public PrestoModule GetModuleInstance() {
             return module;
         }
 
@@ -92,7 +88,7 @@ namespace Presto.Common {
         /// Initializes the presto module instance 
         /// </summary>
         /// <param name="clusterInstance"></param>
-        private void createModuleInstance(ClusterBase clusterInstance){
+        private void createModuleInstance(ClusterBase clusterInstance) {
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
             //create an instance of the PrestoModule

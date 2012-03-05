@@ -2,33 +2,37 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Presto
-{
+namespace Presto {
     /// <summary>
     /// Holds all configuration parameters for the PrestoServer
     /// </summary>
-    public static class Config
-    {
+    public static class Config {
         private static string hostsFile = "hosts.conf";
         private static string configFile = "presto.conf";
         private static Dictionary<string, string> configEntries = new Dictionary<string, string>();
         private static List<string> hostEntries = new List<string>();
 
+        /// <summary>
+        /// The platform of the runtime beneath the application. > .Net or Mono
+        /// </summary>
         public static ExecutionPlatform Platform;
+
+        /// <summary>
+        /// A universal id length across the application.
+        /// </summary>
+        public static int UIDLength = 32;
 
         /// <summary>
         /// Loads and reads the configuration file into the Configuration properties
         /// </summary>
-        public static void Initialize()
-        {
+        public static void Initialize() {
             loadConfig();
             loadHosts();
-            
+
             //discover platform
             if (Environment.OSVersion.Platform == PlatformID.MacOSX || Environment.OSVersion.Platform == PlatformID.Unix) {
                 Platform = ExecutionPlatform.MONO;
-            }
-            else {
+            } else {
                 Platform = ExecutionPlatform.DOTNET;
             }
         }
@@ -36,27 +40,23 @@ namespace Presto
         /// <summary>
         /// load all config parameters into an internal dictionary
         /// </summary>
-        private static void loadConfig()
-        {
+        private static void loadConfig() {
             //A pretty cool little config file reader procedure I found on stack overflow, edited for my needs
             //http://stackoverflow.com/questions/485659/can-net-load-and-parse-a-properties-file-equivalent-to-java-properties-class
 
-            foreach (string line in File.ReadAllLines(configFile))
-            {
+            foreach (string line in File.ReadAllLines(configFile)) {
                 if ((!string.IsNullOrEmpty(line)) &&
                     (!line.StartsWith(";")) &&
                     (!line.StartsWith("#")) &&
                     (!line.StartsWith("'")) &&
                     (!line.StartsWith("\\\\")) &&
-                    (line.Contains("=")))
-                {
+                    (line.Contains("="))) {
                     int index = line.IndexOf('=');
                     string key = line.Substring(0, index).Trim();
                     string value = line.Substring(index + 1).Trim();
 
                     if ((value.StartsWith("\"") && value.EndsWith("\"")) ||
-                        (value.StartsWith("'") && value.EndsWith("'")))
-                    {
+                        (value.StartsWith("'") && value.EndsWith("'"))) {
                         value = value.Substring(1, value.Length - 2);
                     }
                     configEntries.Add(key, value);
@@ -67,16 +67,13 @@ namespace Presto
         /// <summary>
         /// load all other hosts into a host array
         /// </summary>
-        private static void loadHosts()
-        {
-            foreach (string line in File.ReadAllLines(hostsFile))
-            {
+        private static void loadHosts() {
+            foreach (string line in File.ReadAllLines(hostsFile)) {
                 if ((!string.IsNullOrEmpty(line)) &&
                     (!line.StartsWith(";")) &&
                     (!line.StartsWith("#")) &&
                     (!line.StartsWith("\\\\")) &&
-                    (!line.StartsWith("'")))
-                {
+                    (!line.StartsWith("'"))) {
                     //add host to host array
                     hostEntries.Add(line.Trim());
                 }
@@ -102,7 +99,7 @@ namespace Presto
 
     }
 
-    public enum ExecutionPlatform {        
+    public enum ExecutionPlatform {
         DOTNET,
         MONO
     }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Soap;
 using System.Reflection;
-using System.Reflection.Emit;
 using Presto.Common;
 using Presto.Common.Net;
 
@@ -18,8 +15,7 @@ namespace Presto {
         /// <summary>
         /// Initializes the Executor.
         /// </summary>
-        public static void Initialize() 
-        {
+        public static void Initialize() {
             Application.ControlServer.RegisterDispatchAction(MessageType.EXECUTION_BEGIN, ExecutionBegin);
         }
 
@@ -37,33 +33,24 @@ namespace Presto {
         /// Executes a particular function in a module, according to the passed in parameters, acting as a slave server
         /// </summary>
         /// <param name="state">The server state object of the request</param>
-        public static void ExecutionBegin(ServerState state) 
-        {
+        public static void ExecutionBegin(ServerState state) {
             //finally execute the function defined in the transfer
-            //get the execution context
-            SoapFormatter soap = new SoapFormatter();            
-            ExecutionContext context = (ExecutionContext)soap.Deserialize(state.GetDataMemoryStream());
+            //get the execution context          
+            ExecutionContext context = (ExecutionContext)state.GetDataDeserialized();
             AppDomain currentDomain = AppDomain.CurrentDomain;
             Assembly[] assemblies = currentDomain.GetAssemblies();
             Type type = null;
             MethodInfo method = null;
-            foreach(Assembly a in assemblies){
-                if(a.FullName == context.AssemblyName){
+            foreach (Assembly a in assemblies) {
+                if (a.FullName == context.AssemblyName) {
                     type = a.GetType(context.TypeName, false, true);
                     method = type.GetMethod(context.MethodName);
                     break;
                 }
             }
-            
             PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { context.Parameter });
-            ExecutionResult result = new ExecutionResult(res);
-            MemoryStream stream = new MemoryStream();
-            soap.Serialize(stream, result);
-            state.WriteAndClose(MessageType.EXECUTION_COMPLETE, stream.ToArray());
-        }
-
-        private static void asyncExecute(ServerState state, ExecutionContext context) {
-
+            ExecutionResult result = new ExecutionResult(res, context.ContextID);
+            state.SerializeAndWrite(MessageType.EXECUTION_COMPLETE, res);
         }
     }
 }

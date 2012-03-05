@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Timers;
+﻿using System.Collections.Generic;
 
 namespace Presto {
-    
+
     /// <summary>
     /// A static class holding a listing of all node instances and methods to manipulate them
     /// </summary>
@@ -35,7 +31,7 @@ namespace Presto {
         /// <returns></returns>
         public static Node BestNode() {
             //TODO: return best node
-            return null;
+            return nodes[0];
         }
     }
 }

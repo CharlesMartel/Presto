@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Presto.Common.Machine {
 
@@ -7,7 +6,7 @@ namespace Presto.Common.Machine {
     /// Offers details about the cpu a current presto intance is running on.
     /// </summary>
     public static class CPU {
-         
+
         /// <summary>
         /// The performance counter that will deliver performance information on the cpu
         /// </summary>
@@ -17,8 +16,7 @@ namespace Presto.Common.Machine {
         /// Get the total cpu usage percentage.
         /// </summary>
         /// <returns></returns>
-        public static float GetUsage() 
-        {
+        public static float GetUsage() {
             return cpuCounter.NextValue();
         }
     }

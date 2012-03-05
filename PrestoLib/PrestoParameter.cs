@@ -1,13 +1,11 @@
 ﻿using System;
 
-namespace Presto
-{
+namespace Presto {
     /// <summary>
     /// All parameter objects to be passed around the cluster must inherit from this base class.
     /// </summary>
     [Serializable()]
-    public abstract class PrestoParameter
-    {
+    public abstract class PrestoParameter {
 
     }
 }

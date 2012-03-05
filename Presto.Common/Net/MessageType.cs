@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Presto.Common.Net {
     /// <summary>
@@ -65,7 +64,15 @@ namespace Presto.Common.Net {
         /// </summary>
         public static readonly MessageType EXECUTION_DENIED;
 
-
+        //---------Cluster Maintenance Activities -------//
+        /// <summary>
+        /// A request for a server to verify itself.
+        /// </summary>
+        public static readonly MessageType VERIFY;
+        /// <summary>
+        /// The response from a verification.
+        /// </summary>
+        public static readonly MessageType VERIFICATION_RESPONSE;
 
 
 
@@ -84,6 +91,8 @@ namespace Presto.Common.Net {
             EXECUTION_BEGIN = new MessageType("20000001");
             EXECUTION_COMPLETE = new MessageType("20000002");
             EXECUTION_DENIED = new MessageType("20000003");
+            VERIFY = new MessageType("30000001");
+            VERIFICATION_RESPONSE = new MessageType("30000002");
         }
 
 
@@ -98,8 +107,7 @@ namespace Presto.Common.Net {
         /// Internal constructor for the type safe enum MessageType
         /// </summary>
         /// <param name="myName">The name of the message type.</param>
-        private MessageType(string myName)
-        {
+        private MessageType(string myName) {
             name = myName;
             instance[name] = this;
         }
@@ -117,8 +125,7 @@ namespace Presto.Common.Net {
         /// </summary>
         /// <param name="messageType"></param>
         /// <returns>The string representation of the MessageType</returns>
-        public static implicit operator string(MessageType messageType)
-        {
+        public static implicit operator string(MessageType messageType) {
             return messageType.ToString();
         }
 
@@ -127,22 +134,17 @@ namespace Presto.Common.Net {
         /// </summary>
         /// <param name="messageType"></param>
         /// <returns>Will return null if "messageType" matches no MessageType</returns>
-        public static implicit operator MessageType(string messageType)
-        {
+        public static implicit operator MessageType(string messageType) {
             //be sure that the string is not null
 
-            if (messageType == null)
-            {
+            if (messageType == null) {
                 return null;
             }
 
             MessageType result;
-            if (instance.TryGetValue(messageType, out result))
-            {
+            if (instance.TryGetValue(messageType, out result)) {
                 return result;
-            }
-            else
-            {
+            } else {
                 return null;
             }
         }

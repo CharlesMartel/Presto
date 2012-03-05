@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Presto.Common;
 
 namespace Presto {
@@ -17,10 +16,9 @@ namespace Presto {
         /// Adds a new assembly to the store.
         /// </summary>
         /// <param name="assemblyWrapper">The assembly wrapper for the assembly.</param>
-        public static void Add(AssemblyWrapper assemblyWrapper)
-        {
+        public static void Add(AssemblyWrapper assemblyWrapper) {
             //make sure assembly does not already exist, we overwrite if it does
-            if(assemblies.ContainsKey(assemblyWrapper.GetAssemblyName())){
+            if (assemblies.ContainsKey(assemblyWrapper.GetAssemblyName())) {
                 assemblies[assemblyWrapper.GetAssemblyName()] = assemblyWrapper;
                 return;
             }
@@ -31,8 +29,7 @@ namespace Presto {
         /// Remove the assembly according to the provided assembly name.
         /// </summary>
         /// <param name="assemblyFullName">The full name of the assembly to be removed.</param>
-        public static void Remove(string assemblyFullName) 
-        {
+        public static void Remove(string assemblyFullName) {
             assemblies.Remove(assemblyFullName);
         }
 
@@ -40,8 +37,7 @@ namespace Presto {
         /// Remove the assembly according to the provided assembly wrapper.
         /// </summary>
         /// <param name="assemblyWrapper">The assembly wrapper of the assembly to be removed.</param>
-        public static void Remove(AssemblyWrapper assemblyWrapper) 
-        {
+        public static void Remove(AssemblyWrapper assemblyWrapper) {
             assemblies.Remove(assemblyWrapper.GetAssemblyName());
         }
 

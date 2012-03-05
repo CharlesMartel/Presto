@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Runtime.Serialization.Formatters.Soap;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Timers;
-using Presto.Common.Net;
 using Presto.Common;
+using Presto.Common.Net;
 
 namespace Presto {
     /// <summary>
@@ -42,11 +38,11 @@ namespace Presto {
             client.setDispatchAction(MessageType.ASSEMBLY_TRANSFER_COMPLETE, assemblyLoaded);
 
             //connect
-            client.Connect();     
+            client.Connect();
 
             //start verification timer
             double hvi = Double.Parse(Config.GetParameter("NODE_VERIFY_INTERVAL"));
-            pingTimer = new Timer(hvi*1000);
+            pingTimer = new Timer(hvi * 1000);
             pingTimer.AutoReset = true;
             pingTimer.Elapsed += new ElapsedEventHandler(pingTimer_Elapsed);
             pingTimer.Start();
@@ -80,7 +76,7 @@ namespace Presto {
                 return true;
             }
             //first be sure that this node has the appropriate assembly loaded
-            if(!loadedAssemblies.Contains(executionContext.AssemblyName)){
+            if (!loadedAssemblies.Contains(executionContext.AssemblyName)) {
                 //get the assembly
                 AssemblyWrapper assembly = AssemblyStore.Get(executionContext.AssemblyName);
                 DeliverAssembly(assembly.GetAssemblyName(), assembly.GetAssemblyArray());
@@ -90,10 +86,7 @@ namespace Presto {
             }
             //since we know that the other machine has the assembly loaded we can 
             //serialize the execution context and transport
-            MemoryStream stream = new MemoryStream();
-            SoapFormatter serializer = new SoapFormatter();
-            serializer.Serialize(stream, executionContext);
-            client.Write(MessageType.EXECUTION_BEGIN, stream.ToArray());
+            client.SerializeAndWrite(MessageType.EXECUTION_BEGIN, executionContext);
             return true;
         }
 
@@ -134,9 +127,11 @@ namespace Presto {
         //----------------------Response Functions-----------------------//
         private void connectionAccept(ClientState state) {
         }
-        private void unknowMessageType(ClientState state) {    
+        private void unknowMessageType(ClientState state) {
         }
         private void returnExecution(ClientState state) {
+            ExecutionResult res = (ExecutionResult)state.GetDataDeserialized();
+            res.GetType();
         }
         private void deniedExecution(ClientState state) {
         }

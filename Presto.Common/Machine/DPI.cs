@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Presto.Common.Machine {
-    
+
     /// <summary>
     /// Gathers the distribution performance indicator Information for the machine and for the cluster.
     /// </summary>
@@ -19,7 +17,7 @@ namespace Presto.Common.Machine {
         /// Calculate DPI of the current machine.
         /// </summary>
         /// <returns>The "long" value of this machines DPI</returns>
-        public static void CalculateDPI(){
+        public static void CalculateDPI() {
             //I have no other method of measuring performance than to do a simple 
             //prime number finder to 1000 and measure the speed of the result and then multiply the result by the
             //total number of cores, there are no optimizations here, we don't want any, we want this to be a tad slow and fill up a list
@@ -32,8 +30,7 @@ namespace Presto.Common.Machine {
             List<int> notPrimeHolder = new List<int>();
             List<double> someList = new List<double>();
             List<string> stringList = new List<string>();
-            for (int i = 1; i <= 10000; i++)
-            {
+            for (int i = 1; i <= 10000; i++) {
                 for (int j = 2; j < i; i++) {
                     if (i % j == 0) {
                         notPrimeHolder.Add(i);
