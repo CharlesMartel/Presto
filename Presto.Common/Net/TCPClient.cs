@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
 
 namespace Presto.Common.Net {
@@ -17,8 +16,6 @@ namespace Presto.Common.Net {
 
         private IPEndPoint serverEndpoint;
         private TcpClient tcpClient;
-        //an internal soap serializer
-        private SoapFormatter serializer = new SoapFormatter();
 
         // A hash table holding all dispatch references and pointer to their delegates
         private Dictionary<MessageType, Action<ClientState>> dispatchList = new Dictionary<MessageType, Action<ClientState>>();
@@ -65,7 +62,7 @@ namespace Presto.Common.Net {
         }
 
         /// <summary>
-        /// Write data to the Socket stream according to the passed in Message Type and String message
+        /// Write data to the socket stream according to the passed in Message Type and String message
         /// </summary>
         /// <param name="mType"></param>
         /// <param name="message"></param>
@@ -79,7 +76,7 @@ namespace Presto.Common.Net {
         }
 
         /// <summary>
-        /// Write data to the Socket stream according to the passed in message type and byte data array
+        /// Write data to the socket stream according to the passed in message type and byte data array
         /// </summary>
         /// <param name="mType"></param>
         /// <param name="data"></param>
@@ -99,18 +96,7 @@ namespace Presto.Common.Net {
         }
 
         /// <summary>
-        /// Serialize an object and write it to the stream.
-        /// </summary>
-        /// <param name="messageType">The message type of the request.</param>
-        /// <param name="toBeSerialized">The object to be serialized and written.</param>
-        public void SerializeAndWrite(MessageType messageType, Object toBeSerialized) {
-            MemoryStream stream = new MemoryStream();
-            serializer.Serialize(stream, toBeSerialized);
-            Write(messageType, stream.ToArray());
-        }
-
-        /// <summary>
-        /// Internal Write function. Writes the passed in data to the Socket stream.
+        /// Internal Write function. Writes the passed in data to the socket stream.
         /// </summary>
         /// <param name="data">the byte data to be written</param>
         private void write(byte[] data) {
@@ -138,7 +124,6 @@ namespace Presto.Common.Net {
             nStream.EndWrite(result);
         }
 
-
         private void readCallback(IAsyncResult result) {
             int read = 0;
             NetworkStream nStream = null;
@@ -163,12 +148,13 @@ namespace Presto.Common.Net {
                 if (state.IsFullyRecieved()) {
                     ClientState newState = new ClientState(state.Client);
                     nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
+                    dispatch(state);
                 } else {
                     nStream.BeginRead(state.Buffer, 0, ClientState.BufferSize, readCallback, state);
                 }
             } else {
-                //Socket has been closed... handle it
-                //TODO: handle Socket close
+                //socket has been closed... handle it
+                //TODO: handle socket close
             }
         }
 

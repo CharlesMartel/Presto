@@ -26,7 +26,7 @@ namespace Presto.Common.Net {
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Presto.Common.Net.TCPServer"/> class. 
-        /// An asynchronous tcp Socket bound to the specified port.
+        /// An asynchronous tcp socket bound to the specified port.
         /// </summary>
         /// <param name='port'>
         /// The port to bind to.
@@ -79,14 +79,14 @@ namespace Presto.Common.Net {
             // Signal the main thread to continue.
             allDone.Set();
 
-            // Get the Socket that handles the Client request.
+            // Get the socket that handles the Client request.
             Socket asyncListener = (Socket)ar.AsyncState;
             Socket handler = asyncListener.EndAccept(ar);
 
             //Create the state object
             ServerState state = new ServerState(handler);
             //begin recieving the data
-            state.Socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
+            state.socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
         }
 
         /// <summary>
@@ -98,8 +98,8 @@ namespace Presto.Common.Net {
                 //Get the Server State Object
                 ServerState state = (ServerState)ar.AsyncState;
 
-                //read from the Socket
-                int readCount = state.Socket.EndReceive(ar);
+                //read from the socket
+                int readCount = state.socket.EndReceive(ar);
 
                 //check if reading is done, move on if so. then trigger another read
                 if (readCount > 0) {
@@ -108,15 +108,15 @@ namespace Presto.Common.Net {
                     //check if the message is fully recieved, if it is, create a new state object and pass that to the read,
                     // if not, continue the read with the same state object
                     if (state.IsFullyRecieved()) {
-                        ServerState newState = new ServerState(state.Socket);
-                        newState.Socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
+                        ServerState newState = new ServerState(state.socket);
+                        newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
                         dispatch(state);
                     } else {
-                        state.Socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
+                        state.socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
                     }
                 } else {
-                    //Socket has been closed... handle it
-                    //TODO: handle Socket close
+                    //socket has been closed... handle it
+                    //TODO: handle socket close
                 }
             } catch (Exception e) {
                 //The server was closed.

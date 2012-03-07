@@ -4,7 +4,7 @@ namespace Presto {
     /// <summary>
     /// All returning data to be passed around the cluster must inherit from PrestoResult
     /// </summary>
-    [Serializable()]
+    [Serializable]
     public abstract class PrestoResult {
     }
 }

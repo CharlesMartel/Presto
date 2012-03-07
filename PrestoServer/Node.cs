@@ -86,7 +86,7 @@ namespace Presto {
             }
             //since we know that the other machine has the assembly loaded we can 
             //serialize the execution context and transport
-            client.SerializeAndWrite(MessageType.EXECUTION_BEGIN, executionContext);
+            client.Write(MessageType.EXECUTION_BEGIN, SerializationEngine.Serialize(executionContext).ToArray());
             return true;
         }
 
@@ -130,8 +130,8 @@ namespace Presto {
         private void unknowMessageType(ClientState state) {
         }
         private void returnExecution(ClientState state) {
-            ExecutionResult res = (ExecutionResult)state.GetDataDeserialized();
-            res.GetType();
+            ExecutionResult res = (ExecutionResult)SerializationEngine.Deserialize(state.GetDataArray());
+            Application.Cluster.ReturnExecution(res);
         }
         private void deniedExecution(ClientState state) {
         }
@@ -143,9 +143,9 @@ namespace Presto {
         private void assemblyLoaded(ClientState state) {
             loadInProgress = false;
             foreach (ExecutionContext context in waitingJobs) {
-                waitingJobs.Remove(context);
                 Execute(context);
             }
+            waitingJobs.Clear();
         }
     }
 }

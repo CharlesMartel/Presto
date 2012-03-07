@@ -36,7 +36,7 @@ namespace Presto {
         public static void ExecutionBegin(ServerState state) {
             //finally execute the function defined in the transfer
             //get the execution context          
-            ExecutionContext context = (ExecutionContext)state.GetDataDeserialized();
+            ExecutionContext context = (ExecutionContext)SerializationEngine.Deserialize(state.GetDataArray());
             AppDomain currentDomain = AppDomain.CurrentDomain;
             Assembly[] assemblies = currentDomain.GetAssemblies();
             Type type = null;
@@ -50,7 +50,7 @@ namespace Presto {
             }
             PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { context.Parameter });
             ExecutionResult result = new ExecutionResult(res, context.ContextID);
-            state.SerializeAndWrite(MessageType.EXECUTION_COMPLETE, res);
+            state.Write(MessageType.EXECUTION_COMPLETE, SerializationEngine.Serialize(result).ToArray());
         }
     }
 }

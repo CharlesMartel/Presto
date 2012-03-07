@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Nodes.cs" />
+    <Compile Include="SerializationEngine.cs" />
     <Compile Include="Verification.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

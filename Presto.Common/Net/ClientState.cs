@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Soap;
+using System.Reflection;
 using System.Text;
 
 namespace Presto.Common.Net {
     /// <summary>
-    /// ServerState is a state object that gets passed around as the holder for an asynchronous Socket.
+    /// ServerState is a state object that gets passed around as the holder for an asynchronous socket.
     /// </summary>
     public class ClientState {
-        //the internal Socket
+        //the internal socket
         public TcpClient Client;
         // Size of receive Buffer.
         public const int BufferSize = 1024;
@@ -22,13 +22,11 @@ namespace Presto.Common.Net {
         public long MessageLength = 0;
         //a boolean to tell if the message is fully recieved
         private bool messageFullyRecieved = false;
-        //the private serializer
-        private SoapFormatter serializer = new SoapFormatter();
 
         /// <summary>
         /// Create a new server state object to manage a currently running connection
         /// </summary>
-        /// <param name="Socket">The sync Socket associated with the state object.</param>
+        /// <param name="socket">The sync socket associated with the state object.</param>
         public ClientState(TcpClient client) {
             //set the working Client
             this.Client = client;
@@ -46,7 +44,9 @@ namespace Presto.Common.Net {
             List<byte> messageLengthLongList = data.GetRange(0, 8);
             byte[] messageLengthLongArray = messageLengthLongList.ToArray();
             MessageLength = BitConverter.ToInt64(messageLengthLongArray, 0);
-            if (data.Count >= MessageLength + 16) {
+            //The message length property is 8 bytes and is not counting itself in the message length, add 8
+            MessageLength += 8;
+            if (data.Count >= MessageLength) {
                 messageFullyRecieved = true;
             }
         }
@@ -96,14 +96,6 @@ namespace Presto.Common.Net {
             return ASCIIEncoding.ASCII.GetString(dataByteArray.ToArray());
         }
 
-        /// <summary>
-        /// Get the data inside the message as a generic object that has been deserialized.
-        /// </summary>
-        /// <returns>The generic object deserialized.</returns>
-        public Object GetDataDeserialized() {
-            List<byte> dataByteArray = data.GetRange(16, data.Count - 16);
-            return serializer.Deserialize(new MemoryStream(dataByteArray.ToArray()));
-        }
     }
 }
 

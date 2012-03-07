@@ -27,7 +27,7 @@ namespace Presto {
         /// <param name="state">The server state object.</param>
         private void verifyResponse(ServerState state) {
             Verification verification = new Verification("name", DPI.GetDPI());
-            state.SerializeAndWrite(MessageType.VERIFICATION_RESPONSE, verification);
+            state.Write(MessageType.VERIFICATION_RESPONSE, SerializationEngine.Serialize(verification).ToArray());
         }
 
         /// <summary>

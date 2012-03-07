@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
 
 namespace Presto.Common.Net {
     /// <summary>
-    /// ServerState is a state object that gets passed around as the holder for an asynchronous Socket.
+    /// ServerState is a state object that gets passed around as the holder for an asynchronous socket.
     /// </summary>
     public class ServerState {
-        //the internal Socket
-        public Socket Socket;
+        //the internal socket
+        public Socket socket;
         // Size of receive Buffer.
         public const int BufferSize = 1024;
         // Receive Buffer.
@@ -22,16 +21,14 @@ namespace Presto.Common.Net {
         public long MessageLength = 0;
         //a boolean to tell if the message is fully recieved
         private bool messageFullyRecieved = false;
-        //an internal soap serializer
-        private SoapFormatter serializer = new SoapFormatter();
 
         /// <summary>
         /// Create a new server state object to manage a currently running connection
         /// </summary>
-        /// <param name="socket">The sync Socket associated with the state object.</param>
+        /// <param name="socket">The sync socket associated with the state object.</param>
         public ServerState(Socket socket) {
-            //set the working Socket
-            this.Socket = socket;
+            //set the working socket
+            this.socket = socket;
         }
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace Presto.Common.Net {
         }
 
         /// <summary>
-        /// Sends the passed in data as the passed in message type and closes the Socket.
+        /// Sends the passed in data as the passed in message type and closes the socket.
         /// </summary>
         /// <param name="messageType"></param>
         /// <param name="data"></param>
@@ -94,7 +91,7 @@ namespace Presto.Common.Net {
             //send the data
             write(output.ToArray());
 
-            //close the Socket
+            //close the socket
             CloseSocket();
         }
 
@@ -124,18 +121,7 @@ namespace Presto.Common.Net {
         }
 
         /// <summary>
-        /// Serialize an object and write it to the stream.
-        /// </summary>
-        /// <param name="messageType">The message type of the request.</param>
-        /// <param name="toBeSerialized">The object to be serialized and written.</param>
-        public void SerializeAndWrite(MessageType messageType, Object toBeSerialized) {
-            MemoryStream stream = new MemoryStream();
-            serializer.Serialize(stream, toBeSerialized);
-            Write(messageType, stream.ToArray());
-        }
-
-        /// <summary>
-        /// Internal Write function. Writes the passed in data to the Socket stream.
+        /// Internal Write function. Writes the passed in data to the socket stream.
         /// </summary>
         /// <param name="data">the byte data to be written</param>
         private void write(byte[] data) {
@@ -147,16 +133,16 @@ namespace Presto.Common.Net {
             data = tempByteArray.ToArray();
 
             //send the data
-            Socket.Send(data);
+            socket.Send(data);
         }
 
         /// <summary>
-        /// Closes the ServerState's associated Socket
+        /// Closes the ServerState's associated socket
         /// </summary>
         public void CloseSocket() {
-            //close the Socket
-            Socket.Shutdown(SocketShutdown.Both);
-            Socket.Close();
+            //close the socket
+            socket.Shutdown(SocketShutdown.Both);
+            socket.Close();
         }
 
         /// <summary>
@@ -184,15 +170,6 @@ namespace Presto.Common.Net {
         public string GetDataASCIIString() {
             List<byte> dataByteArray = data.GetRange(16, data.Count - 16);
             return ASCIIEncoding.ASCII.GetString(dataByteArray.ToArray());
-        }
-
-        /// <summary>
-        /// Get the data inside the message as a generic object that has been deserialized.
-        /// </summary>
-        /// <returns>The generic object deserialized.</returns>
-        public Object GetDataDeserialized() {
-            List<byte> dataByteArray = data.GetRange(16, data.Count - 16);
-            return serializer.Deserialize(new MemoryStream(dataByteArray.ToArray()));
         }
 
         /// <summary>
