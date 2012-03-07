@@ -43,7 +43,7 @@
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="ExecutionResult.cs" />
     <Compile Include="Executor.cs" />
-    <Compile Include="Job.cs" />
+    <Compile Include="OutboundJob.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />

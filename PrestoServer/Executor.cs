@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using Presto.Common;
 using Presto.Common.Net;
 
@@ -13,10 +15,25 @@ namespace Presto {
     public static class Executor {
 
         /// <summary>
+        /// The number of currently executing or thread pool queued jobs in this instance.
+        /// </summary>
+        private static int runningJobs = 0;
+
+        private delegate void AsyncMethodCaller(ServerState state);
+
+        /// <summary>
         /// Initializes the Executor.
         /// </summary>
         public static void Initialize() {
             Application.ControlServer.RegisterDispatchAction(MessageType.EXECUTION_BEGIN, ExecutionBegin);
+        }
+
+        /// <summary>
+        /// Get the number of currently executing jobs on this instance.
+        /// </summary>
+        /// <returns>The number of currently executing jobs.</returns>
+        public static int RunningJobs() {
+            return runningJobs;
         }
 
         /// <summary>
@@ -35,7 +52,17 @@ namespace Presto {
         /// <param name="state">The server state object of the request</param>
         public static void ExecutionBegin(ServerState state) {
             //finally execute the function defined in the transfer
-            //get the execution context          
+            AsyncMethodCaller execution = new AsyncMethodCaller(execute);
+            execution.BeginInvoke(state, null, null);
+        }
+
+        /// <summary>
+        /// Internal execute function to be called asynchronously.
+        /// </summary>
+        /// <param name="state">The server state object associated with the execution.</param>
+        private static void execute(ServerState state) {
+            Interlocked.Increment(ref runningJobs);
+            //get the execution context 
             ExecutionContext context = (ExecutionContext)SerializationEngine.Deserialize(state.GetDataArray());
             AppDomain currentDomain = AppDomain.CurrentDomain;
             Assembly[] assemblies = currentDomain.GetAssemblies();
@@ -51,6 +78,7 @@ namespace Presto {
             PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { context.Parameter });
             ExecutionResult result = new ExecutionResult(res, context.ContextID);
             state.Write(MessageType.EXECUTION_COMPLETE, SerializationEngine.Serialize(result).ToArray());
+            Interlocked.Decrement(ref runningJobs);
         }
     }
 }

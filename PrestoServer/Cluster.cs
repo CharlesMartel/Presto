@@ -12,7 +12,7 @@ namespace Presto {
     public class Cluster : ClusterBase {
 
         //we keep a list of all jobs currently out for processing
-        private Dictionary<string, Job> scheduledJobs = new Dictionary<string, Job>();
+        private Dictionary<string, OutboundJob> outboundJobs = new Dictionary<string, OutboundJob>();
 
         /// <summary>
         /// Initialize the servers cluster instance.
@@ -47,8 +47,8 @@ namespace Presto {
             MethodInfo method = function.Method;
             ExecutionContext context = new ExecutionContext(method, parameter, Generator.RandomAlphaNumeric(Config.UIDLength));
             //add the job to the scheduled jobs
-            Job job = new Job(context.ContextID, now, callback);
-            scheduledJobs.Add(context.ContextID, job);
+            OutboundJob job = new OutboundJob(context.ContextID, now, callback);
+            outboundJobs.Add(context.ContextID, job);
             //Pass the execution context to the node best fit to serve it
             Nodes.BestNode().Execute(context);
         }
@@ -58,8 +58,8 @@ namespace Presto {
         /// </summary>
         /// <param name="result">The execution result object.</param>
         public void ReturnExecution(ExecutionResult result) {
-            scheduledJobs[result.ContextID].Callback.Invoke(result.Result);
-            scheduledJobs.Remove(result.ContextID);
+            outboundJobs[result.ContextID].Callback.Invoke(result.Result);
+            outboundJobs.Remove(result.ContextID);
         }
     }
 }
