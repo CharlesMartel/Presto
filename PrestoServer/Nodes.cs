@@ -22,6 +22,8 @@ namespace Presto {
                 nodes.Add(new Node(host));
                 Count++;
             }
+            //add this host to the list
+            nodes.Add(new Node("localhost"));
         }
 
         /// <summary>

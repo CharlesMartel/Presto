@@ -20,7 +20,7 @@ namespace Presto {
         /// <summary>
         /// A universal id length across the application.
         /// </summary>
-        public static int UIDLength = 32;
+        public static int UIDLength = 16;
 
         /// <summary>
         /// Loads and reads the configuration file into the Configuration properties
