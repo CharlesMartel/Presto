@@ -43,7 +43,8 @@ namespace Presto {
         public static void ExecuteModule(AssemblyWrapper assemblyWrapper) {
             //finally execute the user module
             PrestoModule module = assemblyWrapper.GetModuleInstance();
-            module.Load();
+            Action moduleLoad = new Action(module.Load);
+            moduleLoad.BeginInvoke(null, null); 
         }
 
         /// <summary>

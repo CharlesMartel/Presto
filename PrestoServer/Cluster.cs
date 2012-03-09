@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using Presto.Common;
 using Presto.Common.Machine;
 using Presto.Common.Net;
@@ -13,7 +14,7 @@ namespace Presto {
 
         //we keep a list of all jobs currently out for processing
         private Dictionary<string, OutboundJob> outboundJobs = new Dictionary<string, OutboundJob>();
-
+        private ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
         /// <summary>
         /// Initialize the servers cluster instance.
         /// </summary>
@@ -37,6 +38,9 @@ namespace Presto {
         /// <param name="parameter">The parameter to be passed to the function.</param>
         /// <param name="callback">The callback that is to be fired upon completion of the job.</param>
         public override void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback) {
+            //set the event to non signaled
+            jobCompletionEvent.Reset();
+
             if (!function.Method.IsStatic) {
                 //I should really make some presto specific exceptions... i will add that to the todo.
                 throw new Exception("Function is not static");
@@ -60,6 +64,16 @@ namespace Presto {
         public void ReturnExecution(ExecutionResult result) {
             outboundJobs[result.ContextID].Callback.Invoke(result.Result);
             outboundJobs.Remove(result.ContextID);
+            if (outboundJobs.Count < 1) {
+                jobCompletionEvent.Set();
+            }
+        }
+
+        /// <summary>
+        /// Wait on all currently processing jobs to return. Blocks the currently running thread untill all jobs return succesful.
+        /// </summary>
+        public void Wait() {
+            jobCompletionEvent.WaitOne();
         }
     }
 }
