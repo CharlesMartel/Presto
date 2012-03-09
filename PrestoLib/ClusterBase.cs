@@ -32,7 +32,10 @@ namespace Presto {
         /// <param name="parameter">The parameter to be passed into the executed function.</param>
         /// <param name="callback">The callback to be executed when the function completes.</param>
         public abstract void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback);
-
+        /// <summary>
+        /// Blocks the currently running thread until all execution jobs return from the cluster. The thread will resume once all jobs return succesful.
+        /// </summary>
+        public abstract void Wait();
 
     }
 }

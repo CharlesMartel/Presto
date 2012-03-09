@@ -72,7 +72,7 @@ namespace Presto {
         /// <summary>
         /// Wait on all currently processing jobs to return. Blocks the currently running thread untill all jobs return succesful.
         /// </summary>
-        public void Wait() {
+        public override void Wait() {
             jobCompletionEvent.WaitOne();
         }
     }
