@@ -12,6 +12,8 @@ namespace Presto {
         /// .
         /// </param>
         public static void Main(string[] args) {
+            //Initialize the configuration
+            Config.Initialize();
             //make sure we have at least one argument, if not, run usage
             if (!(args.Length > 0)) {
                 usage();

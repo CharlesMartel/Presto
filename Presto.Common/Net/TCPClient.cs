@@ -46,6 +46,7 @@ namespace Presto.Common.Net {
         public bool Connect() {
             //Set the internal tcpClient object
             tcpClient = new TcpClient();
+            //tcpClient.NoDelay = true; // again.. for nagles... and its entirely too much to explain.
             try {
                 //we leave the Client connection synchronous, to avoid timing issue with writes
                 tcpClient.Connect(serverEndpoint);
@@ -100,17 +101,16 @@ namespace Presto.Common.Net {
         /// </summary>
         /// <param name="data">the byte data to be written</param>
         private void write(byte[] data) {
-            //get the data length and append it to the beggining of the stream
-            long dataLength = data.Length;
-            byte[] dataLengthArray = BitConverter.GetBytes(dataLength);
-            List<byte> tempByteArray = new List<byte>(dataLengthArray);
+            List<byte> tempByteArray = new List<byte>();
             tempByteArray.AddRange(data);
+            tempByteArray.AddRange(Config.EndOfStreamPattern);
             data = tempByteArray.ToArray();
 
             //get the tcpClient network stream
             NetworkStream nStream = tcpClient.GetStream();
             //Start the synchronous Write
-            nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
+            //nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
+            nStream.Write(data, 0, data.Length);
         }
 
         /// <summary>
@@ -147,6 +147,8 @@ namespace Presto.Common.Net {
                 // if not, continue the read with the same state object
                 if (state.IsFullyRecieved()) {
                     ClientState newState = new ClientState(state.Client);
+                    byte[] excessData = state.CompleteAndTrim();
+                    newState.PreSetData(excessData);
                     nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
                     dispatch(state);
                 } else {
@@ -196,7 +198,6 @@ namespace Presto.Common.Net {
         public void close() {
             tcpClient.Close();
         }
-
     }
 }
 

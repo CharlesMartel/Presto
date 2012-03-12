@@ -54,6 +54,7 @@ namespace Presto.Common.Net {
 
                 listener.Bind(ipEndpoint);
                 listener.Listen(10); // the integer passed to listen specifies a maximum backlag size. Im not entirely sure what that actually entails though. 
+                //listener.NoDelay = true; // this is for nagles... bleh... i dont feel like explaining.
 
                 while (true) {
                     // Set the event to nonsignaled state.
@@ -109,6 +110,8 @@ namespace Presto.Common.Net {
                     // if not, continue the read with the same state object
                     if (state.IsFullyRecieved()) {
                         ServerState newState = new ServerState(state.socket);
+                        byte[] excessData = state.CompleteAndTrim();
+                        newState.PreSetData(excessData);
                         newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
                         dispatch(state);
                     } else {

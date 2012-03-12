@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Presto {
     /// <summary>
@@ -23,6 +24,12 @@ namespace Presto {
         public static int UIDLength = 16;
 
         /// <summary>
+        /// The end of stream pattern is what accompanies the end of each presto network stream.
+        /// </summary>
+        public static byte[] EndOfStreamPattern;
+        private static string endOfStreamFrom = "PRESTOEOS";
+
+        /// <summary>
         /// Loads and reads the configuration file into the Configuration properties
         /// </summary>
         public static void Initialize() {
@@ -35,6 +42,9 @@ namespace Presto {
             } else {
                 Platform = ExecutionPlatform.DOTNET;
             }
+
+            //set the end of stream pattern
+            EndOfStreamPattern = ASCIIEncoding.ASCII.GetBytes(endOfStreamFrom);
         }
 
         /// <summary>
