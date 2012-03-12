@@ -25,7 +25,7 @@ namespace Presto.Common.Net {
         /// Create a new server state object to manage a currently running connection
         /// </summary>
         /// <param name="socket">The sync socket associated with the state object.</param>
-        public ClientState(TcpClient client) {
+        internal ClientState(TcpClient client) {
             //set the working Client
             this.Client = client;
         }
@@ -33,7 +33,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Copies all remaining data in the Buffer into the full data array and clears the Buffer.
         /// </summary>
-        public void PurgeBuffer(int bytesRead) {
+        internal void PurgeBuffer(int bytesRead) {
             //we copy the bytes read out of the Buffer and add it to the data list
             data.AddRange(new List<byte>(Buffer).GetRange(0, bytesRead));
             Buffer = new byte[BufferSize];
@@ -69,7 +69,12 @@ namespace Presto.Common.Net {
         /// </summary>
         /// <param name="presetData">The data to preset the data array with.</param>
         internal void PreSetData(byte[] presetData) {
+            data.Clear();
             data.AddRange(presetData);
+            int indexOfEOS = ByteSearch(data.ToArray(), Config.EndOfStreamPattern);
+            if (indexOfEOS > -1) {
+                messageFullyRecieved = true;
+            }
         }
 
         /// <summary>
@@ -95,7 +100,7 @@ namespace Presto.Common.Net {
         /// internal property.
         /// </summary>
         /// <returns>boolean telling if the message has been fully recieved</returns>
-        public bool IsFullyRecieved() {
+        internal bool IsFullyRecieved() {
             return messageFullyRecieved;
         }
 

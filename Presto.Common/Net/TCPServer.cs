@@ -111,9 +111,16 @@ namespace Presto.Common.Net {
                     if (state.IsFullyRecieved()) {
                         ServerState newState = new ServerState(state.socket);
                         byte[] excessData = state.CompleteAndTrim();
-                        newState.PreSetData(excessData);
-                        newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
                         dispatch(state);
+                        newState.PreSetData(excessData);
+                        while (newState.IsFullyRecieved()) {
+                            ServerState newStateRepeat = newState;
+                            excessData = newStateRepeat.CompleteAndTrim();
+                            newState.PreSetData(excessData);
+                            dispatch(newStateRepeat);                            
+                        }
+                        newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
+                        
                     } else {
                         state.socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
                     }

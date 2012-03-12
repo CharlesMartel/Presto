@@ -148,9 +148,15 @@ namespace Presto.Common.Net {
                 if (state.IsFullyRecieved()) {
                     ClientState newState = new ClientState(state.Client);
                     byte[] excessData = state.CompleteAndTrim();
-                    newState.PreSetData(excessData);
-                    nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
                     dispatch(state);
+                    newState.PreSetData(excessData);
+                    while (newState.IsFullyRecieved()) {
+                        ClientState newStateRepeat = newState;
+                        excessData = newStateRepeat.CompleteAndTrim();
+                        newState.PreSetData(excessData);
+                        dispatch(newStateRepeat);
+                    }
+                    nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);                    
                 } else {
                     nStream.BeginRead(state.Buffer, 0, ClientState.BufferSize, readCallback, state);
                 }
