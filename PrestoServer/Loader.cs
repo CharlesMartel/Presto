@@ -15,6 +15,7 @@ namespace Presto {
         public static void Initialize() {
             Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_TRANSFER_MASTER, recieveAssemblyMaster);
             Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_TRANSFER_SLAVE, recieveAssemblySlave);
+            Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_UNLOAD, unloadAssembly);
         }
 
         /// <summary>
@@ -43,6 +44,17 @@ namespace Presto {
             AssemblyStore.Add(assemblyWrapper);
             //send back assembly transfer complete message
             state.Write(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
+        }
+
+        /// <summary>
+        /// Unload the assembly according to the assembly name;
+        /// </summary>
+        /// <param name="state"></param>
+        private static void unloadAssembly(ServerState state) {
+            //get the name of the assembly
+            string assemblyName = state.GetDataASCIIString();
+            //tell the assembly store to rid of it
+            AssemblyStore.Remove(assemblyName);
         }
     }
 }

@@ -26,7 +26,9 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Remove the assembly according to the provided assembly name.
+        /// Remove the assembly according to the provided assembly name. It should be noted that... it is not
+        /// currently possible to remove an assembly from an app domain without destroying the domain itself.
+        /// This method simply rids the assembly from the assembly store.
         /// </summary>
         /// <param name="assemblyFullName">The full name of the assembly to be removed.</param>
         public static void Remove(string assemblyFullName) {
@@ -34,7 +36,9 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Remove the assembly according to the provided assembly wrapper.
+        /// Remove the assembly according to the provided assembly wrapper. It should be noted that... it is not
+        /// currently possible to remove an assembly from an app domain without destroying the domain itself.
+        /// This method simply rids the assembly from the assembly store.
         /// </summary>
         /// <param name="assemblyWrapper">The assembly wrapper of the assembly to be removed.</param>
         public static void Remove(AssemblyWrapper assemblyWrapper) {

@@ -41,6 +41,10 @@ namespace Presto.Common.Net {
         /// A response notifying the sending service of a succesfull assembly transfer.
         /// </summary>
         public static readonly MessageType ASSEMBLY_TRANSFER_COMPLETE;
+        /// <summary>
+        /// Tell the node to unload a aprticular assembly.
+        /// </summary>
+        public static readonly MessageType ASSEMBLY_UNLOAD;
 
         //---------Process Execution messages-----------//
         /// <summary>
@@ -87,6 +91,7 @@ namespace Presto.Common.Net {
             ASSEMBLY_TRANSFER_MASTER = new MessageType("10000000");
             ASSEMBLY_TRANSFER_SLAVE = new MessageType("10000001");
             ASSEMBLY_TRANSFER_COMPLETE = new MessageType("10000002");
+            ASSEMBLY_UNLOAD = new MessageType("10000003");
             MISSING_ASSEMBLY = new MessageType("20000000");
             EXECUTION_BEGIN = new MessageType("20000001");
             EXECUTION_COMPLETE = new MessageType("20000002");

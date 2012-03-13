@@ -41,6 +41,14 @@ namespace Presto.Common.Net {
         }
 
         /// <summary>
+        /// Whether or not the connection is active.
+        /// </summary>
+        /// <returns>True if it is, false if it is not.</returns>
+        public bool IsConnected() {
+            return tcpClient.Connected;
+        }
+
+        /// <summary>
         /// Connect the Client to the given host server.
         /// </summary>
         public bool Connect() {
@@ -146,17 +154,25 @@ namespace Presto.Common.Net {
                 //check if the message is fully recieved, if it is, create a new state object and pass that to the read,
                 // if not, continue the read with the same state object
                 if (state.IsFullyRecieved()) {
+                    //need to redo all this below.. nto as efficient as I'd like
                     ClientState newState = new ClientState(state.Client);
                     byte[] excessData = state.CompleteAndTrim();
                     dispatch(state);
                     newState.PreSetData(excessData);
-                    while (newState.IsFullyRecieved()) {
-                        ClientState newStateRepeat = newState;
-                        excessData = newStateRepeat.CompleteAndTrim();
-                        newState.PreSetData(excessData);
-                        dispatch(newStateRepeat);
+                    bool moreToProcess = newState.IsFullyRecieved();
+                    if (moreToProcess) {
+                        do {
+                            ClientState newStateRepeat = new ClientState(state.Client);
+                            newStateRepeat.PreSetData(excessData);
+                            excessData = newStateRepeat.CompleteAndTrim();
+                            dispatch(newStateRepeat);
+                            newState.PreSetData(excessData);
+                        } while (newState.IsFullyRecieved());
+                        nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
                     }
-                    nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);                    
+                    else {
+                        nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
+                    }                   
                 } else {
                     nStream.BeginRead(state.Buffer, 0, ClientState.BufferSize, readCallback, state);
                 }

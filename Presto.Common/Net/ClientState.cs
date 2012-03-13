@@ -37,11 +37,6 @@ namespace Presto.Common.Net {
             //we copy the bytes read out of the Buffer and add it to the data list
             data.AddRange(new List<byte>(Buffer).GetRange(0, bytesRead));
             Buffer = new byte[BufferSize];
-
-            //see if the message is fully recieved and set the messageFullyRecieved boolean if so
-            if (ByteSearch(data.ToArray(), Config.EndOfStreamPattern) > -1) {
-                messageFullyRecieved = true;
-            }
         }
 
         /// <summary>
@@ -71,10 +66,6 @@ namespace Presto.Common.Net {
         internal void PreSetData(byte[] presetData) {
             data.Clear();
             data.AddRange(presetData);
-            int indexOfEOS = ByteSearch(data.ToArray(), Config.EndOfStreamPattern);
-            if (indexOfEOS > -1) {
-                messageFullyRecieved = true;
-            }
         }
 
         /// <summary>
@@ -101,7 +92,21 @@ namespace Presto.Common.Net {
         /// </summary>
         /// <returns>boolean telling if the message has been fully recieved</returns>
         internal bool IsFullyRecieved() {
+            recalcMessageFullyRecieved();
             return messageFullyRecieved;
+        }
+
+        /// <summary>
+        /// Internal function to recaculate if the message is fully recieved.
+        /// </summary>
+        private void recalcMessageFullyRecieved() {
+            int indexOfEOS = ByteSearch(data.ToArray(), Config.EndOfStreamPattern);
+            if (indexOfEOS > -1) {
+                messageFullyRecieved = true;
+            }
+            else {
+                messageFullyRecieved = false;
+            }
         }
 
         /// <summary>

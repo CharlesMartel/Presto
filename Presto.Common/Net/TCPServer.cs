@@ -109,18 +109,25 @@ namespace Presto.Common.Net {
                     //check if the message is fully recieved, if it is, create a new state object and pass that to the read,
                     // if not, continue the read with the same state object
                     if (state.IsFullyRecieved()) {
+                        //Need to redo all this below, not as efficient as id like
                         ServerState newState = new ServerState(state.socket);
                         byte[] excessData = state.CompleteAndTrim();
                         dispatch(state);
                         newState.PreSetData(excessData);
-                        while (newState.IsFullyRecieved()) {
-                            ServerState newStateRepeat = newState;
-                            excessData = newStateRepeat.CompleteAndTrim();
-                            newState.PreSetData(excessData);
-                            dispatch(newStateRepeat);                            
+                        bool moreToProcess = newState.IsFullyRecieved();
+                        if (moreToProcess) {
+                            do {
+                                ServerState newStateRepeat = new ServerState(state.socket);
+                                newStateRepeat.PreSetData(excessData);
+                                excessData = newStateRepeat.CompleteAndTrim();
+                                dispatch(newStateRepeat);
+                                newState.PreSetData(excessData);
+                            } while (newState.IsFullyRecieved());
+                            newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
                         }
-                        newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
-                        
+                        else {
+                            newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
+                        }
                     } else {
                         state.socket.BeginReceive(state.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), state);
                     }

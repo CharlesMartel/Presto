@@ -10,7 +10,6 @@ namespace Presto {
     /// </summary>
     public class Node {
 
-        public bool Connected;
         public bool Available;
 
         private List<string> loadedAssemblies = new List<string>();
@@ -92,11 +91,21 @@ namespace Presto {
         }
 
         /// <summary>
+        /// Whether or not the node is connected.
+        /// </summary>
+        /// <returns>True if connected, false if otherwise.</returns>
+        public bool IsConnected() {
+            return client.IsConnected();
+        }
+
+        /// <summary>
         /// Will remove an assembly from the node according to the assmebly name.
         /// </summary>
         /// <param name="assemblyFullName">The full name of the assembly.</param>
         public void UnloadAssembly(string assemblyFullName) {
-            //TODO: remove an assembly by name
+            if(HasAssembly(assemblyFullName){
+                client.Write(MessageType.ASSEMBLY_UNLOAD, assemblyFullName);
+            }
         }
 
 
