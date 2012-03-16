@@ -1,5 +1,9 @@
 using System;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Collections.Generic;
+using System.Text;
 using Presto.Common.Net;
 
 
@@ -48,15 +52,21 @@ namespace Presto {
         /// The url of the assembly to load and execute
         /// </param>
         public static void exec(string assemblyURL) {
-            TCPClient cli = new TCPClient("localhost", 2500);
-            cli.Connect();
+            TcpClient client = new TcpClient();
+            client.Connect("127.0.0.1", Int32.Parse(Config.GetParameter("SERVER_PORT")));
             FileStream fs = File.OpenRead(assemblyURL);
             byte[] bytes = new byte[fs.Length];
             fs.Read(bytes, 0, Convert.ToInt32(fs.Length));
             fs.Close();
-            cli.Write(MessageType.ASSEMBLY_TRANSFER_MASTER, bytes);
-            cli.close();
-
+            List<byte> message = new List<byte>();
+            //get the message type in bytes
+            byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(MessageType.ASSEMBLY_TRANSFER_MASTER);
+            message.AddRange(messageTypeEncoded);
+            message.AddRange(bytes);
+            message.AddRange(Config.EndOfStreamPattern);
+            NetworkStream stream = client.GetStream();
+            stream.Write(message.ToArray(), 0, message.ToArray().Length);
+            client.Close();
         }
 
         /// <summary>

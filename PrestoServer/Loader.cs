@@ -23,8 +23,8 @@ namespace Presto {
         /// </summary>
         /// <param name="state">The server state object recieved along with this event.</param>
         private static void recieveAssemblyMaster(ServerState state) {
-            //send back assembly transfer complete message
-            state.WriteAndClose(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
+            //close the socket
+            state.CloseSocket();
             //Instantiate a new assembly wrapper
             AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
             //add assembly to assembly store

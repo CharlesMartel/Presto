@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibPresto", "PrestoLib\LibP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presto.Common", "Presto.Common\Presto.Common.csproj", "{5CE03B15-134F-436C-9822-F41D889BBD3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic", "Examples\Basic\Basic.csproj", "{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C4D7BF4F-42B4-4679-9C40-63B4262FB40E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,9 +67,22 @@ Global
 		{5CE03B15-134F-436C-9822-F41D889BBD3E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{5CE03B15-134F-436C-9822-F41D889BBD3E}.Release|x86.ActiveCfg = Release|Any CPU
 		{5CE03B15-134F-436C-9822-F41D889BBD3E}.Release|x86.Build.0 = Release|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16} = {C4D7BF4F-42B4-4679-9C40-63B4262FB40E}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Presto\Presto.csproj

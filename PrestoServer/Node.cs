@@ -29,11 +29,11 @@ namespace Presto {
             client = new TCPClient(address, port);
 
             //attatch network events
-            client.setDispatchAction(MessageType.UNKOWN, unknowMessageType);
-            client.setDispatchAction(MessageType.EXECUTION_COMPLETE, returnExecution);
-            client.setDispatchAction(MessageType.EXECUTION_DENIED, deniedExecution);
-            client.setDispatchAction(MessageType.CONNECTION_ACCEPTED, connectionAccept);
-            client.setDispatchAction(MessageType.ASSEMBLY_TRANSFER_COMPLETE, assemblyLoaded);
+            client.SetDispatchAction(MessageType.UNKOWN, unknowMessageType);
+            client.SetDispatchAction(MessageType.EXECUTION_COMPLETE, returnExecution);
+            client.SetDispatchAction(MessageType.EXECUTION_DENIED, deniedExecution);
+            client.SetDispatchAction(MessageType.CONNECTION_ACCEPTED, connectionAccept);
+            client.SetDispatchAction(MessageType.ASSEMBLY_TRANSFER_COMPLETE, assemblyLoaded);
 
             //connect
             client.Connect();
@@ -103,7 +103,7 @@ namespace Presto {
         /// </summary>
         /// <param name="assemblyFullName">The full name of the assembly.</param>
         public void UnloadAssembly(string assemblyFullName) {
-            if(HasAssembly(assemblyFullName){
+            if(HasAssembly(assemblyFullName)){
                 client.Write(MessageType.ASSEMBLY_UNLOAD, assemblyFullName);
             }
         }

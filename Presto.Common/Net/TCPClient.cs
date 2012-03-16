@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Presto.Common;
 
 namespace Presto.Common.Net {
     /// <summary>
@@ -16,6 +17,7 @@ namespace Presto.Common.Net {
 
         private IPEndPoint serverEndpoint;
         private TcpClient tcpClient;
+        private SynchronizedProcessingQueue<byte[]> sendQueue;
 
         // A hash table holding all dispatch references and pointer to their delegates
         private Dictionary<MessageType, Action<ClientState>> dispatchList = new Dictionary<MessageType, Action<ClientState>>();
@@ -29,6 +31,7 @@ namespace Presto.Common.Net {
             //Get the endpoint from DNS and set it as the serverEnpoint
             IPAddress[] addresses = Dns.GetHostAddresses(host);
             serverEndpoint = new IPEndPoint(addresses[0], port);
+            sendQueue = new SynchronizedProcessingQueue<byte[]>(write);
         }
 
         /// <summary>
@@ -38,6 +41,7 @@ namespace Presto.Common.Net {
         public TCPClient(IPEndPoint host) {
             //set the internal serverEnpoint to the provided one.
             serverEndpoint = host;
+            sendQueue = new SynchronizedProcessingQueue<byte[]>(write);
         }
 
         /// <summary>
@@ -101,7 +105,31 @@ namespace Presto.Common.Net {
             }
 
             //Write the output
-            write(output.ToArray());
+            sendQueue.Add(output.ToArray());
+        }
+
+        /// <summary>
+        /// Writes the data to the socket and blocks the thread until all data has been written from the biffer into the stream.
+        /// Use tentatively, as this also waits for other data in the buffer to be written.
+        /// </summary>
+        /// <param name="mType">The message type.</param>
+        /// <param name="data">A byte array of the data to be written.</param>
+        public void WaitWrite(MessageType mType, byte[] data)
+        {
+            //get the message type in bytes
+            byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(mType);
+
+            //combine the messagetype and data byte arrays
+            List<byte> output = new List<byte>();
+            output.AddRange(messageTypeEncoded);
+            if (data != null && data.Length != 0)
+            {
+                output.AddRange(data);
+            }
+
+            //Write the output
+            sendQueue.Add(output.ToArray());
+            sendQueue.Wait();
         }
 
         /// <summary>
@@ -117,19 +145,7 @@ namespace Presto.Common.Net {
             //get the tcpClient network stream
             NetworkStream nStream = tcpClient.GetStream();
             //Start the synchronous Write
-            //nStream.BeginWrite(data, 0, data.Length, writeCallback, nStream);
             nStream.Write(data, 0, data.Length);
-        }
-
-        /// <summary>
-        /// Internal asynchronous Write callback method
-        /// </summary>
-        /// <param name="result"></param>
-        private void writeCallback(IAsyncResult result) {
-            //get the tcpClient network stream
-            NetworkStream nStream = tcpClient.GetStream();
-            //finish the Write
-            nStream.EndWrite(result);
         }
 
         private void readCallback(IAsyncResult result) {
@@ -210,7 +226,7 @@ namespace Presto.Common.Net {
         /// </summary>
         /// <param name="messageType">The message type from the Presto.Common.Net.MessageType struct.</param>
         /// <param name="dispatchAction">An Action that recieves a server state object as its only parameter.</param>
-        public void setDispatchAction(string messageType, Action<ClientState> dispatchAction) {
+        public void SetDispatchAction(string messageType, Action<ClientState> dispatchAction) {
             dispatchList[messageType] = dispatchAction;
         }
 
