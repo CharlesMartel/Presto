@@ -15,7 +15,7 @@ namespace Presto {
         /// <summary>
         /// Adds a new assembly to the store.
         /// </summary>
-        /// <param name="assemblyWrapper">The assembly wrapper for the assembly.</param>
+        /// <param id="assemblyWrapper">The assembly wrapper for the assembly.</param>
         public static void Add(AssemblyWrapper assemblyWrapper) {
             //make sure assembly does not already exist, we overwrite if it does
             if (assemblies.ContainsKey(assemblyWrapper.GetAssemblyName())) {
@@ -26,11 +26,11 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Remove the assembly according to the provided assembly name. It should be noted that... it is not
+        /// Remove the assembly according to the provided assembly id. It should be noted that... it is not
         /// currently possible to remove an assembly from an app domain without destroying the domain itself.
         /// This method simply rids the assembly from the assembly store.
         /// </summary>
-        /// <param name="assemblyFullName">The full name of the assembly to be removed.</param>
+        /// <param id="assemblyFullName">The full id of the assembly to be removed.</param>
         public static void Remove(string assemblyFullName) {
             assemblies.Remove(assemblyFullName);
         }
@@ -40,15 +40,15 @@ namespace Presto {
         /// currently possible to remove an assembly from an app domain without destroying the domain itself.
         /// This method simply rids the assembly from the assembly store.
         /// </summary>
-        /// <param name="assemblyWrapper">The assembly wrapper of the assembly to be removed.</param>
+        /// <param id="assemblyWrapper">The assembly wrapper of the assembly to be removed.</param>
         public static void Remove(AssemblyWrapper assemblyWrapper) {
             assemblies.Remove(assemblyWrapper.GetAssemblyName());
         }
 
         /// <summary>
-        /// Get an assembly wrapper for an assembly using the assembl full name as the index
+        /// Get an assembly wrapper for an assembly using the assembl full id as the index
         /// </summary>
-        /// <param name="assemblyFullName">The full name of the assembly.</param>
+        /// <param id="assemblyFullName">The full id of the assembly.</param>
         /// <returns>The assembly wrapper instance for that assembly.</returns>
         public static AssemblyWrapper Get(string assemblyFullName) {
             return assemblies[assemblyFullName];

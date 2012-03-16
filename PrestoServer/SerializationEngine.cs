@@ -23,7 +23,7 @@ namespace Presto {
         /// <summary>
         /// Serializes the passed in object.
         /// </summary>
-        /// <param name="obj">The object to be serialized.</param>
+        /// <param id="obj">The object to be serialized.</param>
         /// <returns>The serialization stream of the object.</returns>
         public static MemoryStream Serialize(Object obj) {
             MemoryStream stream = new MemoryStream();
@@ -36,7 +36,7 @@ namespace Presto {
         /// <summary>
         /// Deserializes a byte array into
         /// </summary>
-        /// <param name="bytes">The byte array of the object to be deserialized.</param>
+        /// <param id="bytes">The byte array of the object to be deserialized.</param>
         /// <returns></returns>
         public static Object Deserialize(byte[] bytes) {
             Object obj = null;

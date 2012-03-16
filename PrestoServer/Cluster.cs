@@ -15,7 +15,7 @@ namespace Presto {
         //we keep a list of all jobs currently out for processing
         private Dictionary<string, OutboundJob> outboundJobs = new Dictionary<string, OutboundJob>();
         private ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
-        /// <summary>
+        public string NodeID = Generator.RandomAlphaNumeric(Config.UIDLength);
         /// Initialize the servers cluster instance.
         /// </summary>
         public void Initialize() {
@@ -25,18 +25,18 @@ namespace Presto {
         /// <summary>
         /// This server needs to verify itself and send back a Verfication object.
         /// </summary>
-        /// <param name="state">The server state object.</param>
+        /// <param id="state">The server state object.</param>
         private void verifyResponse(ServerState state) {
-            Verification verification = new Verification("name", DPI.GetDPI());
+            Verification verification = new Verification(NodeID, DPI.GetDPI(), CPU.GetCount(), Executor.RunningJobs());
             state.Write(MessageType.VERIFICATION_RESPONSE, SerializationEngine.Serialize(verification).ToArray());
         }
 
         /// <summary>
         /// Deploys an execution job into the cluster.
         /// </summary>
-        /// <param name="function">The function to be executed.</param>
-        /// <param name="parameter">The parameter to be passed to the function.</param>
-        /// <param name="callback">The callback that is to be fired upon completion of the job.</param>
+        /// <param id="function">The function to be executed.</param>
+        /// <param id="parameter">The parameter to be passed to the function.</param>
+        /// <param id="callback">The callback that is to be fired upon completion of the job.</param>
         public override void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback) {
             //set the event to non signaled
             jobCompletionEvent.Reset();
@@ -60,7 +60,7 @@ namespace Presto {
         /// <summary>
         /// Returns an execution job to the cluster object to be dispatched to the calling module.
         /// </summary>
-        /// <param name="result">The execution result object.</param>
+        /// <param id="result">The execution result object.</param>
         public void ReturnExecution(ExecutionResult result) {
             outboundJobs[result.ContextID].Callback.Invoke(result.Result);
             outboundJobs.Remove(result.ContextID);

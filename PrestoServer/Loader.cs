@@ -21,7 +21,7 @@ namespace Presto {
         /// <summary>
         /// A dispatch event to be rasied upon reception of an assembly from the Presto client application.
         /// </summary>
-        /// <param name="state">The server state object recieved along with this event.</param>
+        /// <param id="state">The server state object recieved along with this event.</param>
         private static void recieveAssemblyMaster(ServerState state) {
             //close the socket
             state.CloseSocket();
@@ -36,7 +36,7 @@ namespace Presto {
         /// <summary>
         /// A dispatch event to be rasied upon reception of an assembly from another Presto server..
         /// </summary>
-        /// <param name="state">The server state object recieved along with this event.</param>
+        /// <param id="state">The server state object recieved along with this event.</param>
         private static void recieveAssemblySlave(ServerState state) {
             //Instantiate a new assembly wrapper
             AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
@@ -47,11 +47,11 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Unload the assembly according to the assembly name;
+        /// Unload the assembly according to the assembly id;
         /// </summary>
-        /// <param name="state"></param>
+        /// <param id="state"></param>
         private static void unloadAssembly(ServerState state) {
-            //get the name of the assembly
+            //get the id of the assembly
             string assemblyName = state.GetDataASCIIString();
             //tell the assembly store to rid of it
             AssemblyStore.Remove(assemblyName);

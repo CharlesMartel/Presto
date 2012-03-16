@@ -51,6 +51,7 @@ namespace Presto.Common.Machine {
             long roundTrip = end - start;
             double reversed = Math.Pow(10, 6) - roundTrip;
             dpi = reversed;
+            dpi = dpi * CPU.GetCount();
             //Probably shoulda just implemented whetstone or something instead...
         }
 

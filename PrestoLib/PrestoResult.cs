@@ -6,5 +6,6 @@ namespace Presto {
     /// </summary>
     [Serializable]
     public abstract class PrestoResult {
+        public string ExecutionNodeID;
     }
 }

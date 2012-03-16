@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Presto {
 
@@ -22,8 +24,6 @@ namespace Presto {
                 nodes.Add(new Node(host));
                 Count++;
             }
-            //add this host to the list
-            nodes.Add(new Node("localhost"));
         }
 
         /// <summary>
@@ -31,9 +31,18 @@ namespace Presto {
         /// or possibly even not connected, then the default self node is returned.
         /// </summary>
         /// <returns></returns>
-        public static Node BestNode() {
-            //TODO: return best node
-            return nodes[0];
+        public static Node BestNode() { 
+            //This needs to be smarter, drawing on DPI and such...
+            Node bestNode = null;
+            float currentLoad = float.MaxValue;
+            foreach (Node current in nodes) {
+                float estLoad = current.EstimatedLoad();
+                if (estLoad < currentLoad) {
+                    currentLoad = estLoad;
+                    bestNode = current;
+                }
+            }
+            return bestNode;
         }
     }
 }

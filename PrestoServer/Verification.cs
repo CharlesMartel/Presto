@@ -6,11 +6,15 @@ namespace Presto {
     [Serializable()]
     public struct Verification {
         public double DPI;
-        public string Name;
+        public string NodeID;
+        public int CPUCount;
+        public int JobCount;
 
-        public Verification(string name, double dpi) {
-            Name = name;
+        public Verification(string id, double dpi, int cpuCount, int jobCount) {
+            NodeID = id;
             DPI = dpi;
+            CPUCount = cpuCount;
+            JobCount = jobCount;
         }
     }
 }

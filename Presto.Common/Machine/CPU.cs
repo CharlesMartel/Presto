@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace Presto.Common.Machine {
 
@@ -18,6 +19,14 @@ namespace Presto.Common.Machine {
         /// <returns></returns>
         public static float GetUsage() {
             return cpuCounter.NextValue();
+        }
+
+        /// <summary>
+        /// Get the total number of logical processors on the system.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetCount() {
+            return Environment.ProcessorCount;
         }
     }
 }

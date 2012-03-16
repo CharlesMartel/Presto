@@ -35,7 +35,7 @@ namespace Basic
         public static void functionCallback(PrestoResult result)
         {
             FunctionOutput output = (FunctionOutput)result;
-            Console.WriteLine(output.value);
+            Console.WriteLine(output.value + " from node id " + result.ExecutionNodeID);
         }
     }
 

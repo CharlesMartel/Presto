@@ -75,6 +75,20 @@ namespace Presto.Common.Net {
         }
 
         /// <summary>
+        /// Reconnects the client to the given host.
+        /// </summary>
+        /// <returns></returns>
+        public bool ReConnect() {
+            try {
+                tcpClient.Connect(serverEndpoint);
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Write data to the socket stream according to the passed in Message Type and String message
         /// </summary>
         /// <param name="mType"></param>
