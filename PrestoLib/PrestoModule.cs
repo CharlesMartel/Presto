@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace Presto {
     /// <summary>
     /// All modules that plug in to Presto must have one and only one class that implements the IPrestoModule interface. This interface serves as the starting point for

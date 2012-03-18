@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using System.Runtime.CompilerServices;
 using Presto.Common;
 using Presto.Common.Machine;
 using Presto.Common.Net;
@@ -9,13 +10,18 @@ using Presto.Common.Net;
 namespace Presto {
     /// <summary>
     /// The Cluster class is a static class that extends functionality that allows for interaction with the Presto cluster to the Module developer
-    /// </summary>
+    /// </summary>    
     public class Cluster : ClusterBase {
 
         //we keep a list of all jobs currently out for processing
         private Dictionary<string, OutboundJob> outboundJobs = new Dictionary<string, OutboundJob>();
         private ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
+        /// <summary>
+        /// The generated node id of this node.
+        /// </summary>
         public string NodeID = Generator.RandomAlphaNumeric(Config.UIDLength);
+
+        /// <summary>
         /// Initialize the servers cluster instance.
         /// </summary>
         public void Initialize() {

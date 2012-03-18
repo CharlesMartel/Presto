@@ -6,6 +6,6 @@ namespace Presto {
     /// </summary>
     [Serializable]
     public abstract class PrestoParameter {
-
+        
     }
 }

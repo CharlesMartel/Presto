@@ -30,6 +30,7 @@ namespace Presto {
             lock (locker) {                
                 serializer.Serialize(stream, obj);
             }
+            stream.Dispose();
             return stream;            
         }
 
@@ -46,8 +47,8 @@ namespace Presto {
             lock (locker) {                
                  obj = (Object)serializer.Deserialize(stream);
             }
-            return obj;
-            
+            stream.Dispose();
+            return obj;            
         }
 
         //I took this from http://social.msdn.microsoft.com/forums/en-US/netfxbcl/thread/fec7ea31-5241-4fbd-a9c7-9ae602e172d4/

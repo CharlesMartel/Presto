@@ -8,12 +8,16 @@ using Presto.Common.Net;
 
 
 namespace Presto {
+
+    /// <summary>
+    /// Entry for Presto Main
+    /// </summary>
     class MainClass {
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.
         /// </summary>
         /// <param name='args'>
-        /// .
+        /// The arguments for presto
         /// </param>
         public static void Main(string[] args) {
             //Initialize the configuration

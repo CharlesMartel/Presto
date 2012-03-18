@@ -109,8 +109,17 @@ namespace Presto {
 
     }
 
+    /// <summary>
+    /// The runtime that presto is executing on.
+    /// </summary>
     public enum ExecutionPlatform {
+        /// <summary>
+        /// Microsofts .NET Runtime.
+        /// </summary>
         DOTNET,
+        /// <summary>
+        /// The MONO Runtime.
+        /// </summary>
         MONO
     }
 }

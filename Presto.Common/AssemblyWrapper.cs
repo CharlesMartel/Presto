@@ -16,6 +16,7 @@ namespace Presto.Common {
         /// Initializes with an assembly URL which is the assemblys location on the file system.
         /// </summary>
         /// <param name='assemblyURL'>The assembly's file system URL</param>
+        /// <param name="clusterInstance">The cluster instance associated with the current presto instance.</param>
         public AssemblyWrapper(string assemblyURL, ClusterBase clusterInstance) {
             //TODO: Account for bad assemblies or unreachable files
             //load the assembly into the assembly internal assembly instance
@@ -30,6 +31,7 @@ namespace Presto.Common {
         /// <param name='assemblyBinaryArray'>
         /// Assembly byte array.
         /// </param>
+        /// <param name="clusterInstance">The cluster instance associated with the current presto instance.</param>
         public AssemblyWrapper(byte[] assemblyBinaryArray, ClusterBase clusterInstance) {
             //TODO: Account for bad assemblies
             //load the assembly into the internal assembly instance
@@ -51,6 +53,7 @@ namespace Presto.Common {
         /// <summary>
         /// Validate that the assembly is usable by Presto..
         /// </summary>
+        /// <param name="assembly">The assembly to validate.</param>
         public static bool Validate(Assembly assembly) {
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
@@ -71,7 +74,7 @@ namespace Presto.Common {
         /// <summary>
         /// Get the name of the assembly.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The full name of the assembly.</returns>
         public string GetAssemblyName() {
             return assembly.GetName().FullName;
         }
@@ -79,7 +82,7 @@ namespace Presto.Common {
         /// <summary>
         /// Get the PrestoModule instance associated with this assembly
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The Presto Module inside the assembly.</returns>
         public PrestoModule GetModuleInstance() {
             return module;
         }
@@ -87,7 +90,7 @@ namespace Presto.Common {
         /// <summary>
         /// Initializes the presto module instance 
         /// </summary>
-        /// <param name="clusterInstance"></param>
+        /// <param name="clusterInstance">The Cluster instance associated with the current Presto instance.</param>
         private void createModuleInstance(ClusterBase clusterInstance) {
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();

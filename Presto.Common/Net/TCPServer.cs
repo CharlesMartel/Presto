@@ -135,8 +135,9 @@ namespace Presto.Common.Net {
                     //socket has been closed... handle it
                     //TODO: handle socket close
                 }
-            } catch (Exception e) {
+            } catch {
                 //The server was closed.
+                //TODO: Handle the server being closed
             }
         }
 

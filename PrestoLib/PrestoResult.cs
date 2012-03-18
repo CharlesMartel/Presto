@@ -6,6 +6,9 @@ namespace Presto {
     /// </summary>
     [Serializable]
     public abstract class PrestoResult {
+        /// <summary>
+        /// The node that this result comes from. This node is the node that ran the execution that produced this result.
+        /// </summary>
         public string ExecutionNodeID;
     }
 }

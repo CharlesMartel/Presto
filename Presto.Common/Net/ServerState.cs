@@ -9,11 +9,17 @@ namespace Presto.Common.Net {
     /// ServerState is a state object that gets passed around as the holder for an asynchronous socket.
     /// </summary>
     public class ServerState {
-        //the internal socket
+        /// <summary>
+        /// The socket associated with this server state object.
+        /// </summary>
         public Socket socket;
-        // Size of receive Buffer.
+        /// <summary>
+        /// Size of the recieve buffer.
+        /// </summary>
         public const int BufferSize = 1024;
-        // Receive Buffer.
+        /// <summary>
+        /// The recieve buffer for this Server State object.
+        /// </summary>
         public byte[] Buffer = new byte[BufferSize];
         //An appendable byte list that will hold data being flushed from the Buffer
         private List<byte> data = new List<byte>();
@@ -38,7 +44,7 @@ namespace Presto.Common.Net {
         internal void PurgeBuffer(int bytesRead) {
             //we copy the bytes read out of the Buffer and add it to the data list
             data.AddRange(new List<byte>(Buffer).GetRange(0, bytesRead));
-            Buffer = new byte[BufferSize];
+            Buffer = new byte[BufferSize]; 
         }
 
         /// <summary>

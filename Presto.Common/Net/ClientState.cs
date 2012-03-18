@@ -10,11 +10,17 @@ namespace Presto.Common.Net {
     /// ServerState is a state object that gets passed around as the holder for an asynchronous socket.
     /// </summary>
     public class ClientState {
-        //the internal socket
+        /// <summary>
+        /// The internal TcpClient.
+        /// </summary>
         public TcpClient Client;
-        // Size of receive Buffer.
+        /// <summary>
+        /// Size of the recieve buffer.
+        /// </summary>
         public const int BufferSize = 1024;
-        // Receive Buffer.
+        /// <summary>
+        /// The internal byte buffer.
+        /// </summary>
         public byte[] Buffer = new byte[BufferSize];
         //An appendable byte list that will hold data being flushed from the Buffer
         private List<byte> data = new List<byte>();
@@ -24,7 +30,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Create a new server state object to manage a currently running connection
         /// </summary>
-        /// <param name="socket">The sync socket associated with the state object.</param>
+        /// <param name="client">The tcp client object associated with this ClientState.</param>
         internal ClientState(TcpClient client) {
             //set the working Client
             this.Client = client;
@@ -112,7 +118,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Get the data portion of the message as a byte array
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The data as an array.</returns>
         public byte[] GetDataArray() {
             List<byte> dataByteArray = data.GetRange(8, data.Count - 8);
             return dataByteArray.ToArray();
@@ -121,7 +127,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Get the data portion of the message as an ASCII encoded string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The message data as an string encoded in ASCII.</returns>
         public string GetDataASCIIString() {
             List<byte> dataByteArray = new List<byte>(GetDataArray());
             return ASCIIEncoding.ASCII.GetString(dataByteArray.ToArray());

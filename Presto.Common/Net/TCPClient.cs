@@ -91,8 +91,8 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Write data to the socket stream according to the passed in Message Type and String message
         /// </summary>
-        /// <param name="mType"></param>
-        /// <param name="message"></param>
+        /// <param name="mType">The message type  of the message.</param>
+        /// <param name="message">The message as a string.</param>
         public void Write(MessageType mType, string message = null) {
             if (message != null) {
                 byte[] bytes = ASCIIEncoding.ASCII.GetBytes(message);
@@ -105,8 +105,8 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Write data to the socket stream according to the passed in message type and byte data array
         /// </summary>
-        /// <param name="mType"></param>
-        /// <param name="data"></param>
+        /// <param name="mType">The message type of the message.</param>
+        /// <param name="data">The byte array of the message.</param>
         public void Write(MessageType mType, byte[] data) {
             //get the message type in bytes
             byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(mType);
@@ -149,7 +149,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Internal Write function. Writes the passed in data to the socket stream.
         /// </summary>
-        /// <param name="data">the byte data to be written</param>
+        /// <param name="data">The byte data to be written</param>
         private void write(byte[] data) {
             List<byte> tempByteArray = new List<byte>();
             tempByteArray.AddRange(data);
@@ -172,6 +172,7 @@ namespace Presto.Common.Net {
                 //end the read
                 read = nStream.EndRead(result);
             } catch (ObjectDisposedException e) {
+                Log.Error(e.ToString());
                 //if the Client has been disposed, we set read to 0 to allow cleanup of the TCPClient
                 read = 0;
             }
@@ -192,6 +193,7 @@ namespace Presto.Common.Net {
                     bool moreToProcess = newState.IsFullyRecieved();
                     if (moreToProcess) {
                         do {
+                            //this is a terrible terrible process and needs to be rewritten.
                             ClientState newStateRepeat = new ClientState(state.Client);
                             newStateRepeat.PreSetData(excessData);
                             excessData = newStateRepeat.CompleteAndTrim();

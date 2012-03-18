@@ -27,7 +27,7 @@ namespace Presto.Common
         /// <summary>
         /// Create a new Synchronized Processing Queue with the specified processing function.
         /// </summary>
-        /// <param name="processor">The function to process the incoming queue data.</param>
+        /// <param name="processingFunction">The function to process the incoming queue data.</param>
         public SynchronizedProcessingQueue(Action<T> processingFunction)
         {
             processor = processingFunction;

@@ -11,8 +11,15 @@ namespace Presto {
 
         private static List<Node> nodes = new List<Node>();
 
-        public static int Count = 0;
-        public static long CDPI = 0;
+        /// <summary>
+        /// The total number of nodes in the cluster.
+        /// </summary>
+        private static int Count = 0;
+        /// <summary>
+        /// The Cluster Distribution performance indicator. This value is constantly being generated according to the
+        /// verification interval.
+        /// </summary>
+        private static long CDPI = 0;
 
         /// <summary>
         /// Initializes the node listing.
@@ -43,6 +50,38 @@ namespace Presto {
                 }
             }
             return bestNode;
+        }
+
+        /// <summary>
+        /// Gets the number of nodes in the cluster.
+        /// </summary>
+        /// <returns>The number of nodes in the cluster.</returns>
+        public static int GetNodeCount(){
+            return Count;
+        }
+
+        /// <summary>
+        /// Gets the number of active nodes in the cluster.
+        /// </summary>
+        /// <returns>The number of available nodes in the cluster.</returns>
+        public static int GetAvailableNodeCount() {
+            int counter = 0;
+            for (int i = 0; i < nodes.Count; i++) {
+                if (nodes[i].Available) {
+                    counter++;
+                }
+            }
+            return counter;
+        }
+
+        /// <summary>
+        /// Gets the Cluster Distribution Performance Indicator for this cluster.
+        /// This value is constantly being updated according to the verification interval
+        /// as network speed affects its value.
+        /// </summary>
+        /// <returns>The CDPI of the cluster.</returns>
+        public static long GetCDPI() {
+            return CDPI;
         }
     }
 }
