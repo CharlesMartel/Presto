@@ -13,7 +13,7 @@ namespace Presto {
         /// <summary>
         /// Boolean telling whether or not this node is available for distribution.
         /// </summary>
-        public bool Available = true;
+        public bool Available = false;
 
         /// <summary>
         /// The generated id of this node.
@@ -144,7 +144,12 @@ namespace Presto {
                 client.Write(MessageType.VERIFY);
             }
             else {
-                client.ReConnect();
+                Available = false;
+                bool connected = client.ReConnect();
+                if (connected)
+                {
+                    Available = true;
+                }
             }
         }
 

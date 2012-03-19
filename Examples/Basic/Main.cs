@@ -11,7 +11,7 @@ namespace Basic
     {
         public override void Load()
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 100; i++)
             {
                 //push a new execution of the distributed function into the cluster
                 Cluster.Execute(distributedFunction, new FunctionInput(), functionCallback);
@@ -28,7 +28,11 @@ namespace Basic
         {
             //we can use the param but since this is a basic example we will just ignore and move on
             FunctionOutput output = new FunctionOutput();
-            output.value = 1;
+            //some long running job
+            for (int i = 0; i < 1000000; i++)
+            {
+                output.value = i;
+            }
             return output;
         }
 

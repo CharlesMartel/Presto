@@ -1,11 +1,16 @@
 
 namespace Presto {
+
+    /// <summary>
+    /// The entry point for PrestoServer
+    /// </summary>
     class MainClass {
-        public static void Main(string[] args) {
+
+        /// <summary>
+        /// The entry point for presto server
+        /// </summary>
+        public static void Main() {
             Application.Initialize();
-            while (true) {
-                System.Threading.Thread.Sleep(30000);
-            }
         }
     }
 }

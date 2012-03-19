@@ -16,7 +16,7 @@ namespace Presto.Common
         //the queue count isnt persistent enough for us, we need another counter
         private int counter = 0;
         //the processing function
-        private Action<T> processor;
+        private Func<T,bool> processor;
         //internal processing caller
         private Action internalProcessor;
         //is the data being processed
@@ -28,7 +28,7 @@ namespace Presto.Common
         /// Create a new Synchronized Processing Queue with the specified processing function.
         /// </summary>
         /// <param name="processingFunction">The function to process the incoming queue data.</param>
-        public SynchronizedProcessingQueue(Action<T> processingFunction)
+        public SynchronizedProcessingQueue(Func<T, bool> processingFunction)
         {
             processor = processingFunction;
             internalProcessor = new Action(processQueue);
@@ -68,10 +68,19 @@ namespace Presto.Common
                 bool isdata = queue.TryDequeue(out data);
                 if (isdata)
                 {
-                    processor(data);
+                    bool processed = processor(data);
+
                     lock (mutex)
                     {
-                        counter--;
+                        if (processed)
+                        {
+                            counter--;
+                        }
+                        else
+                        {
+                            //add data back into queue to be processed
+                            queue.Enqueue(data);
+                        }
                     }
                 }
                 lock (mutex)

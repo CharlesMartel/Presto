@@ -43,10 +43,14 @@ namespace Presto {
             Node bestNode = null;
             float currentLoad = float.MaxValue;
             foreach (Node current in nodes) {
-                float estLoad = current.EstimatedLoad();
-                if (estLoad < currentLoad) {
-                    currentLoad = estLoad;
-                    bestNode = current;
+                if (!current.Available)
+                {
+                    float estLoad = current.EstimatedLoad();
+                    if (estLoad < currentLoad)
+                    {
+                        currentLoad = estLoad;
+                        bestNode = current;
+                    }
                 }
             }
             return bestNode;

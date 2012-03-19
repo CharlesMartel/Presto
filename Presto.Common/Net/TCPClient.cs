@@ -80,7 +80,16 @@ namespace Presto.Common.Net {
         /// <returns></returns>
         public bool ReConnect() {
             try {
+                //Set the internal tcpClient object
+                tcpClient = new TcpClient();
+                //tcpClient.NoDelay = true; // again.. for nagles... and its entirely too much to explain.
+                //we leave the Client connection synchronous, to avoid timing issue with writes
                 tcpClient.Connect(serverEndpoint);
+                //get the network stream
+                NetworkStream nStream = tcpClient.GetStream();
+                //asynchronously read data
+                ClientState state = new ClientState(tcpClient);
+                nStream.BeginRead(state.Buffer, 0, state.Buffer.Length, readCallback, state);
                 return true;
             }
             catch {
@@ -150,16 +159,25 @@ namespace Presto.Common.Net {
         /// Internal Write function. Writes the passed in data to the socket stream.
         /// </summary>
         /// <param name="data">The byte data to be written</param>
-        private void write(byte[] data) {
-            List<byte> tempByteArray = new List<byte>();
-            tempByteArray.AddRange(data);
-            tempByteArray.AddRange(Config.EndOfStreamPattern);
-            data = tempByteArray.ToArray();
+        private bool write(byte[] data) {
+            try
+            {
+                List<byte> tempByteArray = new List<byte>();
+                tempByteArray.AddRange(data);
+                tempByteArray.AddRange(Config.EndOfStreamPattern);
+                data = tempByteArray.ToArray();
 
-            //get the tcpClient network stream
-            NetworkStream nStream = tcpClient.GetStream();
-            //Start the synchronous Write
-            nStream.Write(data, 0, data.Length);
+                //get the tcpClient network stream
+                NetworkStream nStream = tcpClient.GetStream();
+                //Start the synchronous Write
+                nStream.Write(data, 0, data.Length);
+                return true;
+            }
+            catch
+            {
+                // the connection was closed return false and the synchronizer will take care of it
+                return false;
+            }
         }
 
         private void readCallback(IAsyncResult result) {

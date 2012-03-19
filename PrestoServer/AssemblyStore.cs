@@ -12,6 +12,7 @@ namespace Presto {
         /// </summary>
         private static Dictionary<string, AssemblyWrapper> assemblies = new Dictionary<string, AssemblyWrapper>();
 
+
         /// <summary>
         /// Adds a new assembly to the store.
         /// </summary>

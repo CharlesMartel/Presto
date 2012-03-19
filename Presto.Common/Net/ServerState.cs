@@ -151,14 +151,23 @@ namespace Presto.Common.Net {
         /// Internal Write function. Writes the passed in data to the socket stream.
         /// </summary>
         /// <param name="data">the byte data to be written</param>
-        private void write(byte[] data) {
-            List<byte> tempByteArray = new List<byte>();
-            tempByteArray.AddRange(data);
-            tempByteArray.AddRange(Config.EndOfStreamPattern);
-            data = tempByteArray.ToArray();
+        private bool write(byte[] data) {
+            try
+            {
+                List<byte> tempByteArray = new List<byte>();
+                tempByteArray.AddRange(data);
+                tempByteArray.AddRange(Config.EndOfStreamPattern);
+                data = tempByteArray.ToArray();
 
-            //send the data
-            socket.Send(data);
+                //send the data
+                socket.Send(data);
+                return true;
+            }
+            catch
+            {
+                //there was a problem sending the data, return false so it will be readded to the queue
+                return false;
+            }
         }
 
         /// <summary>
