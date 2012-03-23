@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace Presto {
+namespace Presto.Transfers {
+
     /// <summary>
     /// A holder for all active jobs
     /// </summary>

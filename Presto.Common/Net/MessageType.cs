@@ -28,7 +28,7 @@ namespace Presto.Common.Net {
         /// </summary>
         public static readonly MessageType CONNECTION_EXISTS;
 
-        //--------Assembly transfer messages------------//
+        //--------Assembly and Domain transfer messages------------//
         /// <summary>
         /// An assembly binary is attatched to this message and the binary needs to be loaded by the recieving PrestoServer
         /// </summary>
@@ -44,7 +44,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Tell the node to unload a aprticular assembly.
         /// </summary>
-        public static readonly MessageType ASSEMBLY_UNLOAD;
+        public static readonly MessageType DOMAIN_UNLOAD;
 
         //---------Process Execution messages-----------//
         /// <summary>
@@ -91,7 +91,7 @@ namespace Presto.Common.Net {
             ASSEMBLY_TRANSFER_MASTER = new MessageType("10000000");
             ASSEMBLY_TRANSFER_SLAVE = new MessageType("10000001");
             ASSEMBLY_TRANSFER_COMPLETE = new MessageType("10000002");
-            ASSEMBLY_UNLOAD = new MessageType("10000003");
+            DOMAIN_UNLOAD = new MessageType("10000003");
             MISSING_ASSEMBLY = new MessageType("20000000");
             EXECUTION_BEGIN = new MessageType("20000001");
             EXECUTION_COMPLETE = new MessageType("20000002");

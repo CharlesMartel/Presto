@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
+using System.Reflection;
 using Presto.Common;
 using Presto.Common.Net;
-using System.Reflection;
+using Presto.Transfers;
 
 namespace Presto {
     /// <summary>
@@ -37,6 +38,7 @@ namespace Presto {
         public int RunningJobs;
 
         private List<string> loadedAssemblies = new List<string>();
+        private List<string> loadedDomains = new List<string>();
         private TCPClient client;
         private string address;
         private Timer pingTimer;
@@ -86,6 +88,9 @@ namespace Presto {
         /// </summary>
         public void DeliverAssembly(string assemblyFullName, byte[] assemblyArray, string domainKey) {
             loadedAssemblies.Add(assemblyFullName);
+            if(!loadedDomains.Contains(domainKey)){
+                loadedDomains.Add(domainKey);
+            }
             client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, assemblyArray);
             assemblyLoadReset.Reset();
         }
@@ -127,12 +132,12 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Will remove an assembly from the node according to the assmebly id.
+        /// Will remove a domain from the node according to the domain key.
         /// </summary>
-        /// <param id="assemblyFullName">The full id of the assembly.</param>
-        public void UnloadAssembly(string assemblyFullName) {
-            if(HasAssembly(assemblyFullName)){
-                client.Write(MessageType.ASSEMBLY_UNLOAD, assemblyFullName);
+        /// <param id="domainKey">The domain key of the domain.</param>
+        public void UnloadDomain(string domainKey) {
+            if(loadedDomains.Contains(domainKey)){
+                client.Write(MessageType.DOMAIN_UNLOAD, domainKey);
             }
         }
 
@@ -168,7 +173,7 @@ namespace Presto {
         /// </summary>
         /// <returns>Boolean</returns>
         public bool IsLocal() {
-            if(NodeID.Equals(Application.Cluster.NodeID)){
+            if(NodeID.Equals(GlobalCluster.NodeID)){
                 return true;
             }
             return false;
@@ -199,7 +204,7 @@ namespace Presto {
         private void returnExecution(ClientState state) {
             ExecutionResult res = (ExecutionResult)SerializationEngine.Deserialize(state.GetDataArray());
             res.Result.ExecutionNodeID = NodeID;
-            Application.Cluster.ReturnExecution(res);
+            GlobalCluster.GetCluster(res.DomainKey).ReturnExecution(res);
         }
 
         /// <summary>

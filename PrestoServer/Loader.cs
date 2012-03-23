@@ -1,5 +1,6 @@
 ﻿using Presto.Common;
 using Presto.Common.Net;
+using Presto.Transfers;
 
 namespace Presto {
 
@@ -15,7 +16,7 @@ namespace Presto {
         public static void Initialize() {
             Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_TRANSFER_MASTER, recieveAssemblyMaster);
             Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_TRANSFER_SLAVE, recieveAssemblySlave);
-            Application.ControlServer.RegisterDispatchAction(MessageType.ASSEMBLY_UNLOAD, unloadAssembly);
+            Application.ControlServer.RegisterDispatchAction(MessageType.DOMAIN_UNLOAD, unloadDomain);
         }
 
         /// <summary>
@@ -38,10 +39,11 @@ namespace Presto {
         /// </summary>
         /// <param id="state">The server state object recieved along with this event.</param>
         private static void recieveAssemblySlave(ServerState state) {
-            //Instantiate a new assembly wrapper
-            AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
-            //add assembly to assembly store
-            AssemblyStore.Add(assemblyWrapper);
+            //get the slave assembly struct
+            SlaveAssembly slaveAssembly = (SlaveAssembly)SerializationEngine.Deserialize(state.GetDataArray());
+            //create the domain and add the assembly to it
+            DomainManager.CreateDomain(slaveAssembly.DomainKey);
+            DomainManager.LoadAssemblyIntoDomain(slaveAssembly.DomainKey, slaveAssembly.AssemblyImage);
             //send back assembly transfer complete message
             state.Write(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
         }
@@ -49,12 +51,12 @@ namespace Presto {
         /// <summary>
         /// Unload the assembly according to the assembly id;
         /// </summary>
-        /// <param id="state"></param>
-        private static void unloadAssembly(ServerState state) {
-            //get the id of the assembly
-            string assemblyName = state.GetDataASCIIString();
-            //tell the assembly store to rid of it
-            AssemblyStore.Remove(assemblyName);
+        /// <param id="state">Server state object for request.</param>
+        private static void unloadDomain(ServerState state) {
+            //get the key of the domain
+            string domainKey = state.GetDataASCIIString();
+            //tell the domain manager to delete the domain
+            DomainManager.DestroyDomain(domainKey);
         }
     }
 }

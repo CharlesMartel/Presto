@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Presto {
+namespace Presto.Transfers {
 
     /// <summary>
     /// Internal serializable structure defining the properties of a remote execution.

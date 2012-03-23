@@ -11,10 +11,6 @@ namespace Presto {
         /// The control server is the server that messaging, jobs, and file transfers occur on.
         /// </summary>
         public static TCPServer ControlServer = new TCPServer(2500);
-        /// <summary>
-        /// The PrestoServer Internal Cluster instance.
-        /// </summary>
-        public static Cluster Cluster = new Cluster();
 
 
 
@@ -31,7 +27,6 @@ namespace Presto {
             //Initialize subsystems
             Loader.Initialize();
             Executor.Initialize();
-            Cluster.Initialize();
             //Start the server listening thread
             ControlServer.Start();
             //Initialize the Node Listing

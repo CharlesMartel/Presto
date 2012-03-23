@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading;
 using System.Runtime.CompilerServices;
 using Presto.Common;
-using Presto.Common.Machine;
 using Presto.Common.Net;
 
 namespace Presto {
@@ -14,27 +13,16 @@ namespace Presto {
     public class Cluster : ClusterBase {
 
         //we keep a list of all jobs currently out for processing
-        private Dictionary<string, OutboundJob> outboundJobs = new Dictionary<string, OutboundJob>();
+        private Dictionary<string, Transfers.OutboundJob> outboundJobs = new Dictionary<string, Transfers.OutboundJob>();
         private ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
-        /// <summary>
-        /// The generated node id of this node.
-        /// </summary>
-        public string NodeID = Generator.RandomAlphaNumeric(Config.UIDLength);
+        private string key;
 
         /// <summary>
-        /// Initialize the servers cluster instance.
+        /// Create a new cluster object for a particular module or application.
         /// </summary>
-        public void Initialize() {
-            Application.ControlServer.RegisterDispatchAction(MessageType.VERIFY, verifyResponse);
-        }
-
-        /// <summary>
-        /// This server needs to verify itself and send back a Verfication object.
-        /// </summary>
-        /// <param id="state">The server state object.</param>
-        private void verifyResponse(ServerState state) {
-            Verification verification = new Verification(NodeID, DPI.GetDPI(), CPU.GetCount(), Executor.RunningJobs());
-            state.Write(MessageType.VERIFICATION_RESPONSE, SerializationEngine.Serialize(verification).ToArray());
+        /// <param name="domainKey">The domain key associated with this cluster.</param>
+        public Cluster(string domainKey) {
+            key = domainKey;
         }
 
         /// <summary>
@@ -55,9 +43,9 @@ namespace Presto {
             DateTime now = DateTime.Now;
             //Create the ExecutionContext for the method.
             MethodInfo method = function.Method;
-            ExecutionContext context = new ExecutionContext(method, parameter, Generator.RandomAlphaNumeric(Config.UIDLength));
+            Transfers.ExecutionContext context = new Transfers.ExecutionContext(method, parameter, Generator.RandomAlphaNumeric(Config.UIDLength), key);
             //add the job to the scheduled jobs
-            OutboundJob job = new OutboundJob(context.ContextID, now, callback);
+            Transfers.OutboundJob job = new Transfers.OutboundJob(context.ContextID, now, callback, key);
             outboundJobs.Add(context.ContextID, job);
             //Pass the execution context to the node best fit to serve it
             Nodes.BestNode().Execute(context);
@@ -67,7 +55,7 @@ namespace Presto {
         /// Returns an execution job to the cluster object to be dispatched to the calling module.
         /// </summary>
         /// <param id="result">The execution result object.</param>
-        public void ReturnExecution(ExecutionResult result) {
+        public void ReturnExecution(Transfers.ExecutionResult result) {
             outboundJobs[result.ContextID].Callback.Invoke(result.Result);
             outboundJobs.Remove(result.ContextID);
             if (outboundJobs.Count < 1) {

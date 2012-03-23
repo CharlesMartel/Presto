@@ -1,5 +1,6 @@
 ﻿using System;
-namespace Presto {
+namespace Presto.Transfers {
+
     /// <summary>
     /// The verification sent back with a verfication request.
     /// </summary>

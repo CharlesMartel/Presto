@@ -56,17 +56,19 @@
     <Compile Include="Application.cs" />
     <Compile Include="Cluster.cs" />
     <Compile Include="DomainManager.cs" />
-    <Compile Include="ExecutionContext.cs" />
-    <Compile Include="ExecutionResult.cs" />
+    <Compile Include="GlobalCluster.cs" />
+    <Compile Include="Transfers\ExecutionContext.cs" />
+    <Compile Include="Transfers\ExecutionResult.cs" />
     <Compile Include="Executor.cs" />
-    <Compile Include="OutboundJob.cs" />
+    <Compile Include="Transfers\OutboundJob.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Nodes.cs" />
     <Compile Include="SerializationEngine.cs" />
-    <Compile Include="Verification.cs" />
+    <Compile Include="Transfers\SlaveAssembly.cs" />
+    <Compile Include="Transfers\Verification.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Presto {
+namespace Presto.Transfers {
 
     /// <summary>
     /// The result structure returned from a succesful distributed execution.
@@ -16,15 +16,20 @@ namespace Presto {
         /// The generated context ID belonging to this distributed execution.
         /// </summary>
         public string ContextID;
+        /// <summary>
+        /// The domain key associated with the execution.
+        /// </summary>
+        public string DomainKey;
 
         /// <summary>
         /// Creates a Execution Result with the specefied PrestoResult and contextID.
         /// </summary>
         /// <param name="result">The PrestoResult object returned from the function executed.</param>
         /// <param name="contextid">The context ID of this distributed execution.</param>
-        public ExecutionResult(PrestoResult result, string contextid) {
+        public ExecutionResult(PrestoResult result, string contextid, string domainKey) {
             Result = result;
             ContextID = contextid;
+            DomainKey = domainKey;
         }
     }
 }

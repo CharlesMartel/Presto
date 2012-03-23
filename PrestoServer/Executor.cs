@@ -39,7 +39,7 @@ namespace Presto {
         /// <summary>
         /// Starts up the execution of a new module, making this instance the master.
         /// </summary>
-        /// <param id="assemblyWrapper">An AssemblyWrapper around the assembly of the module to be executed.</param>
+        /// <param id="domainKey">The domain key of the domain that this module will be executed in.</param>
         public static void ExecuteModule(string domainKey) {
             //finally execute the user module
             PrestoModule module = DomainManager.GetModuleInstance(domainKey);
@@ -64,20 +64,13 @@ namespace Presto {
         private static void execute(ServerState state) {
             Interlocked.Increment(ref runningJobs);
             //get the execution context 
-            ExecutionContext context = (ExecutionContext)SerializationEngine.Deserialize(state.GetDataArray());
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            Assembly[] assemblies = currentDomain.GetAssemblies();
-            Type type = null;
-            MethodInfo method = null;
-            foreach (Assembly a in assemblies) {
-                if (a.FullName == context.AssemblyName) {
-                    type = a.GetType(context.TypeName, false, true);
-                    method = type.GetMethod(context.MethodName);
-                    break;
-                }
-            }
+            Transfers.ExecutionContext context = (Transfers.ExecutionContext)SerializationEngine.Deserialize(state.GetDataArray());
+            //get the assembly from the domain
+            Assembly assembly = DomainManager.GetAssemblyFromDomain(context.DomainKey, context.AssemblyName);
+            Type type = assembly.GetType(context.TypeName, false, true);
+            MethodInfo method = type.GetMethod(context.MethodName);
             PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { context.Parameter });
-            ExecutionResult result = new ExecutionResult(res, context.ContextID);
+            Transfers.ExecutionResult result = new Transfers.ExecutionResult(res, context.ContextID, context.DomainKey);
             state.Write(MessageType.EXECUTION_COMPLETE, SerializationEngine.Serialize(result).ToArray());
             Interlocked.Decrement(ref runningJobs);
         }

@@ -30,14 +30,18 @@ namespace Presto {
         private static Dictionary<string, byte[]> assemblies = new Dictionary<string, byte[]>();
 
         /// <summary>
-        /// Creates a new application domain, adds it to the store and passes back its domain key.
+        /// Creates a new application domain, and adds it to the store. If the domain already exists, does nothing.
         /// </summary>
-        /// <returns>The domain key of the domain.</returns>
         public static void CreateDomain(string domainKey) {
+            //if we already have the domain it doesnt need to be created.
+            if (domains.ContainsKey(domainKey)) {
+                return;
+            }
             AppDomain newDomain = AppDomain.CreateDomain(domainKey);
+            newDomain.Load("LibPresto");
             domains.Add(domainKey, newDomain);
             domainAssemblies.Add(domainKey, new List<Assembly>());
-            domainAssemblies.Add(domainKey, null);
+            domainInstance.Add(domainKey, null);
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace Presto {
             foreach (Type type in assemblyTypes) {
                 if (type.IsSubclassOf(typeof(PrestoModule))) {
                     module = (PrestoModule)Activator.CreateInstance(type);
-                    module.Cluster = Application.Cluster;
+                    module.Cluster = GlobalCluster.CreateCluster(domainKey);
                     module.DomainKey = domainKey;
                     break;
                 }
