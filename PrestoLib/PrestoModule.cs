@@ -7,10 +7,14 @@ namespace Presto {
     [Serializable()]
     public abstract class PrestoModule {
         /// <summary>
-        /// The cluster that allows for interaction with the Presto cluster. When the PrstoModule is loaded, the PrestoServer assigns its internal cluster instance to this object. It is advised 
+        /// The cluster that allows for interaction with the Presto cluster. When the PrestoModule is loaded, the PrestoServer assigns its internal cluster instance to this object. It is advised 
         /// to not override or overwrite this object.
         /// </summary>
         public ClusterBase Cluster = null;
+        /// <summary>
+        /// A DomainKey assigned to this module at instantiation. It is best not to override or ovewrite this string unless you are fully aware fo the consequences.
+        /// </summary>
+        public string DomainKey = null;
         /// <summary>
         /// After a new instance of the module is created. The Load method is immediately called to begin processing.
         /// </summary>
@@ -19,5 +23,6 @@ namespace Presto {
         /// After the module has finished executing, the Unload method gets called to allow the module to clean up behind itself before being destroyed.
         /// </summary>
         public abstract void Unload();
+
     }
 }

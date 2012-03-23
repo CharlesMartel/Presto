@@ -34,7 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AssemblyWrapper.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Machine\CPU.cs" />

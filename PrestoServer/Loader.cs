@@ -25,12 +25,12 @@ namespace Presto {
         private static void recieveAssemblyMaster(ServerState state) {
             //close the socket
             state.CloseSocket();
-            //Instantiate a new assembly wrapper
-            AssemblyWrapper assemblyWrapper = new AssemblyWrapper(state.GetDataArray(), Application.Cluster);
-            //add assembly to assembly store
-            AssemblyStore.Add(assemblyWrapper);
+            //create a new domain and add the assembly to it
+            string domainkey = Generator.RandomAlphaNumeric(Config.UIDLength);
+            DomainManager.CreateDomain(domainkey);
+            DomainManager.LoadAssemblyIntoDomain(domainkey, state.GetDataArray());
             //push assembly onto executor to be executed
-            Executor.ExecuteModule(assemblyWrapper);
+            Executor.ExecuteModule(domainkey);
         }
 
         /// <summary>

@@ -29,6 +29,10 @@ namespace Presto {
         /// The Gernerated ID of this distributed execution.
         /// </summary>
         public string ContextID;
+        /// <summary>
+        /// The key of the domain this execution will run in.
+        /// </summary>
+        public string DomainKey;
 
         /// <summary>
         /// Creates a new ExecutionContext to be distributed across the cluster.
@@ -36,12 +40,13 @@ namespace Presto {
         /// <param name="method">The method to be executed.</param>
         /// <param name="param">The PrestoParameter to be passed into the method.</param>
         /// <param name="contextid">The Gernerated ID of this distributed execution.</param>
-        public ExecutionContext(MethodInfo method, PrestoParameter param, string contextid) {
+        public ExecutionContext(MethodInfo method, PrestoParameter param, string contextid, string domainKey) {
             AssemblyName = method.DeclaringType.Assembly.FullName;
             TypeName = method.DeclaringType.FullName;
             MethodName = method.Name;
             Parameter = param;
             ContextID = contextid;
+            DomainKey = domainKey;
         }
     }
 }

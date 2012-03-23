@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Timers;
 using Presto.Common;
 using Presto.Common.Net;
+using System.Reflection;
 
 namespace Presto {
     /// <summary>
@@ -83,7 +84,7 @@ namespace Presto {
         /// <summary>
         /// Deliver an assembly to this node.
         /// </summary>
-        public void DeliverAssembly(string assemblyFullName, byte[] assemblyArray) {
+        public void DeliverAssembly(string assemblyFullName, byte[] assemblyArray, string domainKey) {
             loadedAssemblies.Add(assemblyFullName);
             client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, assemblyArray);
             assemblyLoadReset.Reset();
@@ -97,8 +98,8 @@ namespace Presto {
             //first be sure that this node has the appropriate assembly loaded
             if (!loadedAssemblies.Contains(executionContext.AssemblyName)) {
                 //get the assembly
-                AssemblyWrapper assembly = AssemblyStore.Get(executionContext.AssemblyName);
-                DeliverAssembly(assembly.GetAssemblyName(), assembly.GetAssemblyArray());
+                byte[] assembly = DomainManager.GetAssemblyStream(executionContext.AssemblyName);
+                DeliverAssembly(executionContext.AssemblyName, assembly, executionContext.DomainKey);
             }
             assemblyLoadReset.WaitOne();
             //since we know that the other machine has the assembly loaded we can 
@@ -109,7 +110,7 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Tells whether or not this node has the specefied assembly.
+        /// Tells whether or not this node has the specified assembly.
         /// </summary>
         /// <param id="assemblyFullName">The full id of the assembly.</param>
         /// <returns>Whether or not the node has the assembly.</returns>

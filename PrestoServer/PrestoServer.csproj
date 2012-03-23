@@ -54,8 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="AssemblyStore.cs" />
     <Compile Include="Cluster.cs" />
+    <Compile Include="DomainManager.cs" />
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="ExecutionResult.cs" />
     <Compile Include="Executor.cs" />

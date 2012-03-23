@@ -40,9 +40,9 @@ namespace Presto {
         /// Starts up the execution of a new module, making this instance the master.
         /// </summary>
         /// <param id="assemblyWrapper">An AssemblyWrapper around the assembly of the module to be executed.</param>
-        public static void ExecuteModule(AssemblyWrapper assemblyWrapper) {
+        public static void ExecuteModule(string domainKey) {
             //finally execute the user module
-            PrestoModule module = assemblyWrapper.GetModuleInstance();
+            PrestoModule module = DomainManager.GetModuleInstance(domainKey);
             Action moduleLoad = new Action(module.Load);
             moduleLoad.BeginInvoke(null, null); 
         }
