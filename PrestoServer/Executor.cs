@@ -42,9 +42,7 @@ namespace Presto {
         /// <param id="domainKey">The domain key of the domain that this module will be executed in.</param>
         public static void ExecuteModule(string domainKey) {
             //finally execute the user module
-            PrestoModule module = DomainManager.GetModuleInstance(domainKey);
-            Action moduleLoad = new Action(module.Load);
-            moduleLoad.BeginInvoke(null, null); 
+            DomainManager.ExecuteLoad(domainKey);            
         }
 
         /// <summary>
@@ -65,11 +63,7 @@ namespace Presto {
             Interlocked.Increment(ref runningJobs);
             //get the execution context 
             Transfers.ExecutionContext context = (Transfers.ExecutionContext)SerializationEngine.Deserialize(state.GetDataArray());
-            //get the assembly from the domain
-            Assembly assembly = DomainManager.GetAssemblyFromDomain(context.DomainKey, context.AssemblyName);
-            Type type = assembly.GetType(context.TypeName, false, true);
-            MethodInfo method = type.GetMethod(context.MethodName);
-            PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { context.Parameter });
+            PrestoResult res = DomainManager.ExecuteIncoming(context);
             Transfers.ExecutionResult result = new Transfers.ExecutionResult(res, context.ContextID, context.DomainKey);
             state.Write(MessageType.EXECUTION_COMPLETE, SerializationEngine.Serialize(result).ToArray());
             Interlocked.Decrement(ref runningJobs);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using Presto.Common;
+using Presto.Transfers;
 
 namespace Presto {
 
@@ -17,13 +18,9 @@ namespace Presto {
         /// </summary>
         private static Dictionary<string, AppDomain> domains = new Dictionary<string, AppDomain>();
         /// <summary>
-        /// Internal hashmap of which domains have which assemblies.
+        /// Internal hashmap of domains and their proxy instances.
         /// </summary>
-        private static Dictionary<string, List<Assembly>> domainAssemblies = new Dictionary<string, List<Assembly>>();
-        /// <summary>
-        /// Internal hashmap of instances of the presto instances.
-        /// </summary>
-        private static Dictionary<string, PrestoModule> domainInstance = new Dictionary<string, PrestoModule>();
+        private static Dictionary<string, Presto.DomainProxy> proxies = new Dictionary<string, Presto.DomainProxy>();
         /// <summary>
         /// COFF images of assemblies according to their full names.
         /// </summary>
@@ -38,10 +35,15 @@ namespace Presto {
                 return;
             }
             AppDomain newDomain = AppDomain.CreateDomain(domainKey);
-            newDomain.Load("LibPresto");
+            //preload assemblies
+            foreach (string item in Config.DomainPreloads) {
+                newDomain.Load(item);
+            }
+            //create the domain proxy
+            Presto.DomainProxy proxy = (Presto.DomainProxy)newDomain.CreateInstanceAndUnwrap(typeof(Presto.DomainProxy).Assembly.FullName, typeof(Presto.DomainProxy).FullName);
+            //add the data to the lookup tables
+            proxies.Add(domainKey, proxy);
             domains.Add(domainKey, newDomain);
-            domainAssemblies.Add(domainKey, new List<Assembly>());
-            domainInstance.Add(domainKey, null);
         }
 
         /// <summary>
@@ -50,48 +52,23 @@ namespace Presto {
         /// <param name="domainKey">The string key of the domain to be loaded into.</param>
         /// <param name="assemblyStream">The COFF byte array of the assembly.</param>
         /// <param name="createInstance">By default we also create a new module instance upon loading the assembly.</param>
-        public static Assembly LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream, bool createInstance = true){
-            AppDomain domain = domains[domainKey];
-            Assembly newAssembly = domain.Load(assemblyStream);
-            domainAssemblies[domainKey].Add(newAssembly);
-            assemblies.Add(newAssembly.FullName, assemblyStream);
+        public static void LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream, bool createInstance = true){
+            DomainProxy proxy = proxies[domainKey];
+            string assemblyName = proxy.LoadAssembly(assemblyStream);
+            assemblies.Add(assemblyName, assemblyStream);
             if (createInstance) {
-                PrestoModule module = createPrestoInstance(newAssembly, domainKey);
-                domainInstance.Add(domainKey, module);
+                createPrestoInstance(assemblyName, domainKey);
             }
-            return newAssembly;
         }
 
         /// <summary>
         /// Initializes the presto module instance 
         /// </summary>
-        private static PrestoModule createPrestoInstance(Assembly assembly, string domainKey) {
-            //get all types housed in the assembly
-            Type[] assemblyTypes = assembly.GetTypes();
-            //create an instance of the PrestoModule
-            PrestoModule module = null;
-            foreach (Type type in assemblyTypes) {
-                if (type.IsSubclassOf(typeof(PrestoModule))) {
-                    module = (PrestoModule)Activator.CreateInstance(type);
-                    module.Cluster = GlobalCluster.CreateCluster(domainKey);
-                    module.DomainKey = domainKey;
-                    break;
-                }
-            }
-            return module;
+        private static void createPrestoInstance(string assemblyName, string domainKey) {
+            DomainProxy proxy = proxies[domainKey];
+            proxy.CreatePrestoInstance(assemblyName, GlobalCluster.CreateCluster(domainKey));
         }
 
-        /// <summary>
-        /// Get the PrestoModule instance loaded in a domain. If no instance exists, one is created.
-        /// </summary>
-        /// <param name="key">The key of the domain.</param>
-        /// <returns>The presto Module Instance.</returns>
-        public static PrestoModule GetModuleInstance(string key) {
-            if (domainInstance[key] == null) {
-                createPrestoInstance(domainAssemblies[key][0], key);
-            }
-            return domainInstance[key];
-        }
 
         /// <summary>
         /// Unloads and destroys the domain with the specified key. Also deletes any assemblies associated with the domain.
@@ -117,44 +94,15 @@ namespace Presto {
         /// Tells whether the assembly with the given name is loaded into the domain with the given key.
         /// Will return false if the given domain key does not correspond to a currently loaded domain.
         /// </summary>
-        /// <param name="domainKey"></param>
-        /// <param name="assemblyName"></param>
-        /// <returns></returns>
+        /// <param name="domainKey">The key of the domain to check in.</param>
+        /// <param name="assemblyName">The name of the assembly to check for.</param>
+        /// <returns>Whether or not the domain has the assembly.</returns>
         public static bool DomainHasAssembly(string domainKey, string assemblyName) {
             if (!HasDomain(domainKey)) {
                 return false;
             }
-            bool isThere = false;
-            List<Assembly> assemblies = domainAssemblies[domainKey];
-            foreach (Assembly assembly in assemblies) {
-                if (assembly.FullName == assemblyName) {
-                    isThere = true;
-                    break;
-                }
-            }
-            return isThere;
-        }
-
-        /// <summary>
-        /// Gets the assembly with the specified name from the domain, returns null if it doesnt exist
-        /// in the domain or if the domain doesnt exist.
-        /// </summary>
-        /// <param name="domainKey">The key of the domain to get the assembly from.</param>
-        /// <param name="assemblyName">The full name of the assembly.</param>
-        /// <returns>The desired assembly or null.</returns>
-        public static Assembly GetAssemblyFromDomain(string domainKey, string assemblyName){
-            if(!DomainHasAssembly(domainKey, assemblyName)){
-                return null;
-            }
-            Assembly desired = null;
-            List<Assembly> assemblies = domainAssemblies[domainKey];
-            foreach (Assembly assembly in assemblies) {
-                if (assembly.FullName == assemblyName) {
-                    desired = assembly;
-                    break;
-                }
-            }
-            return desired;
+            DomainProxy proxy = proxies[domainKey];
+            return proxy.HasAssembly(assemblyName);
         }
 
         /// <summary>
@@ -164,6 +112,25 @@ namespace Presto {
         /// <returns>The COFF-based image of an assembly in a byte array.</returns>
         public static byte[] GetAssemblyStream(string assemblyName) {
             return assemblies[assemblyName];
+        }
+
+        /// <summary>
+        /// Execute the load procedure on the presto instance in the specefied domain.
+        /// </summary>
+        /// <param name="domainKey">The key of the domain to execute in.</param>
+        public static void ExecuteLoad(string domainKey) {
+            DomainProxy proxy = proxies[domainKey];
+            proxy.ExecuteInstance();
+        }
+
+        /// <summary>
+        /// Execute an incoming job according to the passed in execution context.
+        /// </summary>
+        /// <param name="context">He context of the job.</param>
+        /// <returns>The result of the job.</returns>
+        public static PrestoResult ExecuteIncoming(ExecutionContext context) {
+            DomainProxy proxy = proxies[context.DomainKey];
+            return proxy.ExecuteIncoming(context.MethodName, context.TypeName, context.AssemblyName, context.Parameter);
         }
     }
 }

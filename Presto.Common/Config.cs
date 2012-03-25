@@ -30,6 +30,11 @@ namespace Presto {
         private static string endOfStreamFrom = "PRESTOEOS";
 
         /// <summary>
+        /// A list of all assemblies to preload into new domains.
+        /// </summary>
+        public static List<string> DomainPreloads = new List<string>();
+
+        /// <summary>
         /// Loads and reads the configuration file into the Configuration properties
         /// </summary>
         public static void Initialize() {
@@ -45,6 +50,9 @@ namespace Presto {
 
             //set the end of stream pattern
             EndOfStreamPattern = ASCIIEncoding.ASCII.GetBytes(endOfStreamFrom);
+
+            //set the domain assembly preloads
+            DomainPreloads.Add("LibPresto");
         }
 
         /// <summary>

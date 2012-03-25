@@ -12,10 +12,6 @@ namespace Presto {
         /// </summary>
         public ClusterBase Cluster = null;
         /// <summary>
-        /// A DomainKey assigned to this module at instantiation. It is best not to override or ovewrite this string unless you are fully aware fo the consequences.
-        /// </summary>
-        public string DomainKey = null;
-        /// <summary>
         /// After a new instance of the module is created. The Load method is immediately called to begin processing.
         /// </summary>
         public abstract void Load();

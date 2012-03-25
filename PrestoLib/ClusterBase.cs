@@ -4,7 +4,7 @@ namespace Presto {
     /// <summary>
     /// A defining class for the PrestoServer internal cluster object. 
     /// </summary>
-    public abstract class ClusterBase {
+    public abstract class ClusterBase : MarshalByRefObject {
         //------------Properties--------------------//
 
         /// <summary>

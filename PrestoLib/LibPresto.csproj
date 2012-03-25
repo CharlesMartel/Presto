@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ClusterBase.cs" />
+    <Compile Include="DomainProxy.cs" />
     <Compile Include="PrestoModule.cs" />
     <Compile Include="PrestoParameter.cs" />
     <Compile Include="PrestoResult.cs" />
