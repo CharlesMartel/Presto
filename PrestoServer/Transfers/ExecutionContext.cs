@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace Presto.Transfers {
 
@@ -22,9 +21,9 @@ namespace Presto.Transfers {
         /// </summary>
         public string MethodName;
         /// <summary>
-        /// The PrestoParameter to be passed into the execution function.
+        /// The PrestoParameter to be passed into the execution function. Serialized inside app domain.
         /// </summary>
-        public PrestoParameter Parameter;
+        public byte[] Parameter;
         /// <summary>
         /// The Gernerated ID of this distributed execution.
         /// </summary>
@@ -37,13 +36,16 @@ namespace Presto.Transfers {
         /// <summary>
         /// Creates a new ExecutionContext to be distributed across the cluster.
         /// </summary>
-        /// <param name="method">The method to be executed.</param>
+        /// <param name="assemblyName">The full name of the containing assembly.</param>
+        /// <param name="typeName"> The full name of the containing type.</param>
+        /// <param name="methodName"> The full name of the method to be executed.</param>
         /// <param name="param">The PrestoParameter to be passed into the method.</param>
         /// <param name="contextid">The Gernerated ID of this distributed execution.</param>
-        public ExecutionContext(MethodInfo method, PrestoParameter param, string contextid, string domainKey) {
-            AssemblyName = method.DeclaringType.Assembly.FullName;
-            TypeName = method.DeclaringType.FullName;
-            MethodName = method.Name;
+        /// <param name="domainKey">The domain key of the executing domain.</param>
+        public ExecutionContext(string assemblyName, string typeName, string methodName, byte[] param, string contextid, string domainKey) {
+            AssemblyName = assemblyName;
+            TypeName = typeName;
+            MethodName = methodName;
             Parameter = param;
             ContextID = contextid;
             DomainKey = domainKey;

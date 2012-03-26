@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Presto.Common.Machine {
+namespace Presto.Machine {
 
     /// <summary>
     /// Offers details about the memory a current presto intance is running in.

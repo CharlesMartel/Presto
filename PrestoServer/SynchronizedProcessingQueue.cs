@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Presto.Common
+namespace Presto
 {
     /// <summary>
     /// Provides the ability to add things to a queue to be processed by a specefied function keeping the processing synchronous but not necessarily ordered.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Presto.Common.Machine {
+namespace Presto.Machine {
 
     /// <summary>
     /// Offers details about the cpu a current presto intance is running on.

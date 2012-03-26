@@ -41,6 +41,9 @@ namespace Presto {
             }
             //create the domain proxy
             Presto.DomainProxy proxy = (Presto.DomainProxy)newDomain.CreateInstanceAndUnwrap(typeof(Presto.DomainProxy).Assembly.FullName, typeof(Presto.DomainProxy).FullName);
+            //create the cluster proxy
+            ClusterProxy cproxy = new ClusterProxy();
+            proxy.ConfigureCluster(cproxy, domainKey);
             //add the data to the lookup tables
             proxies.Add(domainKey, proxy);
             domains.Add(domainKey, newDomain);
@@ -66,7 +69,8 @@ namespace Presto {
         /// </summary>
         private static void createPrestoInstance(string assemblyName, string domainKey) {
             DomainProxy proxy = proxies[domainKey];
-            proxy.CreatePrestoInstance(assemblyName, GlobalCluster.CreateCluster(domainKey));
+
+            proxy.CreatePrestoInstance(assemblyName);
         }
 
 
@@ -131,6 +135,11 @@ namespace Presto {
         public static PrestoResult ExecuteIncoming(ExecutionContext context) {
             DomainProxy proxy = proxies[context.DomainKey];
             return proxy.ExecuteIncoming(context.MethodName, context.TypeName, context.AssemblyName, context.Parameter);
+        }
+
+        public static void ReturnExecution(ExecutionResult result) {
+            DomainProxy proxy = proxies[result.DomainKey];
+            proxy.ReturnExecution(result.ContextID, result.Result);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Text;
-using Presto.Common.Net;
+using Presto.Net;
 
 
 namespace Presto {

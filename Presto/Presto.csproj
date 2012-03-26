@@ -39,11 +39,11 @@
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Presto.Common\Presto.Common.csproj">
       <Project>{5CE03B15-134F-436C-9822-F41D889BBD3E}</Project>
       <Name>Presto.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

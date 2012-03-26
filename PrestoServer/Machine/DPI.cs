@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Presto.Common.Machine {
+namespace Presto.Machine {
 
     /// <summary>
     /// Gathers the distribution performance indicator Information for the machine and for the cluster.

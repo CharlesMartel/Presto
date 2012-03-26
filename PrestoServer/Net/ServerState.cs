@@ -2,38 +2,40 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Text;
 
-namespace Presto.Common.Net {
+namespace Presto.Net {
     /// <summary>
     /// ServerState is a state object that gets passed around as the holder for an asynchronous socket.
     /// </summary>
-    public class ClientState {
+    public class ServerState {
         /// <summary>
-        /// The internal TcpClient.
+        /// The socket associated with this server state object.
         /// </summary>
-        public TcpClient Client;
+        public Socket socket;
         /// <summary>
         /// Size of the recieve buffer.
         /// </summary>
         public const int BufferSize = 1024;
         /// <summary>
-        /// The internal byte buffer.
+        /// The recieve buffer for this Server State object.
         /// </summary>
         public byte[] Buffer = new byte[BufferSize];
         //An appendable byte list that will hold data being flushed from the Buffer
         private List<byte> data = new List<byte>();
         //a boolean to tell if the message is fully recieved
         private bool messageFullyRecieved = false;
+        //processing queue for the writes
+        private SynchronizedProcessingQueue<byte[]> sendQueue;
 
         /// <summary>
         /// Create a new server state object to manage a currently running connection
         /// </summary>
-        /// <param name="client">The tcp client object associated with this ClientState.</param>
-        internal ClientState(TcpClient client) {
-            //set the working Client
-            this.Client = client;
+        /// <param name="socket">The sync socket associated with the state object.</param>
+        internal ServerState(Socket socket) {
+            //set the working socket
+            this.socket = socket;
+            sendQueue = new SynchronizedProcessingQueue<byte[]>(write);
         }
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Presto.Common.Net {
         internal void PurgeBuffer(int bytesRead) {
             //we copy the bytes read out of the Buffer and add it to the data list
             data.AddRange(new List<byte>(Buffer).GetRange(0, bytesRead));
-            Buffer = new byte[BufferSize];
+            Buffer = new byte[BufferSize]; 
         }
 
         /// <summary>
@@ -62,14 +64,14 @@ namespace Presto.Common.Net {
             int excessLength = data.Count - excessIndex;
             byte[] excess = data.GetRange(excessIndex, excessLength).ToArray();
             data.RemoveRange(index, excessLength + Config.EndOfStreamPattern.Length);
-            return excess;
+            return excess;           
         }
 
         /// <summary>
         /// preset what data is in the data array.
         /// </summary>
         /// <param name="presetData">The data to preset the data array with.</param>
-        internal void PreSetData(byte[] presetData) {
+        internal void PreSetData(byte[] presetData){
             data.Clear();
             data.AddRange(presetData);
         }
@@ -90,6 +92,90 @@ namespace Presto.Common.Net {
             List<byte> messageTypeByteList = data.GetRange(0, 8);
             byte[] messageTypeByteArray = messageTypeByteList.ToArray();
             return ASCIIEncoding.ASCII.GetString(messageTypeByteArray);
+        }
+
+        /// <summary>
+        /// Sends the passed in data as the passed in message type and closes the socket.
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="data"></param>
+        public void WriteAndClose(MessageType messageType, byte[] data = null) {
+            //make sure we have a real message type
+            if (messageType == null) {
+                throw new ArgumentNullException("messageType");
+            }
+
+            //get the message type in bytes
+            byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(messageType);
+
+            //combine the messagetype and data byte arrays
+            List<byte> output = new List<byte>();
+            output.AddRange(messageTypeEncoded);
+            if (data != null) {
+                output.AddRange(data);
+            }
+
+            //send the data
+            sendQueue.Add(output.ToArray());
+
+            //close the socket
+            CloseSocket();
+        }
+
+        /// <summary>
+        /// Sends the passed in data as the passed in message type
+        /// </summary>
+        /// <param name="messageType"></param>
+        /// <param name="data"></param>
+        public void Write(MessageType messageType, byte[] data = null) {
+            //make sure we have a real message type
+            if (messageType == null) {
+                throw new ArgumentNullException("messageType");
+            }
+
+            //get the message type in bytes
+            byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(messageType);
+
+            //combine the messagetype and data byte arrays
+            List<byte> output = new List<byte>();
+            output.AddRange(messageTypeEncoded);
+            if (data != null) {
+                output.AddRange(data);
+            }
+
+            //send the data
+            sendQueue.Add(output.ToArray());
+        }
+
+        /// <summary>
+        /// Internal Write function. Writes the passed in data to the socket stream.
+        /// </summary>
+        /// <param name="data">the byte data to be written</param>
+        private bool write(byte[] data) {
+            try
+            {
+                List<byte> tempByteArray = new List<byte>();
+                tempByteArray.AddRange(data);
+                tempByteArray.AddRange(Config.EndOfStreamPattern);
+                data = tempByteArray.ToArray();
+
+                //send the data
+                socket.Send(data);
+                return true;
+            }
+            catch
+            {
+                //there was a problem sending the data, return false so it will be readded to the queue
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Closes the ServerState's associated socket
+        /// </summary>
+        public void CloseSocket() {
+            sendQueue.Wait();
+            socket.Close();
         }
 
         /// <summary>
@@ -118,7 +204,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Get the data portion of the message as a byte array
         /// </summary>
-        /// <returns>The data as an array.</returns>
+        /// <returns></returns>
         public byte[] GetDataArray() {
             List<byte> dataByteArray = data.GetRange(8, data.Count - 8);
             return dataByteArray.ToArray();
@@ -127,7 +213,7 @@ namespace Presto.Common.Net {
         /// <summary>
         /// Get the data portion of the message as an ASCII encoded string
         /// </summary>
-        /// <returns>The message data as an string encoded in ASCII.</returns>
+        /// <returns></returns>
         public string GetDataASCIIString() {
             List<byte> dataByteArray = new List<byte>(GetDataArray());
             return ASCIIEncoding.ASCII.GetString(dataByteArray.ToArray());
@@ -174,14 +260,11 @@ namespace Presto.Common.Net {
                             found = i;
                             break; //stop the loop
                         }
-
                     }
                 }
-
             }
             return found;
         }
-
     }
 }
 

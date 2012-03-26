@@ -27,6 +27,11 @@ namespace Presto {
         private PrestoModule moduleInstance;
 
         /// <summary>
+        /// The cluster instance to be assigned to the module upon creation.
+        /// </summary>
+        private Cluster ClusterInstance;
+
+        /// <summary>
         /// Direct the surrounding app domain to load a new assembly.
         /// </summary>
         /// <param name="assemblyImage">The COFF based image of the assembly to be loaded.</param>
@@ -43,7 +48,7 @@ namespace Presto {
         /// </summary>
         /// <param name="assemblyName">The full name of the assembly that the Presto object resides in.</param>
         /// <param name="cluster">THe cluster instance associated with this domain.</param>
-        public void CreatePrestoInstance(string assemblyName, ClusterBase cluster) {
+        public void CreatePrestoInstance(string assemblyName) {
             Assembly assembly = assemblies[assemblyName]; ;
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
@@ -52,7 +57,7 @@ namespace Presto {
             foreach (Type type in assemblyTypes) {
                 if (type.IsSubclassOf(typeof(PrestoModule))) {
                     module = (PrestoModule)Activator.CreateInstance(type);
-                    module.Cluster = cluster;
+                    module.Cluster = ClusterInstance;
                     break;
                 }
             }
@@ -88,12 +93,22 @@ namespace Presto {
         /// <param name="assemblyName">The name of the assembly the procedure resides in.</param>
         /// <param name="parameter">The parameter passed to the executed procedure.</param>
         /// <returns>The result of the execution.</returns>
-        public PrestoResult ExecuteIncoming(string methodName, string typeName, string assemblyName, PrestoParameter parameter) {
+        public PrestoResult ExecuteIncoming(string methodName, string typeName, string assemblyName, byte[] parameter) {
+            PrestoParameter param = (PrestoParameter)SerializationEngine.Deserialize(parameter);
             Assembly assembly = assemblies[assemblyName];
             Type type = assembly.GetType(typeName, false, true);
             MethodInfo method = type.GetMethod(methodName);
-            PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { parameter });
+            PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { param });
             return res;
+        }
+
+        public void ConfigureCluster(IClusterProxy clusterProxy, string domainKey) {
+            ClusterInstance = new Cluster(domainKey);
+            ClusterInstance.ClusterProxy = clusterProxy;
+        }
+
+        public void ReturnExecution(string contextID, PrestoResult result) {
+            ClusterInstance.ReturnExecution(contextID, result);
         }
     }
 }

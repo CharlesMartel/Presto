@@ -50,13 +50,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="Cluster.cs" />
+    <Compile Include="ClusterProxy.cs" />
     <Compile Include="DomainManager.cs" />
-    <Compile Include="GlobalCluster.cs" />
+    <Compile Include="ClusterManager.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Machine\CPU.cs" />
+    <Compile Include="Machine\DPI.cs" />
+    <Compile Include="Machine\Memory.cs" />
+    <Compile Include="Net\ClientState.cs" />
+    <Compile Include="Net\ServerState.cs" />
+    <Compile Include="Net\TCPClient.cs" />
+    <Compile Include="Net\TCPServer.cs" />
+    <Compile Include="SynchronizedProcessingQueue.cs" />
     <Compile Include="Transfers\ExecutionContext.cs" />
     <Compile Include="Transfers\ExecutionResult.cs" />
     <Compile Include="Executor.cs" />

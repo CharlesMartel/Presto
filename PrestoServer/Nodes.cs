@@ -38,7 +38,8 @@ namespace Presto {
         /// or possibly even not connected, then the default self node is returned.
         /// </summary>
         /// <returns></returns>
-        public static Node BestNode() { 
+        public static Node BestNode() {
+            return nodes[0];
             //This needs to be smarter, drawing on DPI and such...
             Node bestNode = null;
             float currentLoad = float.MaxValue;

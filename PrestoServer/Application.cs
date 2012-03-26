@@ -1,5 +1,5 @@
-﻿using Presto.Common.Machine;
-using Presto.Common.Net;
+﻿using Presto.Machine;
+using Presto.Net;
 
 namespace Presto {
     /// <summary>

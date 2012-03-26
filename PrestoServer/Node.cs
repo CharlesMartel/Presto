@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Timers;
 using System.Reflection;
 using Presto.Common;
-using Presto.Common.Net;
+using Presto.Net;
 using Presto.Transfers;
 
 namespace Presto {
@@ -173,7 +173,7 @@ namespace Presto {
         /// </summary>
         /// <returns>Boolean</returns>
         public bool IsLocal() {
-            if(NodeID.Equals(GlobalCluster.NodeID)){
+            if(NodeID.Equals(ClusterManager.NodeID)){
                 return true;
             }
             return false;
@@ -204,7 +204,7 @@ namespace Presto {
         private void returnExecution(ClientState state) {
             ExecutionResult res = (ExecutionResult)SerializationEngine.Deserialize(state.GetDataArray());
             res.Result.ExecutionNodeID = NodeID;
-            GlobalCluster.GetCluster(res.DomainKey).ReturnExecution(res);
+            DomainManager.ReturnExecution(res);
         }
 
         /// <summary>

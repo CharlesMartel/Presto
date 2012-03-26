@@ -35,11 +35,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ClusterBase.cs" />
+    <Compile Include="Cluster.cs" />
     <Compile Include="DomainProxy.cs" />
+    <Compile Include="IClusterProxy.cs" />
     <Compile Include="PrestoModule.cs" />
     <Compile Include="PrestoParameter.cs" />
     <Compile Include="PrestoResult.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Presto.Common\Presto.Common.csproj">
+      <Project>{5CE03B15-134F-436C-9822-F41D889BBD3E}</Project>
+      <Name>Presto.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using Presto.Common;
-using Presto.Common.Net;
+using Presto.Net;
 
 namespace Presto {
 

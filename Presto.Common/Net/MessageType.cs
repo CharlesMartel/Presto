@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Presto.Common.Net {
+namespace Presto.Net {
     /// <summary>
     /// A type safe enum holding all available message types.
     /// Message types are an 8 character ASCII string passed as an identifier to the recieving end of the tcp connection as to what

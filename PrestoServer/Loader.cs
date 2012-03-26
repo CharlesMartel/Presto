@@ -1,5 +1,5 @@
 ﻿using Presto.Common;
-using Presto.Common.Net;
+using Presto.Net;
 using Presto.Transfers;
 
 namespace Presto {
