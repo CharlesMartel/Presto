@@ -11,11 +11,18 @@ namespace Basic
     {
         public override void Load()
         {
+            DateTime begin = DateTime.Now;
             for (int i = 0; i < 100; i++)
             {
                 //push a new execution of the distributed function into the cluster
-                Cluster.Execute(distributedFunction, new FunctionInput(), functionCallback);
+                FunctionInput input = new FunctionInput();
+                input.value = i;
+                Cluster.Execute(distributedFunction, input, functionCallback);
             }
+            Cluster.Wait();
+            DateTime end = DateTime.Now;
+            TimeSpan lot = end - begin;
+            Console.WriteLine("Time taken: " + lot.ToString());
         }
 
         public override void Unload()
@@ -26,20 +33,16 @@ namespace Basic
 
         public static PrestoResult distributedFunction(PrestoParameter param)
         {
-            //we can use the param but since this is a basic example we will just ignore and move on
             FunctionOutput output = new FunctionOutput();
-            //some long running job
-            for (int i = 0; i < 1000000; i++)
-            {
-                output.value = i;
-            }
+            FunctionInput input = (FunctionInput)param;
+            output.value = input.value;
             return output;
         }
 
         public static void functionCallback(PrestoResult result)
         {
             FunctionOutput output = (FunctionOutput)result;
-            Console.WriteLine(output.value + " from node id " + result.ExecutionNodeID);
+            Console.WriteLine("Execution number: " + output.value + " from node id: " + output.ExecutionNodeID);
         }
     }
 

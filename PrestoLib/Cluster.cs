@@ -66,8 +66,8 @@ namespace Presto {
             //add the job to the scheduled jobs
             outboundJobs.Add(contextID, callback);
             //execute
-            MemoryStream stream = SerializationEngine.Serialize(parameter);
-            ClusterProxy.Execute(function.Method.GetType().Assembly.FullName, function.Method.GetType().FullName, function.Method.Name, stream.ToArray(), contextID, key);
+            byte[] stream = SerializationEngine.Serialize(parameter);
+            ClusterProxy.Execute(function.Method.DeclaringType.Assembly.FullName, function.Method.DeclaringType.FullName, function.Method.Name, stream, contextID, key);
         }
 
         /// <summary>
@@ -76,6 +76,7 @@ namespace Presto {
         /// <param id="result">The execution result object.</param>
         public void ReturnExecution(string contextID, PrestoResult result) {
             outboundJobs[contextID].Invoke(result);
+            outboundJobs.Remove(contextID);
             if (outboundJobs.Count < 1) {
                 jobCompletionEvent.Set();
             }

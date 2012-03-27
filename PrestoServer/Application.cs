@@ -25,6 +25,7 @@ namespace Presto {
             Memory.GetTotalSize();
             DPI.CalculateDPI();
             //Initialize subsystems
+            ClusterManager.Initialize();
             Loader.Initialize();
             Executor.Initialize();
             //Start the server listening thread

@@ -43,6 +43,7 @@ namespace Presto.Net {
             //create a listening thread and Start the listener
             Thread listenThread = new Thread(listen);
             listenThread.Start();
+            listenThread.Priority = ThreadPriority.Highest;
         }
 
         /// <summary>
@@ -135,9 +136,9 @@ namespace Presto.Net {
                     //socket has been closed... handle it
                     //TODO: handle socket close
                 }
-            } catch {
+            } catch (Exception e){
                 //The server was closed.
-                //TODO: Handle the server being closed
+                Log.Error(e.ToString());
             }
         }
 
@@ -151,14 +152,14 @@ namespace Presto.Net {
 
             //if messageType is null we return the Unknowm message response
             if (messageType == null) {
-                state.WriteAndClose(MessageType.UNKOWN);
+                state.Write(MessageType.UNKOWN);
             }
 
             //find the corresponding message type in the listing and dispatch accordingly, or return Unknown message response
             if (dispatchList.ContainsKey(messageType)) {
                 dispatchList[messageType].BeginInvoke(state, null, null);
             } else {
-                state.WriteAndClose(MessageType.UNKOWN);
+                state.Write(MessageType.UNKOWN);
             }
         }
 

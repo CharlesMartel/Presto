@@ -8,6 +8,7 @@ namespace Presto.Transfers {
     /// <summary>
     /// An assembly transfer structure.
     /// </summary>
+    [Serializable]
     struct SlaveAssembly {
         public byte[] AssemblyImage;
         public string DomainKey;

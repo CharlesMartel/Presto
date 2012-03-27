@@ -74,7 +74,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Nodes.cs" />
-    <Compile Include="SerializationEngine.cs" />
     <Compile Include="Transfers\SlaveAssembly.cs" />
     <Compile Include="Transfers\Verification.cs" />
   </ItemGroup>

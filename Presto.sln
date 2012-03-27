@@ -13,6 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic", "Examples\Basic\Bas
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C4D7BF4F-42B4-4679-9C40-63B4262FB40E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{90EA8EE9-900B-4A4F-A3BF-DBDDC953CCC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Profiling", "Profiling", "{7A9773A5-6A76-439C-A21D-693E49FD72F0}"
+	ProjectSection(SolutionItems) = preProject
+		Analysis\Profiling\PrestoServer.psess = Analysis\Profiling\PrestoServer.psess
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{EC76E759-30B3-4B28-B18C-55FBA3531267}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +92,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16} = {C4D7BF4F-42B4-4679-9C40-63B4262FB40E}
+		{7A9773A5-6A76-439C-A21D-693E49FD72F0} = {90EA8EE9-900B-4A4F-A3BF-DBDDC953CCC9}
+		{EC76E759-30B3-4B28-B18C-55FBA3531267} = {90EA8EE9-900B-4A4F-A3BF-DBDDC953CCC9}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Presto\Presto.csproj

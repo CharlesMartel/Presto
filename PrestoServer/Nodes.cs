@@ -39,7 +39,6 @@ namespace Presto {
         /// </summary>
         /// <returns></returns>
         public static Node BestNode() {
-            return nodes[0];
             //This needs to be smarter, drawing on DPI and such...
             Node bestNode = null;
             float currentLoad = float.MaxValue;

@@ -24,13 +24,14 @@ namespace Presto {
         /// </summary>
         /// <param id="obj">The object to be serialized.</param>
         /// <returns>The serialization stream of the object.</returns>
-        public static MemoryStream Serialize(Object obj) {
+        public static byte[] Serialize(Object obj) {
             MemoryStream stream = new MemoryStream();
             lock (locker) {                
                 serializer.Serialize(stream, obj);
             }
+            byte[] serialized = stream.ToArray();
             stream.Dispose();
-            return stream;            
+            return serialized;            
         }
 
         /// <summary>

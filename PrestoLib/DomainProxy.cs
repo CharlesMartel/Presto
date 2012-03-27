@@ -92,14 +92,14 @@ namespace Presto {
         /// <param name="typeName">The name of the type held within the assembly for with the procedure to be executed resides.</param>
         /// <param name="assemblyName">The name of the assembly the procedure resides in.</param>
         /// <param name="parameter">The parameter passed to the executed procedure.</param>
-        /// <returns>The result of the execution.</returns>
-        public PrestoResult ExecuteIncoming(string methodName, string typeName, string assemblyName, byte[] parameter) {
+        /// <returns>The result of the execution serialized for transport.</returns>
+        public byte[] ExecuteIncoming(string methodName, string typeName, string assemblyName, byte[] parameter) {
             PrestoParameter param = (PrestoParameter)SerializationEngine.Deserialize(parameter);
             Assembly assembly = assemblies[assemblyName];
             Type type = assembly.GetType(typeName, false, true);
             MethodInfo method = type.GetMethod(methodName);
             PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { param });
-            return res;
+            return SerializationEngine.Serialize(res);
         }
 
         public void ConfigureCluster(IClusterProxy clusterProxy, string domainKey) {
@@ -107,8 +107,10 @@ namespace Presto {
             ClusterInstance.ClusterProxy = clusterProxy;
         }
 
-        public void ReturnExecution(string contextID, PrestoResult result) {
-            ClusterInstance.ReturnExecution(contextID, result);
+        public void ReturnExecution(string contextID, string nodeID, byte[] result) {
+            PrestoResult resultObj = (PrestoResult)SerializationEngine.Deserialize(result);
+            resultObj.ExecutionNodeID = nodeID;
+            ClusterInstance.ReturnExecution(contextID, resultObj);
         }
     }
 }

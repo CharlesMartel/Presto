@@ -42,7 +42,7 @@ namespace Presto {
         private TCPClient client;
         private string address;
         private Timer pingTimer;
-        private System.Threading.ManualResetEvent assemblyLoadReset = new System.Threading.ManualResetEvent(false);
+        private System.Threading.ManualResetEvent assemblyLoadReset = new System.Threading.ManualResetEvent(true);
 
         /// <summary>
         /// Instantiate a new Node object with the connection to the specefied address
@@ -91,8 +91,12 @@ namespace Presto {
             if(!loadedDomains.Contains(domainKey)){
                 loadedDomains.Add(domainKey);
             }
-            client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, assemblyArray);
-            assemblyLoadReset.Reset();
+
+            if (NodeID != ClusterManager.NodeID) {
+                SlaveAssembly slavePackage = new SlaveAssembly(assemblyArray, domainKey);
+                client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, SerializationEngine.Serialize(slavePackage));
+                assemblyLoadReset.Reset();
+            }
         }
 
         /// <summary>
@@ -109,7 +113,7 @@ namespace Presto {
             assemblyLoadReset.WaitOne();
             //since we know that the other machine has the assembly loaded we can 
             //serialize the execution context and transport
-            client.Write(MessageType.EXECUTION_BEGIN, SerializationEngine.Serialize(executionContext).ToArray());
+            client.Write(MessageType.EXECUTION_BEGIN, SerializationEngine.Serialize(executionContext));
             RunningJobs++;
             return true;
         }
@@ -203,7 +207,6 @@ namespace Presto {
         /// <param id="state">The state object of the response.</param>
         private void returnExecution(ClientState state) {
             ExecutionResult res = (ExecutionResult)SerializationEngine.Deserialize(state.GetDataArray());
-            res.Result.ExecutionNodeID = NodeID;
             DomainManager.ReturnExecution(res);
         }
 

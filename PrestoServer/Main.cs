@@ -11,6 +11,9 @@ namespace Presto {
         /// </summary>
         public static void Main() {
             Application.Initialize();
+            while (true) {
+                System.Threading.Thread.Sleep(60000);
+            }
         }
     }
 }

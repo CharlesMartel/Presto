@@ -11,7 +11,7 @@ namespace Presto.Transfers {
         /// <summary>
         /// The PrestoResult returned from the execution function.
         /// </summary>
-        public PrestoResult Result;
+        public byte[] Result;
         /// <summary>
         /// The generated context ID belonging to this distributed execution.
         /// </summary>
@@ -20,16 +20,21 @@ namespace Presto.Transfers {
         /// The domain key associated with the execution.
         /// </summary>
         public string DomainKey;
+        /// <summary>
+        /// The node that this execution was run on.
+        /// </summary>
+        public string ExecutingNodeID;
 
         /// <summary>
         /// Creates a Execution Result with the specefied PrestoResult and contextID.
         /// </summary>
         /// <param name="result">The PrestoResult object returned from the function executed.</param>
         /// <param name="contextid">The context ID of this distributed execution.</param>
-        public ExecutionResult(PrestoResult result, string contextid, string domainKey) {
+        public ExecutionResult(byte[] result, string contextid, string domainKey, string nodeId) {
             Result = result;
             ContextID = contextid;
             DomainKey = domainKey;
+            ExecutingNodeID = nodeId;
         }
     }
 }

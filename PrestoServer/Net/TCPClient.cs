@@ -68,8 +68,9 @@ namespace Presto.Net {
                 ClientState state = new ClientState(tcpClient);
                 nStream.BeginRead(state.Buffer, 0, state.Buffer.Length, readCallback, state);
                 return true;
-            } catch {
+            } catch (Exception e) {
                 //there was a problem connecting
+                Log.Error(e.ToString());
                 return false;
             }
         }
@@ -92,7 +93,8 @@ namespace Presto.Net {
                 nStream.BeginRead(state.Buffer, 0, state.Buffer.Length, readCallback, state);
                 return true;
             }
-            catch {
+            catch (Exception e){
+                Log.Error(e.ToString());
                 return false;
             }
         }
@@ -162,10 +164,12 @@ namespace Presto.Net {
         private bool write(byte[] data) {
             try
             {
-                List<byte> tempByteArray = new List<byte>();
-                tempByteArray.AddRange(data);
-                tempByteArray.AddRange(Config.EndOfStreamPattern);
-                data = tempByteArray.ToArray();
+                long datalength = data.Length;
+                byte[] datalengtharray = BitConverter.GetBytes(datalength);
+                List<byte> holder = new List<byte>();
+                holder.AddRange(datalengtharray);
+                holder.AddRange(data);
+                data = holder.ToArray();
 
                 //get the tcpClient network stream
                 NetworkStream nStream = tcpClient.GetStream();
@@ -173,9 +177,10 @@ namespace Presto.Net {
                 nStream.Write(data, 0, data.Length);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
                 // the connection was closed return false and the synchronizer will take care of it
+                Log.Error(e.ToString());
                 return false;
             }
         }

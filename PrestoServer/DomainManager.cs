@@ -58,6 +58,9 @@ namespace Presto {
         public static void LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream, bool createInstance = true){
             DomainProxy proxy = proxies[domainKey];
             string assemblyName = proxy.LoadAssembly(assemblyStream);
+            if(assemblies.ContainsKey(assemblyName)){
+                assemblies.Remove(assemblyName);
+            }
             assemblies.Add(assemblyName, assemblyStream);
             if (createInstance) {
                 createPrestoInstance(assemblyName, domainKey);
@@ -79,7 +82,22 @@ namespace Presto {
         /// </summary>
         /// <param name="domainKey">The key of the domain to be destroyed.</param>
         public static void DestroyDomain(string domainKey){
-            //TODO: destroy a domain
+            if (!domains.ContainsKey(domainKey)) {
+                return;
+            }
+
+            AppDomain domain = domains[domainKey];
+            /*
+            Assembly[] domainassemblies = domain.GetAssemblies();
+            foreach (Assembly assem in domainassemblies) {
+                if (assemblies.ContainsKey(assem.FullName)){
+                    assemblies.Remove(assem.FullName);
+                }
+            }
+             * */
+            proxies.Remove(domainKey);
+            AppDomain.Unload(domain);
+            domains.Remove(domainKey);
         }
 
         /// <summary>
@@ -130,16 +148,16 @@ namespace Presto {
         /// <summary>
         /// Execute an incoming job according to the passed in execution context.
         /// </summary>
-        /// <param name="context">He context of the job.</param>
-        /// <returns>The result of the job.</returns>
-        public static PrestoResult ExecuteIncoming(ExecutionContext context) {
+        /// <param name="context">The context of the job.</param>
+        /// <returns>The result of the job serialized for transport.</returns>
+        public static byte[] ExecuteIncoming(ExecutionContext context) {
             DomainProxy proxy = proxies[context.DomainKey];
             return proxy.ExecuteIncoming(context.MethodName, context.TypeName, context.AssemblyName, context.Parameter);
         }
 
         public static void ReturnExecution(ExecutionResult result) {
             DomainProxy proxy = proxies[result.DomainKey];
-            proxy.ReturnExecution(result.ContextID, result.Result);
+            proxy.ReturnExecution(result.ContextID, result.ExecutingNodeID, result.Result);
         }
     }
 }

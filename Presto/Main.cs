@@ -65,11 +65,13 @@ namespace Presto {
             List<byte> message = new List<byte>();
             //get the message type in bytes
             byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(MessageType.ASSEMBLY_TRANSFER_MASTER);
+            message.AddRange(BitConverter.GetBytes((long)(bytes.Length + messageTypeEncoded.Length)));
             message.AddRange(messageTypeEncoded);
             message.AddRange(bytes);
-            message.AddRange(Config.EndOfStreamPattern);
             NetworkStream stream = client.GetStream();
             stream.Write(message.ToArray(), 0, message.ToArray().Length);
+            client.LingerState.Enabled = true;
+            client.LingerState.LingerTime = 30;
             client.Close();
         }
 

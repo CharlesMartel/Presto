@@ -63,9 +63,9 @@ namespace Presto {
             Interlocked.Increment(ref runningJobs);
             //get the execution context 
             Transfers.ExecutionContext context = (Transfers.ExecutionContext)SerializationEngine.Deserialize(state.GetDataArray());
-            PrestoResult res = DomainManager.ExecuteIncoming(context);
-            Transfers.ExecutionResult result = new Transfers.ExecutionResult(res, context.ContextID, context.DomainKey);
-            state.Write(MessageType.EXECUTION_COMPLETE, SerializationEngine.Serialize(result).ToArray());
+            byte[] res = DomainManager.ExecuteIncoming(context);
+            Transfers.ExecutionResult result = new Transfers.ExecutionResult(res, context.ContextID, context.DomainKey, ClusterManager.NodeID);
+            state.Write(MessageType.EXECUTION_COMPLETE, SerializationEngine.Serialize(result));
             Interlocked.Decrement(ref runningJobs);
         }
     }
