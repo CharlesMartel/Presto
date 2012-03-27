@@ -19,6 +19,7 @@ namespace Basic
                 input.value = i;
                 Cluster.Execute(distributedFunction, input, functionCallback);
             }
+            //We can force a block untill all jobs return from the cluster.
             Cluster.Wait();
             DateTime end = DateTime.Now;
             TimeSpan lot = end - begin;

@@ -58,6 +58,9 @@ namespace Presto {
         public static void exec(string assemblyURL) {
             TcpClient client = new TcpClient();
             client.Connect("127.0.0.1", Int32.Parse(Config.GetParameter("SERVER_PORT")));
+            if(!File.Exists(assemblyURL)){
+                assemblyURL += ".dll";
+            }
             FileStream fs = File.OpenRead(assemblyURL);
             byte[] bytes = new byte[fs.Length];
             fs.Read(bytes, 0, Convert.ToInt32(fs.Length));

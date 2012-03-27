@@ -102,11 +102,23 @@ namespace Presto {
             return SerializationEngine.Serialize(res);
         }
 
+        /// <summary>
+        /// Set up the cluster proxy instance for the specefied domain.
+        /// </summary>
+        /// <param name="clusterProxy">The cluster proxy instance to be set up.</param>
+        /// <param name="domainKey">The domain key of the domain to be set up.</param>
         public void ConfigureCluster(IClusterProxy clusterProxy, string domainKey) {
             ClusterInstance = new Cluster(domainKey);
             ClusterInstance.ClusterProxy = clusterProxy;
         }
 
+
+        /// <summary>
+        /// Return an execution back into the domain.
+        /// </summary>
+        /// <param name="contextID">The context ID of the execution.</param>
+        /// <param name="nodeID">The node ID where the execution was run.</param>
+        /// <param name="result">The serialized result of the excution.</param>
         public void ReturnExecution(string contextID, string nodeID, byte[] result) {
             PrestoResult resultObj = (PrestoResult)SerializationEngine.Deserialize(result);
             resultObj.ExecutionNodeID = nodeID;
