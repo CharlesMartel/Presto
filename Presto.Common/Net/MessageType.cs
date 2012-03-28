@@ -78,6 +78,12 @@ namespace Presto.Net {
         /// </summary>
         public static readonly MessageType VERIFICATION_RESPONSE;
 
+        //---------User Scheduled Directives -----------//
+        /// <summary>
+        /// Send a message to a remote node.
+        /// </summary>
+        public static readonly MessageType USER_MESSAGE;
+
 
 
         /// <summary>
@@ -98,9 +104,8 @@ namespace Presto.Net {
             EXECUTION_DENIED = new MessageType("20000003");
             VERIFY = new MessageType("30000001");
             VERIFICATION_RESPONSE = new MessageType("30000002");
+            USER_MESSAGE = new MessageType("40000001");
         }
-
-
 
         /* Beneath is entirely internal to the type safe enum pattern used for the MessageType class
          * Not to be changed. 

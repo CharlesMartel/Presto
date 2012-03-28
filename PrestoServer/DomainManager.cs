@@ -155,11 +155,29 @@ namespace Presto {
         public static byte[] ExecuteIncoming(ExecutionContext context) {
             DomainProxy proxy = proxies[context.DomainKey];
             return proxy.ExecuteIncoming(context.MethodName, context.TypeName, context.AssemblyName, context.Parameter);
-        }
+        } 
 
+        /// <summary>
+        /// Return an execution from the cluster and give it back to the correct domain.
+        /// </summary>
+        /// <param name="result">The Result object of the execution.</param>
         public static void ReturnExecution(ExecutionResult result) {
             DomainProxy proxy = proxies[result.DomainKey];
             proxy.ReturnExecution(result.ContextID, result.ExecutingNodeID, result.Result);
+        }
+
+        /// <summary>
+        /// Delivers a user sent message to the correct domain. If the correct domain is not valid, an error is logged.
+        /// </summary>
+        /// <param name="message">The UserMessage object for the message.</param>
+        public static void DeliverMessage(UserMessage message) {
+            if (domains.ContainsKey(message.DomainKey)) {
+                DomainProxy proxy = proxies[message.DomainKey];
+                proxy.DeliverMessage(message.Message, message.Sender);
+            }
+            else {
+                Log.Error("No domain with key: " + message.DomainKey + " was found to deliver message: \"" + message.Message + "\" from: NodeID: " + message.Sender);
+            }
         }
     }
 }

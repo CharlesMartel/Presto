@@ -27,9 +27,9 @@ namespace Presto {
         private PrestoModule moduleInstance;
 
         /// <summary>
-        /// The cluster instance to be assigned to the module upon creation.
+        /// The domain key of this domain.
         /// </summary>
-        private Cluster ClusterInstance;
+        private string key;
 
         /// <summary>
         /// Direct the surrounding app domain to load a new assembly.
@@ -57,7 +57,6 @@ namespace Presto {
             foreach (Type type in assemblyTypes) {
                 if (type.IsSubclassOf(typeof(PrestoModule))) {
                     module = (PrestoModule)Activator.CreateInstance(type);
-                    module.Cluster = ClusterInstance;
                     break;
                 }
             }
@@ -103,13 +102,13 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Set up the cluster proxy instance for the specefied domain.
+        /// Set up the cluster proxy instance for the domain and tell the domain what its key is.
         /// </summary>
         /// <param name="clusterProxy">The cluster proxy instance to be set up.</param>
-        /// <param name="domainKey">The domain key of the domain to be set up.</param>
+        /// <param name="domainKey">The domain key of the domain.</param>
         public void ConfigureCluster(IClusterProxy clusterProxy, string domainKey) {
-            ClusterInstance = new Cluster(domainKey);
-            ClusterInstance.ClusterProxy = clusterProxy;
+            Cluster.key = domainKey;
+            Cluster.ClusterProxy = clusterProxy;
         }
 
 
@@ -122,7 +121,7 @@ namespace Presto {
         public void ReturnExecution(string contextID, string nodeID, byte[] result) {
             PrestoResult resultObj = (PrestoResult)SerializationEngine.Deserialize(result);
             resultObj.ExecutionNodeID = nodeID;
-            ClusterInstance.ReturnExecution(contextID, resultObj);
+            Cluster.ReturnExecution(contextID, resultObj);
         }
 
         /// <summary>
@@ -131,6 +130,15 @@ namespace Presto {
         /// <returns>The names of user assemblies loaded into this domain.</returns>
         public string[] GetAssemblyNames() {
             return assemblyNames.ToArray();
+        }
+
+        /// <summary>
+        /// Deliver the message sent from an outside node.
+        /// </summary>
+        /// <param name="payload">The message sent from the outside node.</param>
+        /// <param name="sender"> The node ID of the sending Node.</param>
+        public void DeliverMessage(string payload, string sender) {
+            Cluster.DeliverMessage(payload, sender);
         }
     }
 }

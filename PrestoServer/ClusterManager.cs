@@ -25,6 +25,7 @@ namespace Presto {
         /// </summary>
         public static void Initialize() {
             Application.ControlServer.RegisterDispatchAction(MessageType.VERIFY, verifyResponse);
+            Application.ControlServer.RegisterDispatchAction(MessageType.USER_MESSAGE, receiveMessage);
         }
 
         /// <summary>
@@ -34,6 +35,15 @@ namespace Presto {
         private static void verifyResponse(ServerState state) {
             Transfers.Verification verification = new Transfers.Verification(NodeID, DPI.GetDPI(), CPU.GetCount(), Executor.RunningJobs());
             state.Write(MessageType.VERIFICATION_RESPONSE, SerializationEngine.Serialize(verification).ToArray());
+        }
+
+        /// <summary>
+        /// Recieve a user message from a remote node.
+        /// </summary>
+        /// <param name="state">The server state object of this transfer.</param>
+        private static void receiveMessage(ServerState state) {
+            UserMessage message = (UserMessage)SerializationEngine.Deserialize(state.GetDataArray());
+            DomainManager.DeliverMessage(message);
         }
     }
 }

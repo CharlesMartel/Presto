@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Timers;
 using System.Reflection;
@@ -252,6 +253,15 @@ namespace Presto {
             DPI = vResponse.DPI;
             CPUCount = vResponse.CPUCount;
             RunningJobs = vResponse.JobCount;
+        }
+
+        /// <summary>
+        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
+        /// the receiving node calling MessageReceived event.
+        /// </summary>
+        /// <param name="message">The user message struct to be sent.</param>
+        public void SendMessage(UserMessage message) {
+            client.Write(MessageType.USER_MESSAGE, SerializationEngine.Serialize(message));
         }
     }
 }

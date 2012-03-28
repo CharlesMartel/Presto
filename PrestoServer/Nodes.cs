@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Presto.Transfers;
 
 namespace Presto {
 
@@ -102,6 +103,39 @@ namespace Presto {
                     currentNode.UnloadDomain(domainKey, assemblyNames);
                 }
             }
+        }
+
+        /// <summary>
+        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
+        /// the receiving node calling MessageReceived event.
+        /// </summary>
+        /// <param name="nodeID">The node ID of the node to send the message to.</param>
+        /// <param name="message">The message to be sent. This message is UTF8 encoded on transport.</param>
+        public static void SendMessage(string nodeID, string message, string domainKey) {
+            Node remoteNode = getNodeByID(nodeID);
+            if (remoteNode != null) {
+                UserMessage mesg = new UserMessage(message, ClusterManager.NodeID, domainKey);
+                remoteNode.SendMessage(mesg);
+            }
+            else {
+                //No node could be found matching the specefied id, log error and lost message
+                Log.Error("No node with ID: " + nodeID + " could be found to dispatch message: \"" + message + "\" to.");
+            }
+        }
+
+        /// <summary>
+        /// Retrieve a node by node id, returns null if no node matches the specified id.
+        /// </summary>
+        /// <param name="id">The id of the node to retrieve.</param>
+        /// <returns></returns>
+        private static Node getNodeByID(string id){
+            foreach(Node node in nodes)
+            {
+                if (node.NodeID == id){
+                    return node;
+                }
+            }
+            return null;
         }
     }
 }

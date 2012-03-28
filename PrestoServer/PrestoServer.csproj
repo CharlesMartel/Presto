@@ -75,6 +75,7 @@
     <Compile Include="Node.cs" />
     <Compile Include="Nodes.cs" />
     <Compile Include="Transfers\SlaveAssembly.cs" />
+    <Compile Include="Transfers\UserMessage.cs" />
     <Compile Include="Transfers\Verification.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

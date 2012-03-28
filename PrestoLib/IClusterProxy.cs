@@ -24,5 +24,14 @@ namespace Presto {
         /// and is ready to be disposed.
         /// </summary>
         void SignalComplete(string domainKey);
+
+        /// <summary>
+        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
+        /// the receiving node calling MessageReceived event.
+        /// </summary>
+        /// <param name="nodeID">The node ID of the node to send the message to.</param>
+        /// <param name="message">The message to be sent. This message is UTF8 encoded on transport.</param>
+        /// <param name="domainKey">The key of the domain to deliver the message to.</param>
+        void SendMessage(string nodeID, string message, string domainKey);
     }
 }

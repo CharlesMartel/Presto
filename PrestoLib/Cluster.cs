@@ -8,9 +8,21 @@ using System.IO;
 
 namespace Presto {
     /// <summary>
-    /// The Cluster class is a static class that extends functionality that allows for interaction with the Presto cluster to the Module developer
-    /// </summary>    
-    public class Cluster : MarshalByRefObject {
+    /// The cluster object that allows for interaction with the Presto cluster.
+    /// </summary>  
+    public static class Cluster {
+        //-----------Events-------------------------//
+
+        /// <summary>
+        /// Event handler for whenever a message from an outside node is sent to the current one.
+        /// </summary>
+        /// <param name="payload">The message sent.</param>
+        /// <param name="sender"> The node ID of the sending Node.</param>
+        public delegate void MessageReceivedHandler(string payload, string sender);
+        /// <summary>
+        /// The events called whenever a message is received from an outside node.
+        /// </summary>
+        public static event MessageReceivedHandler MessageRecieved;
 
         //------------Properties--------------------//
 
@@ -20,22 +32,18 @@ namespace Presto {
         /// processes runnable, and the performance of the clusters communications channel. It is a "score" for the cluster as 
         /// a whole.
         /// </summary>
-        public long CDPI;
-
-        public IClusterProxy ClusterProxy;
-
-        //we keep a list of all jobs currently out for processing
-        private Dictionary<string, Action<PrestoResult>> outboundJobs = new Dictionary<string, Action<PrestoResult>>();
-        private ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
-        private string key;
+        public static long CDPI;
 
         /// <summary>
-        /// Create a new cluster object for a particular module or application.
+        /// A proxy out of the current domain and into the Presto server. This should not be overwritten or even accessed unless you
+        /// are fully aware of the consequences.
         /// </summary>
-        /// <param name="domainKey">The domain key associated with this cluster.</param>
-        public Cluster(string domainKey) {
-            key = domainKey;
-        }
+        public static IClusterProxy ClusterProxy;
+
+        //we keep a list of all jobs currently out for processing
+        private static Dictionary<string, Action<PrestoResult>> outboundJobs = new Dictionary<string, Action<PrestoResult>>();
+        private static ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
+        internal static string key;
 
         //------------Methods-----------------------//
 
@@ -52,7 +60,7 @@ namespace Presto {
         /// <param name="function">The function to be executed.</param>
         /// <param name="parameter">The parameter to be passed into the executed function.</param>
         /// <param name="callback">The callback to be executed when the function completes.</param>
-        public void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback) {
+        public static void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback) {
             //set the event to non signaled
             jobCompletionEvent.Reset();
 
@@ -74,7 +82,7 @@ namespace Presto {
         /// Returns an execution job to the cluster object to be dispatched to the calling module.
         /// </summary>
         /// <param id="result">The execution result object.</param>
-        public void ReturnExecution(string contextID, PrestoResult result) {
+        public static void ReturnExecution(string contextID, PrestoResult result) {
             outboundJobs[contextID].Invoke(result);
             outboundJobs.Remove(contextID);
             if (outboundJobs.Count < 1) {
@@ -85,7 +93,7 @@ namespace Presto {
         /// <summary>
         /// Blocks the currently running thread until all execution jobs return from the cluster. The thread will resume once all jobs return succesful.
         /// </summary>
-        public void Wait() {
+        public static void Wait() {
             jobCompletionEvent.WaitOne();
         }
 
@@ -97,8 +105,27 @@ namespace Presto {
         /// Consequently, this is the same ID given to the app domain under which this module or application will run.
         /// 
         /// </summary>
-        public string GetInstanceKey(){
+        public static string GetInstanceKey(){
             return key;
+        }
+
+        /// <summary>
+        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
+        /// the receiving node calling MessageReceived event.
+        /// </summary>
+        /// <param name="nodeID">The node ID of the node to send the message to.</param>
+        /// <param name="message">The message to be sent. This message is UTF8 encoded on transport.</param>
+        public static void SendMessage(string nodeID, string message) {
+            ClusterProxy.SendMessage(nodeID, message, key);
+        }
+
+        /// <summary>
+        /// Deliver the message from a remote node.
+        /// </summary>
+        /// <param name="payload">The message sent.</param>
+        /// <param name="sender"> The Node ID of the sending node.</param>
+        internal static void DeliverMessage(string payload, string sender){
+            MessageRecieved(payload, sender);
         }
     }
 }
