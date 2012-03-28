@@ -62,13 +62,5 @@ namespace Presto.Machine {
         public static double GetDPI() {
             return dpi;
         }
-
-        /// <summary>
-        /// Get the DPI of the Cluster.
-        /// </summary>
-        /// <returns></returns>
-        public static double GetCDPI() {
-            return 0.0;
-        }
     }
 }

@@ -113,6 +113,7 @@ namespace Presto
         /// Block the current thread until all data in the queue has been processed. Accurate to a millisecond.
         /// This should be used under known circumstances, as this will wait indefinitely if data keeps being added to 
         /// the queue. only when the queue has a chance to reach zero entries will the thread be allowed to continue.
+        /// Please understand.. this is a work around because I suck.
         /// </summary>
         public void Wait()
         {

@@ -88,5 +88,17 @@ namespace Presto {
         public void Wait() {
             jobCompletionEvent.WaitOne();
         }
+
+        /// <summary>
+        /// Every presto module or application is assigned a unique identifier to separate itself from other applications or
+        /// modules also loaded into the cluster. This identifier is given to the Cluster object upon at its creation and will 
+        /// not change for the lifetime of this module or application, nor will it change between cluster nodes.
+        /// 
+        /// Consequently, this is the same ID given to the app domain under which this module or application will run.
+        /// 
+        /// </summary>
+        public string GetInstanceKey(){
+            return key;
+        }
     }
 }

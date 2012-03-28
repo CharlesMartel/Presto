@@ -18,5 +18,11 @@ namespace Presto {
         /// <param name="contextid">The context id of this execution.</param>
         /// <param name="domainKey">The domain key of this domain.</param>
         void Execute(string assemblyName, string typeName, string methodName, byte[] param, string contextid, string domainKey);
+        
+        /// <summary>
+        /// Signal to the controlling presto server that the currently running module has finished its work
+        /// and is ready to be disposed.
+        /// </summary>
+        void SignalComplete(string domainKey);
     }
 }

@@ -24,5 +24,13 @@ namespace Presto {
             ExecutionContext context = new ExecutionContext(assemblyName, typeName, methodName, param, contextid, domainKey);
             Nodes.BestNode().Execute(context);
         }
+
+        /// <summary>
+        /// Signal to the controlling presto server that the currently running module has finished its work
+        /// and is ready to be disposed.
+        /// </summary>
+        public void SignalComplete(string domainKey) {
+            DomainManager.DestroyDomain(domainKey, true);
+        }
     }
 }

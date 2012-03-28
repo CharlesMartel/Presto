@@ -18,8 +18,14 @@ namespace Presto {
         /// <summary>
         /// After the module has finished executing, the Unload method gets called to allow the module to clean up behind itself before being destroyed.
         /// </summary>
-        public abstract void Unload();
-
-
+        public void Unload() { }
+        /// <summary>
+        /// Signal to the controlling presto server that the currently running module has finished its work
+        /// and is ready to be disposed.
+        /// </summary>
+        public void SignalComplete() {
+            Unload();
+            Cluster.ClusterProxy.SignalComplete(Cluster.GetInstanceKey());
+        }
     }
 }

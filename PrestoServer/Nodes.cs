@@ -9,6 +9,9 @@ namespace Presto {
     /// </summary>
     public static class Nodes {
 
+        /// <summary>
+        /// Private listing of all nodes in the cluster, regardless of state.
+        /// </summary>
         private static List<Node> nodes = new List<Node>();
 
         /// <summary>
@@ -86,6 +89,19 @@ namespace Presto {
         /// <returns>The CDPI of the cluster.</returns>
         public static long GetCDPI() {
             return CDPI;
+        }
+
+        /// <summary>
+        /// Signal to all nodes who have the specefied domain loaded to unload that domain and purge all 
+        /// resources associated with it.
+        /// </summary>
+        /// <param name="domainKey">The key of the domain to be unloaded.</param>
+        public static void UnloadDomain(string domainKey, string[] assemblyNames){
+            foreach(Node currentNode in nodes){
+                if (currentNode.HasDomain(domainKey)) {
+                    currentNode.UnloadDomain(domainKey, assemblyNames);
+                }
+            }
         }
     }
 }

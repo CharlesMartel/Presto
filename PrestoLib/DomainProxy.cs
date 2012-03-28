@@ -124,5 +124,13 @@ namespace Presto {
             resultObj.ExecutionNodeID = nodeID;
             ClusterInstance.ReturnExecution(contextID, resultObj);
         }
+
+        /// <summary>
+        /// Get the names of all user assemblies loaded into this domain.
+        /// </summary>
+        /// <returns>The names of user assemblies loaded into this domain.</returns>
+        public string[] GetAssemblyNames() {
+            return assemblyNames.ToArray();
+        }
     }
 }

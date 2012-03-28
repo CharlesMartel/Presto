@@ -81,23 +81,25 @@ namespace Presto {
         /// Unloads and destroys the domain with the specified key. Also deletes any assemblies associated with the domain.
         /// </summary>
         /// <param name="domainKey">The key of the domain to be destroyed.</param>
-        public static void DestroyDomain(string domainKey){
+        /// <param name="localyInitiated"> A boolean telling whether or not this signal was localy initiated.</param>
+        public static void DestroyDomain(string domainKey, bool instanceSignal = false){
             if (!domains.ContainsKey(domainKey)) {
                 return;
             }
-
             AppDomain domain = domains[domainKey];
-            /*
-            Assembly[] domainassemblies = domain.GetAssemblies();
-            foreach (Assembly assem in domainassemblies) {
-                if (assemblies.ContainsKey(assem.FullName)){
-                    assemblies.Remove(assem.FullName);
+            DomainProxy proxy = proxies[domainKey];
+            if (instanceSignal) {
+                Nodes.UnloadDomain(domainKey, proxy.GetAssemblyNames());
+                return;
+            }
+            foreach (string assem in proxy.GetAssemblyNames()) {
+                if (assemblies.ContainsKey(assem)){
+                    assemblies.Remove(assem);
                 }
             }
-             * */
             proxies.Remove(domainKey);
-            AppDomain.Unload(domain);
             domains.Remove(domainKey);
+            AppDomain.Unload(domain);
         }
 
         /// <summary>

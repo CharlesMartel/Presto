@@ -128,6 +128,15 @@ namespace Presto {
         }
 
         /// <summary>
+        /// Tells whether or not this node has the specefied domain loaded.
+        /// </summary>
+        /// <param name="domainKey">The key of the specefied domain.</param>
+        /// <returns>Whether or not the node has the domain.</returns>
+        public bool HasDomain(string domainKey) {
+            return loadedDomains.Contains(domainKey);
+        }
+
+        /// <summary>
         /// Whether or not the node is connected.
         /// </summary>
         /// <returns>True if connected, false if otherwise.</returns>
@@ -139,9 +148,16 @@ namespace Presto {
         /// Will remove a domain from the node according to the domain key.
         /// </summary>
         /// <param id="domainKey">The domain key of the domain.</param>
-        public void UnloadDomain(string domainKey) {
+        /// <param name="assemblies">A string array of all the assemblies to be removed with the domain.</param>
+        public void UnloadDomain(string domainKey, string[] assemblies) {
             if(loadedDomains.Contains(domainKey)){
                 client.Write(MessageType.DOMAIN_UNLOAD, domainKey);
+                loadedDomains.Remove(domainKey);
+            }
+            foreach (string assem in assemblies) {
+                if(loadedAssemblies.Contains(assem)){
+                    loadedAssemblies.Remove(assem);
+                }
             }
         }
 
@@ -215,6 +231,7 @@ namespace Presto {
         /// </summary>
         /// <param id="state">The state object of the response.</param>
         private void deniedExecution(ClientState state) {
+            //TODO: handle denied execution.
         }
 
         /// <summary>

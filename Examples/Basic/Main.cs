@@ -24,12 +24,7 @@ namespace Basic
             DateTime end = DateTime.Now;
             TimeSpan lot = end - begin;
             Console.WriteLine("Time taken: " + lot.ToString());
-        }
-
-        public override void Unload()
-        {
-            //any cleanup would go here
-            Console.WriteLine("All finished!");
+            SignalComplete();
         }
 
         public static PrestoResult distributedFunction(PrestoParameter param)
