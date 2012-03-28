@@ -149,7 +149,7 @@ namespace Presto.Remote {
         /// <summary>
         /// Will remove a domain from the node according to the domain key.
         /// </summary>
-        /// <param id="domainKey">The domain key of the domain.</param>
+        /// <param name="domainKey">The domain key of the domain.</param>
         /// <param name="assemblies">A string array of all the assemblies to be removed with the domain.</param>
         public void UnloadDomain(string domainKey, string[] assemblies) {
             if(loadedDomains.Contains(domainKey)){

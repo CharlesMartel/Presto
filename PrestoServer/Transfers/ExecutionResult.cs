@@ -30,6 +30,8 @@ namespace Presto.Transfers {
         /// </summary>
         /// <param name="result">The PrestoResult object returned from the function executed.</param>
         /// <param name="contextid">The context ID of this distributed execution.</param>
+        /// <param name="domainKey"> The domain key to deliver the result to.</param>
+        /// <param name="nodeId">The node id that produced the result.</param>
         public ExecutionResult(byte[] result, string contextid, string domainKey, string nodeId) {
             Result = result;
             ContextID = contextid;

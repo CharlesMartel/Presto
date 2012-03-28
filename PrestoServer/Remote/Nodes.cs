@@ -99,6 +99,7 @@ namespace Presto.Remote {
         /// resources associated with it.
         /// </summary>
         /// <param name="domainKey">The key of the domain to be unloaded.</param>
+        /// <param name="assemblyNames">The names of the assemblies loaded for this domain.</param>
         public static void UnloadDomain(string domainKey, string[] assemblyNames){
             foreach(Node currentNode in nodes){
                 if (currentNode.HasDomain(domainKey)) {
@@ -113,6 +114,7 @@ namespace Presto.Remote {
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
         /// <param name="message">The message to be sent. This message is UTF8 encoded on transport.</param>
+        /// <param name="domainKey">The domain key to deliver the message to.</param>
         public static void SendMessage(string nodeID, string message, string domainKey) {
             Node remoteNode = getNodeByID(nodeID);
             if (remoteNode != null) {

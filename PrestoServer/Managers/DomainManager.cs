@@ -82,7 +82,7 @@ namespace Presto.Managers {
         /// Unloads and destroys the domain with the specified key. Also deletes any assemblies associated with the domain.
         /// </summary>
         /// <param name="domainKey">The key of the domain to be destroyed.</param>
-        /// <param name="localyInitiated"> A boolean telling whether or not this signal was localy initiated.</param>
+        /// <param name="instanceSignal">Specefies whether or not the Destroy domain signal came from a local instance.</param>
         public static void DestroyDomain(string domainKey, bool instanceSignal = false){
             if (!domains.ContainsKey(domainKey)) {
                 return;

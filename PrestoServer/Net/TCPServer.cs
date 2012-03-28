@@ -26,7 +26,7 @@ namespace Presto.Net {
         private Dictionary<MessageType, Action<ServerState>> dispatchList = new Dictionary<MessageType, Action<ServerState>>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Presto.Common.Net.TCPServer"/> class. 
+        /// Initializes a new instance of the <see cref="Presto.Net.TCPServer"/> class. 
         /// An asynchronous tcp socket bound to the specified port.
         /// </summary>
         /// <param name='port'>

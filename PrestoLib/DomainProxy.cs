@@ -28,11 +28,6 @@ namespace Presto {
         private PrestoModule moduleInstance;
 
         /// <summary>
-        /// The domain key of this domain.
-        /// </summary>
-        private string key;
-
-        /// <summary>
         /// Direct the surrounding app domain to load a new assembly.
         /// </summary>
         /// <param name="assemblyImage">The COFF based image of the assembly to be loaded.</param>
@@ -48,7 +43,6 @@ namespace Presto {
         /// Creates the presto instance housed in assembly with the given name.
         /// </summary>
         /// <param name="assemblyName">The full name of the assembly that the Presto object resides in.</param>
-        /// <param name="cluster">THe cluster instance associated with this domain.</param>
         public void CreatePrestoInstance(string assemblyName) {
             Assembly assembly = assemblies[assemblyName]; ;
             //get all types housed in the assembly
