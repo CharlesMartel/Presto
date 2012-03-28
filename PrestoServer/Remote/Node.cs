@@ -62,7 +62,10 @@ namespace Presto.Remote {
             client.SetDispatchAction(MessageType.VERIFICATION_RESPONSE, verificationResponse);
 
             //connect
-            client.Connect();
+            if (client.Connect()) {
+                Available = true;
+            }
+                
 
             //Send first verification.
             verify();

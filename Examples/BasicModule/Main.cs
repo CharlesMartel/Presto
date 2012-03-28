@@ -5,8 +5,6 @@ namespace BasicModule{
     [Serializable]
     public class Main : PrestoModule {
         public override void Load() {
-            string[] nodes = Cluster.GetAvailableNodes();
-
             DateTime begin = DateTime.Now;
             for (int i = 0; i < 100; i++) {
                 //push a new execution of the distributed function into the cluster
