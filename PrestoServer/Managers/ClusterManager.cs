@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Presto.Common;
-using Presto.Net;
 using Presto.Machine;
+using Presto.Net;
 using Presto.Transfers;
 
 namespace Presto.Managers {

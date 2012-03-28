@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Text;
 
 namespace Presto.Net {
@@ -109,8 +108,7 @@ namespace Presto.Net {
             long datalength = BitConverter.ToInt64(datalengtharray.ToArray(), 0);
             if (data.Count >= datalength + 8) {
                 messageFullyRecieved = true;
-            }
-            else {
+            } else {
                 messageFullyRecieved = false;
             }
         }

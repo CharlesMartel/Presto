@@ -126,8 +126,7 @@ namespace Presto.Net {
                                 newState.PreSetData(excessData);
                             } while (newState.IsFullyRecieved());
                             newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
-                        }
-                        else {
+                        } else {
                             newState.socket.BeginReceive(newState.Buffer, 0, ServerState.BufferSize, 0, new AsyncCallback(read), newState);
                         }
                     } else {
@@ -137,7 +136,7 @@ namespace Presto.Net {
                     //socket has been closed... handle it
                     //TODO: handle socket close
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 //The server was closed.
                 Log.Error(e.ToString());
             }

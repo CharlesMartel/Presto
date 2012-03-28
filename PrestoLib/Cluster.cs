@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
-using System.Runtime.CompilerServices;
 using Presto.Common;
-using System.IO;
 
 namespace Presto {
     /// <summary>
@@ -24,6 +21,15 @@ namespace Presto {
         /// </summary>
         public static event MessageReceivedHandler MessageRecieved;
 
+        /// <summary>
+        /// Event handler triggered when a Module or Application is being deconstructed and removed from the cluster.
+        /// </summary>
+        public delegate void UnloadingHandler();
+        /// <summary>
+        /// Event triggered directly before the deconstructiona and removal of a module or application from the cluster.
+        /// </summary>
+        public static event UnloadingHandler Unloading;
+
         //------------Properties--------------------//
 
         /// <summary>
@@ -35,10 +41,9 @@ namespace Presto {
         public static long CDPI;
 
         /// <summary>
-        /// A proxy out of the current domain and into the Presto server. This should not be overwritten or even accessed unless you
-        /// are fully aware of the consequences.
+        /// A proxy out of the current domain and into the Presto server. 
         /// </summary>
-        public static IClusterProxy ClusterProxy;
+        internal static IClusterProxy ClusterProxy;
 
         //we keep a list of all jobs currently out for processing
         private static Dictionary<string, Action<PrestoResult>> outboundJobs = new Dictionary<string, Action<PrestoResult>>();
@@ -82,7 +87,7 @@ namespace Presto {
         /// Returns an execution job to the cluster object to be dispatched to the calling module.
         /// </summary>
         /// <param id="result">The execution result object.</param>
-        public static void ReturnExecution(string contextID, PrestoResult result) {
+        internal static void ReturnExecution(string contextID, PrestoResult result) {
             outboundJobs[contextID].Invoke(result);
             outboundJobs.Remove(contextID);
             if (outboundJobs.Count < 1) {
@@ -105,16 +110,16 @@ namespace Presto {
         /// Consequently, this is the same ID given to the app domain under which this module or application will run.
         /// 
         /// </summary>
-        public static string GetInstanceKey(){
+        public static string GetInstanceKey() {
             return key;
         }
 
         /// <summary>
-        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
-        /// the receiving node calling MessageReceived event.
+        /// Send a message to the node with the specified ID. The message is delivered to 
+        /// the receiving node and calls the MessageReceived event.
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
-        /// <param name="message">The message to be sent. This message is UTF8 encoded on transport.</param>
+        /// <param name="message">The message to be sent.</param>
         public static void SendMessage(string nodeID, string message) {
             ClusterProxy.SendMessage(nodeID, message, key);
         }
@@ -124,8 +129,15 @@ namespace Presto {
         /// </summary>
         /// <param name="payload">The message sent.</param>
         /// <param name="sender"> The Node ID of the sending node.</param>
-        internal static void DeliverMessage(string payload, string sender){
+        internal static void DeliverMessage(string payload, string sender) {
             MessageRecieved(payload, sender);
+        }
+
+        /// <summary>
+        /// Trigger the unload event as a module or application has issued the Completion Signal.
+        /// </summary>
+        internal static void TriggerUnloading() {
+            Unloading();
         }
     }
 }

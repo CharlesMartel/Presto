@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
+﻿using System.Threading;
 using Presto.Common;
-using Presto.Net;
 using Presto.Managers;
+using Presto.Net;
 
 namespace Presto {
 
@@ -43,7 +40,7 @@ namespace Presto {
         /// <param id="domainKey">The domain key of the domain that this module will be executed in.</param>
         public static void ExecuteModule(string domainKey) {
             //finally execute the user module
-            DomainManager.ExecuteLoad(domainKey);            
+            DomainManager.ExecuteLoad(domainKey);
         }
 
         /// <summary>

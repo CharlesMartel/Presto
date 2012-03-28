@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Timers;
-using System.Reflection;
 using Presto.Common;
+using Presto.Managers;
 using Presto.Net;
 using Presto.Transfers;
-using Presto.Managers;
 
 namespace Presto.Remote {
     /// <summary>
@@ -90,7 +88,7 @@ namespace Presto.Remote {
         /// </summary>
         public void DeliverAssembly(string assemblyFullName, byte[] assemblyArray, string domainKey) {
             loadedAssemblies.Add(assemblyFullName);
-            if(!loadedDomains.Contains(domainKey)){
+            if (!loadedDomains.Contains(domainKey)) {
                 loadedDomains.Add(domainKey);
             }
 
@@ -152,12 +150,12 @@ namespace Presto.Remote {
         /// <param name="domainKey">The domain key of the domain.</param>
         /// <param name="assemblies">A string array of all the assemblies to be removed with the domain.</param>
         public void UnloadDomain(string domainKey, string[] assemblies) {
-            if(loadedDomains.Contains(domainKey)){
+            if (loadedDomains.Contains(domainKey)) {
                 client.Write(MessageType.DOMAIN_UNLOAD, domainKey);
                 loadedDomains.Remove(domainKey);
             }
             foreach (string assem in assemblies) {
-                if(loadedAssemblies.Contains(assem)){
+                if (loadedAssemblies.Contains(assem)) {
                     loadedAssemblies.Remove(assem);
                 }
             }
@@ -170,12 +168,10 @@ namespace Presto.Remote {
         private void verify() {
             if (client.IsConnected()) {
                 client.Write(MessageType.VERIFY);
-            }
-            else {
+            } else {
                 Available = false;
                 bool connected = client.ReConnect();
-                if (connected)
-                {
+                if (connected) {
                     Available = true;
                 }
             }
@@ -195,7 +191,7 @@ namespace Presto.Remote {
         /// </summary>
         /// <returns>Boolean</returns>
         public bool IsLocal() {
-            if(NodeID.Equals(ClusterManager.NodeID)){
+            if (NodeID.Equals(ClusterManager.NodeID)) {
                 return true;
             }
             return false;
@@ -257,8 +253,7 @@ namespace Presto.Remote {
         }
 
         /// <summary>
-        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
-        /// the receiving node calling MessageReceived event.
+        /// Send a message to the node with the specified ID.
         /// </summary>
         /// <param name="message">The user message struct to be sent.</param>
         public void SendMessage(UserMessage message) {

@@ -1,11 +1,10 @@
 using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Sockets;
 using System.Text;
-using Presto.Net;
 using Presto.Common;
+using Presto.Net;
 
 
 namespace Presto {
@@ -59,7 +58,7 @@ namespace Presto {
         public static void exec(string assemblyURL) {
             TcpClient client = new TcpClient();
             client.Connect("127.0.0.1", Int32.Parse(Config.GetParameter("SERVER_PORT")));
-            if(!File.Exists(assemblyURL)){
+            if (!File.Exists(assemblyURL)) {
                 assemblyURL += ".dll";
             }
             FileStream fs = File.OpenRead(assemblyURL);

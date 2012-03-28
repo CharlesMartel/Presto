@@ -1,7 +1,7 @@
-﻿using Presto.Machine;
-using Presto.Net;
-using Presto.Common;
+﻿using Presto.Common;
+using Presto.Machine;
 using Presto.Managers;
+using Presto.Net;
 using Presto.Remote;
 
 namespace Presto {

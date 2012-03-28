@@ -45,7 +45,7 @@ namespace Presto.Net {
         internal void PurgeBuffer(int bytesRead) {
             //we copy the bytes read out of the Buffer and add it to the data list
             data.AddRange(new List<byte>(Buffer).GetRange(0, bytesRead));
-            Buffer = new byte[BufferSize]; 
+            Buffer = new byte[BufferSize];
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Presto.Net {
         /// preset what data is in the data array.
         /// </summary>
         /// <param name="presetData">The data to preset the data array with.</param>
-        internal void PreSetData(byte[] presetData){
+        internal void PreSetData(byte[] presetData) {
             data.Clear();
             data.AddRange(presetData);
         }
@@ -148,8 +148,7 @@ namespace Presto.Net {
         /// </summary>
         /// <param name="data">the byte data to be written</param>
         private bool write(byte[] data) {
-            try
-            {
+            try {
                 long datalength = data.Length;
                 byte[] datalengtharray = BitConverter.GetBytes(datalength);
                 List<byte> holder = new List<byte>();
@@ -160,16 +159,14 @@ namespace Presto.Net {
                 //send the data
                 socket.Send(data);
                 return true;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 //there was a problem sending the data, return false so it will be readded to the queue
                 Log.Error(e.ToString());
                 return false;
             }
         }
 
-        
+
         /// <summary>
         /// Closes the ServerState's associated socket
         /// </summary>
@@ -200,8 +197,7 @@ namespace Presto.Net {
             long datalength = BitConverter.ToInt64(datalengtharray.ToArray(), 0);
             if (data.Count >= datalength + 8) {
                 messageFullyRecieved = true;
-            }
-            else {
+            } else {
                 messageFullyRecieved = false;
             }
         }

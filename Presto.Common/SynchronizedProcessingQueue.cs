@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace Presto.Common
-{
+namespace Presto.Common {
     /// <summary>
     /// Provides the ability to add things to a queue to be processed by a specefied function keeping the processing synchronous but not necessarily ordered.
     /// </summary>
     /// <typeparam name="T">The type of data the queue will hold.</typeparam>
-    public class SynchronizedProcessingQueue<T>
-    {
+    public class SynchronizedProcessingQueue<T> {
         //The queue of data
         private ConcurrentQueue<T> queue = new ConcurrentQueue<T>();
         //the queue count isnt persistent enough for us, we need another counter
         private int counter = 0;
         //the processing function
-        private Func<T,bool> processor;
+        private Func<T, bool> processor;
         //internal processing caller
         private Action internalProcessor;
         //is the data being processed
@@ -28,8 +25,7 @@ namespace Presto.Common
         /// Create a new Synchronized Processing Queue with the specified processing function.
         /// </summary>
         /// <param name="processingFunction">The function to process the incoming queue data.</param>
-        public SynchronizedProcessingQueue(Func<T, bool> processingFunction)
-        {
+        public SynchronizedProcessingQueue(Func<T, bool> processingFunction) {
             processor = processingFunction;
             internalProcessor = new Action(processQueue);
         }
@@ -38,15 +34,12 @@ namespace Presto.Common
         /// Add data to the queue. This data will then be processed by the specified processing function.
         /// </summary>
         /// <param name="data">The data added to the queue.</param>
-        public void Add(T data)
-        {
+        public void Add(T data) {
             //queue the data and signal the processor if it is not already running.
             queue.Enqueue(data);
-            lock (mutex)
-            {
+            lock (mutex) {
                 counter++;
-                if (!isProcessing)
-                {
+                if (!isProcessing) {
                     internalProcessor.BeginInvoke(null, null);
                 }
             }
@@ -55,38 +48,28 @@ namespace Presto.Common
         /// <summary>
         /// Process when data gets added to the queue.
         /// </summary>
-        private void processQueue()
-        {
-            lock (mutex)
-            {
+        private void processQueue() {
+            lock (mutex) {
                 isProcessing = true;
             }
             bool stillData = true;
-            while (stillData)
-            {
+            while (stillData) {
                 T data;
                 bool isdata = queue.TryDequeue(out data);
-                if (isdata)
-                {
+                if (isdata) {
                     bool processed = processor(data);
 
-                    lock (mutex)
-                    {
-                        if (processed)
-                        {
+                    lock (mutex) {
+                        if (processed) {
                             counter--;
-                        }
-                        else
-                        {
+                        } else {
                             //add data back into queue to be processed
                             queue.Enqueue(data);
                         }
                     }
                 }
-                lock (mutex)
-                {
-                    if (IsEmpty())
-                    {
+                lock (mutex) {
+                    if (IsEmpty()) {
                         stillData = false;
                         isProcessing = false;
                     }
@@ -100,10 +83,8 @@ namespace Presto.Common
         /// Either no data has been added or all data has been processed.
         /// </summary>
         /// <returns></returns>
-        public bool IsEmpty()
-        {
-            if (counter > 0)
-            {
+        public bool IsEmpty() {
+            if (counter > 0) {
                 return false;
             }
             return true;
@@ -115,10 +96,8 @@ namespace Presto.Common
         /// the queue. only when the queue has a chance to reach zero entries will the thread be allowed to continue.
         /// Please understand.. this is a work around because I suck.
         /// </summary>
-        public void Wait()
-        {
-            while (counter > 0)
-            {
+        public void Wait() {
+            while (counter > 0) {
                 Thread.Sleep(1);
             }
         }

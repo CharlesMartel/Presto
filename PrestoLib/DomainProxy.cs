@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 using Presto.Common;
 
@@ -44,7 +42,8 @@ namespace Presto {
         /// </summary>
         /// <param name="assemblyName">The full name of the assembly that the Presto object resides in.</param>
         public void CreatePrestoInstance(string assemblyName) {
-            Assembly assembly = assemblies[assemblyName]; ;
+            Assembly assembly = assemblies[assemblyName];
+            ;
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
             //create an instance of the PrestoModule
@@ -75,7 +74,7 @@ namespace Presto {
         /// </summary>
         public void ExecuteInstance() {
             Action moduleLoad = new Action(moduleInstance.Load);
-            moduleLoad.BeginInvoke(null, null); 
+            moduleLoad.BeginInvoke(null, null);
         }
 
 

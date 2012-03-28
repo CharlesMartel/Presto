@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace Presto {
     /// <summary>
     /// Provides a proxy out of the appdomain for cluster specific funtionality. This object gets tracked by the domain manager.
@@ -18,7 +14,7 @@ namespace Presto {
         /// <param name="contextid">The context id of this execution.</param>
         /// <param name="domainKey">The domain key of this domain.</param>
         void Execute(string assemblyName, string typeName, string methodName, byte[] param, string contextid, string domainKey);
-        
+
         /// <summary>
         /// Signal to the controlling presto server that the currently running module has finished its work
         /// and is ready to be disposed.
@@ -26,11 +22,10 @@ namespace Presto {
         void SignalComplete(string domainKey);
 
         /// <summary>
-        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
-        /// the receiving node calling MessageReceived event.
+        /// Send a message to the node with the specified ID.
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
-        /// <param name="message">The message to be sent. This message is UTF8 encoded on transport.</param>
+        /// <param name="message">The message to be sent.</param>
         /// <param name="domainKey">The key of the domain to deliver the message to.</param>
         void SendMessage(string nodeID, string message, string domainKey);
     }

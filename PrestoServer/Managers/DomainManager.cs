@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using Presto.Common;
-using Presto.Transfers;
 using Presto.Remote;
+using Presto.Transfers;
 
 namespace Presto.Managers {
 
@@ -56,10 +53,10 @@ namespace Presto.Managers {
         /// <param name="domainKey">The string key of the domain to be loaded into.</param>
         /// <param name="assemblyStream">The COFF byte array of the assembly.</param>
         /// <param name="createInstance">By default we also create a new module instance upon loading the assembly.</param>
-        public static void LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream, bool createInstance = true){
+        public static void LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream, bool createInstance = true) {
             DomainProxy proxy = proxies[domainKey];
             string assemblyName = proxy.LoadAssembly(assemblyStream);
-            if(assemblies.ContainsKey(assemblyName)){
+            if (assemblies.ContainsKey(assemblyName)) {
                 assemblies.Remove(assemblyName);
             }
             assemblies.Add(assemblyName, assemblyStream);
@@ -83,7 +80,7 @@ namespace Presto.Managers {
         /// </summary>
         /// <param name="domainKey">The key of the domain to be destroyed.</param>
         /// <param name="instanceSignal">Specefies whether or not the Destroy domain signal came from a local instance.</param>
-        public static void DestroyDomain(string domainKey, bool instanceSignal = false){
+        public static void DestroyDomain(string domainKey, bool instanceSignal = false) {
             if (!domains.ContainsKey(domainKey)) {
                 return;
             }
@@ -94,7 +91,7 @@ namespace Presto.Managers {
                 return;
             }
             foreach (string assem in proxy.GetAssemblyNames()) {
-                if (assemblies.ContainsKey(assem)){
+                if (assemblies.ContainsKey(assem)) {
                     assemblies.Remove(assem);
                 }
             }
@@ -109,7 +106,7 @@ namespace Presto.Managers {
         /// <param name="domainKey">The key of the domain to check for.</param>
         /// <returns></returns>
         public static bool HasDomain(string domainKey) {
-            if(domains.ContainsKey(domainKey)){
+            if (domains.ContainsKey(domainKey)) {
                 return true;
             }
             return false;
@@ -156,7 +153,7 @@ namespace Presto.Managers {
         public static byte[] ExecuteIncoming(ExecutionContext context) {
             DomainProxy proxy = proxies[context.DomainKey];
             return proxy.ExecuteIncoming(context.MethodName, context.TypeName, context.AssemblyName, context.Parameter);
-        } 
+        }
 
         /// <summary>
         /// Return an execution from the cluster and give it back to the correct domain.
@@ -175,8 +172,7 @@ namespace Presto.Managers {
             if (domains.ContainsKey(message.DomainKey)) {
                 DomainProxy proxy = proxies[message.DomainKey];
                 proxy.DeliverMessage(message.Message, message.Sender);
-            }
-            else {
+            } else {
                 Log.Error("No domain with key: " + message.DomainKey + " was found to deliver message: \"" + message.Message + "\" from: NodeID: " + message.Sender);
             }
         }

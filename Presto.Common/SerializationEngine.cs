@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Linq;
-using System.Text;
 
 namespace Presto.Common {
 
@@ -26,12 +24,12 @@ namespace Presto.Common {
         /// <returns>The serialization stream of the object.</returns>
         public static byte[] Serialize(Object obj) {
             MemoryStream stream = new MemoryStream();
-            lock (locker) {                
+            lock (locker) {
                 serializer.Serialize(stream, obj);
             }
             byte[] serialized = stream.ToArray();
             stream.Dispose();
-            return serialized;            
+            return serialized;
         }
 
         /// <summary>
@@ -44,11 +42,11 @@ namespace Presto.Common {
             MemoryStream stream = new MemoryStream(bytes);
             serializer.AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;
             serializer.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
-            lock (locker) {                
-                 obj = (Object)serializer.Deserialize(stream);
+            lock (locker) {
+                obj = (Object)serializer.Deserialize(stream);
             }
             stream.Dispose();
-            return obj;            
+            return obj;
         }
 
         //I took this from http://social.msdn.microsoft.com/forums/en-US/netfxbcl/thread/fec7ea31-5241-4fbd-a9c7-9ae602e172d4/
@@ -69,8 +67,7 @@ namespace Presto.Common {
                                 string asmName = asmTmp.Remove(asmTmp.IndexOf(']')).Trim();
                                 string typName = typ.Remove(typ.IndexOf(','));
                                 tmpTypes.Add(BindToType(asmName, typName));
-                            }
-                            else if (typ.Contains("Generic")) {
+                            } else if (typ.Contains("Generic")) {
                                 genType = BindToType(assemblyName, typ);
                             }
                         }
@@ -87,8 +84,7 @@ namespace Presto.Common {
                             break;
                         }
                     }
-                }
-                catch (System.Exception exception) {
+                } catch (System.Exception exception) {
                     throw exception;
                 }
                 return typeToDeserialize;

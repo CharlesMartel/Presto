@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -92,8 +91,7 @@ namespace Presto.Net {
                 ClientState state = new ClientState(tcpClient);
                 nStream.BeginRead(state.Buffer, 0, state.Buffer.Length, readCallback, state);
                 return true;
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 Log.Error(e.ToString());
                 return false;
             }
@@ -139,16 +137,14 @@ namespace Presto.Net {
         /// </summary>
         /// <param name="mType">The message type.</param>
         /// <param name="data">A byte array of the data to be written.</param>
-        public void WaitWrite(MessageType mType, byte[] data)
-        {
+        public void WaitWrite(MessageType mType, byte[] data) {
             //get the message type in bytes
             byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(mType);
 
             //combine the messagetype and data byte arrays
             List<byte> output = new List<byte>();
             output.AddRange(messageTypeEncoded);
-            if (data != null && data.Length != 0)
-            {
+            if (data != null && data.Length != 0) {
                 output.AddRange(data);
             }
 
@@ -162,8 +158,7 @@ namespace Presto.Net {
         /// </summary>
         /// <param name="data">The byte data to be written</param>
         private bool write(byte[] data) {
-            try
-            {
+            try {
                 long datalength = data.Length;
                 byte[] datalengtharray = BitConverter.GetBytes(datalength);
                 List<byte> holder = new List<byte>();
@@ -176,9 +171,7 @@ namespace Presto.Net {
                 //Start the synchronous Write
                 nStream.Write(data, 0, data.Length);
                 return true;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 // the connection was closed return false and the synchronizer will take care of it
                 Log.Error(e.ToString());
                 return false;
@@ -224,10 +217,9 @@ namespace Presto.Net {
                             newState.PreSetData(excessData);
                         } while (newState.IsFullyRecieved());
                         nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
-                    }
-                    else {
+                    } else {
                         nStream.BeginRead(newState.Buffer, 0, ClientState.BufferSize, readCallback, newState);
-                    }                   
+                    }
                 } else {
                     nStream.BeginRead(state.Buffer, 0, ClientState.BufferSize, readCallback, state);
                 }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Presto.Transfers;
+﻿using System.Collections.Generic;
 using Presto.Common;
 using Presto.Managers;
+using Presto.Transfers;
 
 namespace Presto.Remote {
 
@@ -49,11 +47,9 @@ namespace Presto.Remote {
             Node bestNode = null;
             float currentLoad = float.MaxValue;
             foreach (Node current in nodes) {
-                if (!current.Available)
-                {
+                if (!current.Available) {
                     float estLoad = current.EstimatedLoad();
-                    if (estLoad < currentLoad)
-                    {
+                    if (estLoad < currentLoad) {
                         currentLoad = estLoad;
                         bestNode = current;
                     }
@@ -66,7 +62,7 @@ namespace Presto.Remote {
         /// Gets the number of nodes in the cluster.
         /// </summary>
         /// <returns>The number of nodes in the cluster.</returns>
-        public static int GetNodeCount(){
+        public static int GetNodeCount() {
             return Count;
         }
 
@@ -100,8 +96,8 @@ namespace Presto.Remote {
         /// </summary>
         /// <param name="domainKey">The key of the domain to be unloaded.</param>
         /// <param name="assemblyNames">The names of the assemblies loaded for this domain.</param>
-        public static void UnloadDomain(string domainKey, string[] assemblyNames){
-            foreach(Node currentNode in nodes){
+        public static void UnloadDomain(string domainKey, string[] assemblyNames) {
+            foreach (Node currentNode in nodes) {
                 if (currentNode.HasDomain(domainKey)) {
                     currentNode.UnloadDomain(domainKey, assemblyNames);
                 }
@@ -109,19 +105,17 @@ namespace Presto.Remote {
         }
 
         /// <summary>
-        /// Send a message to the node with the specified ID. The message is UTF8 encoded on transport and is delivered to 
-        /// the receiving node calling MessageReceived event.
+        /// Send a message to the node with the specified ID.
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
-        /// <param name="message">The message to be sent. This message is UTF8 encoded on transport.</param>
+        /// <param name="message">The message to be sent.</param>
         /// <param name="domainKey">The domain key to deliver the message to.</param>
         public static void SendMessage(string nodeID, string message, string domainKey) {
             Node remoteNode = getNodeByID(nodeID);
             if (remoteNode != null) {
                 UserMessage mesg = new UserMessage(message, ClusterManager.NodeID, domainKey);
                 remoteNode.SendMessage(mesg);
-            }
-            else {
+            } else {
                 //No node could be found matching the specefied id, log error and lost message
                 Log.Error("No node with ID: " + nodeID + " could be found to dispatch message: \"" + message + "\" to.");
             }
@@ -132,10 +126,9 @@ namespace Presto.Remote {
         /// </summary>
         /// <param name="id">The id of the node to retrieve.</param>
         /// <returns></returns>
-        private static Node getNodeByID(string id){
-            foreach(Node node in nodes)
-            {
-                if (node.NodeID == id){
+        private static Node getNodeByID(string id) {
+            foreach (Node node in nodes) {
+                if (node.NodeID == id) {
                     return node;
                 }
             }
