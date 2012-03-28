@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Presto.Transfers;
+using Presto.Common;
+using Presto.Managers;
 
-namespace Presto {
+namespace Presto.Remote {
 
     /// <summary>
     /// A static class holding a listing of all node instances and methods to manipulate them

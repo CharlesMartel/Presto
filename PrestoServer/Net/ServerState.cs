@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using Presto.Common;
 
 namespace Presto.Net {
     /// <summary>

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using Presto.Common;
 using Presto.Net;
+using Presto.Managers;
 
 namespace Presto {
 

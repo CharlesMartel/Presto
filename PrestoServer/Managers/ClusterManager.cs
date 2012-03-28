@@ -7,7 +7,7 @@ using Presto.Net;
 using Presto.Machine;
 using Presto.Transfers;
 
-namespace Presto {
+namespace Presto.Managers {
 
     /// <summary>
     /// Each loaded module or application will have its own cluster object assigned to it. This global cluster allows for management of those cluster objects and an

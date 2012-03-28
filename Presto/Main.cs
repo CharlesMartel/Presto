@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Text;
 using Presto.Net;
+using Presto.Common;
 
 
 namespace Presto {

@@ -53,10 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="ClusterProxy.cs" />
-    <Compile Include="DomainManager.cs" />
-    <Compile Include="ClusterManager.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Managers\ClusterProxy.cs" />
+    <Compile Include="Managers\DomainManager.cs" />
+    <Compile Include="Managers\ClusterManager.cs" />
     <Compile Include="Machine\CPU.cs" />
     <Compile Include="Machine\DPI.cs" />
     <Compile Include="Machine\Memory.cs" />
@@ -64,7 +63,6 @@
     <Compile Include="Net\ServerState.cs" />
     <Compile Include="Net\TCPClient.cs" />
     <Compile Include="Net\TCPServer.cs" />
-    <Compile Include="SynchronizedProcessingQueue.cs" />
     <Compile Include="Transfers\ExecutionContext.cs" />
     <Compile Include="Transfers\ExecutionResult.cs" />
     <Compile Include="Executor.cs" />
@@ -72,8 +70,8 @@
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Nodes.cs" />
+    <Compile Include="Remote\Node.cs" />
+    <Compile Include="Remote\Nodes.cs" />
     <Compile Include="Transfers\SlaveAssembly.cs" />
     <Compile Include="Transfers\UserMessage.cs" />
     <Compile Include="Transfers\Verification.cs" />

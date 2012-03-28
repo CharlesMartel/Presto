@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Presto.Transfers;
+using Presto.Remote;
 
-namespace Presto {
+namespace Presto.Managers {
 
     /// <summary>
     /// Proxies requests out of the app domain and into the cluster.

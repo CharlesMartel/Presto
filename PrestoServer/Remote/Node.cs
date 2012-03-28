@@ -6,8 +6,9 @@ using System.Reflection;
 using Presto.Common;
 using Presto.Net;
 using Presto.Transfers;
+using Presto.Managers;
 
-namespace Presto {
+namespace Presto.Remote {
     /// <summary>
     /// Holds each instance of connected Presto Servers, the connection to them, and information about the instance.
     /// </summary>

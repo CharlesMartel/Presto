@@ -1,5 +1,8 @@
 ﻿using Presto.Machine;
 using Presto.Net;
+using Presto.Common;
+using Presto.Managers;
+using Presto.Remote;
 
 namespace Presto {
     /// <summary>

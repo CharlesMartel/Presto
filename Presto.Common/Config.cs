@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Presto {
+namespace Presto.Common {
     /// <summary>
     /// Holds all configuration parameters for the PrestoServer
     /// </summary>

@@ -1,6 +1,7 @@
 ﻿using Presto.Common;
 using Presto.Net;
 using Presto.Transfers;
+using Presto.Managers;
 
 namespace Presto {
 

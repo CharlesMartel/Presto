@@ -5,8 +5,9 @@ using System.Text;
 using System.Reflection;
 using Presto.Common;
 using Presto.Transfers;
+using Presto.Remote;
 
-namespace Presto {
+namespace Presto.Managers {
 
     /// <summary>
     /// Stores and manages all created domains.

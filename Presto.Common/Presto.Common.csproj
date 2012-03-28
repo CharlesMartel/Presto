@@ -36,8 +36,10 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Net\MessageType.cs" />
     <Compile Include="SerializationEngine.cs" />
+    <Compile Include="SynchronizedProcessingQueue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

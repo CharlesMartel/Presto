@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Presto.Common;
 
 namespace Presto.Machine {
 

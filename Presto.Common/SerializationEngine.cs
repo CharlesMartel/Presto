@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using System.Text;
 
-namespace Presto {
+namespace Presto.Common {
 
     /// <summary>
     /// Handles serialization throughout the Presto Server
