@@ -1,7 +1,7 @@
 ﻿using System;
 using Presto;
 
-namespace Basic {
+namespace BasicModule{
     [Serializable]
     public class Main : PrestoModule {
         public override void Load() {

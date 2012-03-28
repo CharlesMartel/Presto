@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibPresto", "PrestoLib\LibP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presto.Common", "Presto.Common\Presto.Common.csproj", "{5CE03B15-134F-436C-9822-F41D889BBD3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Basic", "Examples\Basic\Basic.csproj", "{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C4D7BF4F-42B4-4679-9C40-63B4262FB40E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{90EA8EE9-900B-4A4F-A3BF-DBDDC953CCC9}"
@@ -21,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Profiling", "Profiling", "{
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{EC76E759-30B3-4B28-B18C-55FBA3531267}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicModule", "Examples\BasicModule\BasicModule.csproj", "{A1F80A8A-7A42-4A2E-8AAF-D3E01F6ECE16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

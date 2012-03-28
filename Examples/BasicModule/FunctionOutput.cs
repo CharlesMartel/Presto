@@ -1,7 +1,7 @@
 ﻿using System;
 using Presto;
 
-namespace Basic {
+namespace BasicModule {
     [Serializable]
     class FunctionOutput : PrestoResult {
         public int value;
