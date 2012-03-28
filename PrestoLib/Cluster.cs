@@ -139,5 +139,13 @@ namespace Presto {
         internal static void TriggerUnloading() {
             Unloading();
         }
+
+        /// <summary>
+        /// Get the IDs of all nodes available to this application or module.
+        /// </summary>
+        /// <returns>List of all node IDs available to this application or module.</returns>
+        public static string[] GetAvailableNodes() {
+            return ClusterProxy.GetAvailableNodes(key);
+        }
     }
 }

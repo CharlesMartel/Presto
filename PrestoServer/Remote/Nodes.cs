@@ -70,7 +70,7 @@ namespace Presto.Remote {
         /// Gets the number of active nodes in the cluster.
         /// </summary>
         /// <returns>The number of available nodes in the cluster.</returns>
-        public static int GetAvailableNodeCount() {
+        public static int GetTotalAvailableNodeCount() {
             int counter = 0;
             for (int i = 0; i < nodes.Count; i++) {
                 if (nodes[i].Available) {
@@ -133,6 +133,16 @@ namespace Presto.Remote {
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Get all nodes a particular cluster is allowed to access. Since the functionality for partial clusters has not yet been implemented,
+        /// returns all nodes.
+        /// </summary>
+        /// <param name="domainKey">The domain key to get associated nodes for.</param>
+        /// <returns>Array of nodes available to a single instance.</returns>
+        public static Node[] GetAssociatedNodes(string domainKey){
+            return nodes.ToArray();
         }
     }
 }

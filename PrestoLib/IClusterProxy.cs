@@ -28,5 +28,12 @@ namespace Presto {
         /// <param name="message">The message to be sent.</param>
         /// <param name="domainKey">The key of the domain to deliver the message to.</param>
         void SendMessage(string nodeID, string message, string domainKey);
+
+        /// <summary>
+        /// Get the IDs of all nodes available to this application or module.
+        /// </summary>
+        /// <param name="domainKey">The domain key associated with the requesting domain.</param>
+        /// <returns>List of all node IDs available to this application or module.</returns>
+        string[] GetAvailableNodes(string domainKey);
     }
 }

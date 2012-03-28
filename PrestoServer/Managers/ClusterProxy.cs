@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Presto.Remote;
 using Presto.Transfers;
 
@@ -39,6 +40,22 @@ namespace Presto.Managers {
         /// <param name="domainKey"> The key of the domain to deliver the message to.</param>
         public void SendMessage(string nodeID, string message, string domainKey) {
             Nodes.SendMessage(nodeID, message, domainKey);
+        }
+
+        /// <summary>
+        /// Get the IDs of all nodes available to this application or module.
+        /// </summary>
+        /// <param name="domainKey">The domain key associated with the requesting domain.</param>
+        /// <returns>List of all node IDs available to this application or module.</returns>
+        public string[] GetAvailableNodes(string domainKey) {
+            Node[] associatedNodes = Nodes.GetAssociatedNodes(domainKey);
+            List<string> NodeIDs = new List<string>();
+            foreach (Node node in associatedNodes) {
+                if (node.Available) {
+                    NodeIDs.Add(node.NodeID);
+                }
+            }
+            return NodeIDs.ToArray();
         }
     }
 }
