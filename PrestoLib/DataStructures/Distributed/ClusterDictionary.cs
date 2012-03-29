@@ -6,57 +6,71 @@ using Presto.DataStructures.Distributed.Policies;
 
 namespace Presto.DataStructures.Distributed {
     
-    public class ClusterDictionary<T> where T : struct {
+
+    public class AsyncClusterDictionary<T> where T : struct {
 
         /// <summary>
         /// The conflict resolution policy for conflicting data.
         /// </summary>
-        private ConflictResolution ConflictResolutionPolicy = ConflictResolution.CHRONOLOGICAL;            
+        public readonly ConflictResolution ConflictResolutionPolicy;
 
         /// <summary>
-        /// The distribution method for the dictionary.
+        /// The distribution method for the map.
         /// </summary>
-        private DistributionMethod ClusterDistributionMethod = DistributionMethod.FULLY_DISTRIBUTED;
+        public readonly DistributionMethod ClusterDistributionMethod;
 
         /// <summary>
         /// The update interval for which data is broadcast to subscribing nodes.
         /// </summary>
-        private UpdateInterval UpdateIntervalPolicy = UpdateInterval.IMMEDIATE;
+        public readonly UpdateInterval UpdateIntervalPolicy;
 
         /// <summary>
-        /// The cluster dictionary is more or less a simple wrapper for a standard dictionary. This is the internal dictionary.
+        /// The initialization policy for deciding how data gets loaded up initialization.
         /// </summary>
-        private Dictionary<string, T> dictionary = new Dictionary<string,T>();
+        public readonly Initialization InitializationPolicy;
 
         /// <summary>
-        /// Create a new cluster dictionary, only called internally.
+        /// The cluster dictionary is more or less a simple wrapper for a standard dictionary that maintains state across many machines.
+        /// This is the internal dictionary.
         /// </summary>
-        internal ClusterDictionary () {
+        private Dictionary<string, T> map = new Dictionary<string,T>();
+
+        /// <summary>
+        /// The function assigned to act as the setter for the map.
+        /// </summary>
+        private Action<T> setter;
+
+        /// <summary>
+        /// The function assigned to act as the getter for the map.
+        /// </summary>
+        private Action<string> getter;
+
+        /// <summary>
+        /// Create a new cluster map, only called internally.
+        /// </summary>
+        internal AsyncClusterDictionary (ConflictResolution conflictResolutionPolicy = ConflictResolution.CHRONOLOGICAL,
+                                    DistributionMethod clusterDistributionMethod = DistributionMethod.FULLY_DISTRIBUTED,
+                                    UpdateInterval updateIntervalPolicy = UpdateInterval.IMMEDIATE,
+                                    Initialization initializationPolicy = Initialization.LAZY) {
+            ConflictResolutionPolicy = conflictResolutionPolicy;
+            ClusterDistributionMethod = clusterDistributionMethod;
+            UpdateIntervalPolicy = updateIntervalPolicy;
+            InitializationPolicy = initializationPolicy;
+            initialize ();
         }
 
         /// <summary>
-        /// Gets or sets the value associated with a specefied key.
+        /// Initialize this instance.
         /// </summary>
-        /// <param name="key">The key of the value to get or set.</param>
-        /// <returns></returns>
-        public T this[string key] {
+        private void initialize () {
+        }
+
+        public void Get (string key, Action<IAsyncResult> callback) {
+
+        }
+
+        public void Set (string key, T value, Action<IAsyncResult> callback) {
             
-            get {
-                return getValue(key);
-            }
-
-            set {
-            }
-
-        }
-
-        /// <summary>
-        /// Get the value at a particular key.
-        /// </summary>
-        /// <param name="key">The key to obtain the value from.</param>
-        /// <returns>The value held at the specefied key or null.</returns>
-        private T getValue(string key) {
-
         }
 
     }

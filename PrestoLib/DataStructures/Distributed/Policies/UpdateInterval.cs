@@ -8,7 +8,7 @@ namespace Presto.DataStructures.Distributed.Policies {
     /// <summary>
     /// Specifies the intervals for which changed data should be updated throughout the cluster.
     /// </summary>
-    enum UpdateInterval {
+    public enum UpdateInterval {
         /// <summary>
         /// Update data messages are sent every time a datum is changed.
         /// </summary>
