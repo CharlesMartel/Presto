@@ -1,5 +1,5 @@
 ﻿
-namespace Presto {
+namespace Presto.Managers {
     /// <summary>
     /// Provides a proxy out of the appdomain for cluster specific funtionality. This object gets tracked by the domain manager.
     /// </summary>

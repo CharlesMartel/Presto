@@ -36,8 +36,14 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Cluster.cs" />
-    <Compile Include="DomainProxy.cs" />
-    <Compile Include="IClusterProxy.cs" />
+    <Compile Include="DataStructures\Distributed\ClusterDictionary.cs" />
+    <Compile Include="DataStructures\Distributed\Policies\ConflictResolution.cs" />
+    <Compile Include="DataStructures\Distributed\Policies\DistributionMethod.cs" />
+    <Compile Include="DataStructures\Distributed\Policies\UpdateInterval.cs" />
+    <Compile Include="DataStructures\DataStructureFactory.cs" />
+    <Compile Include="Managers\DomainProxy.cs" />
+    <Compile Include="Managers\IClusterProxy.cs" />
+    <Compile Include="Managers\IDataProxy.cs" />
     <Compile Include="PrestoModule.cs" />
     <Compile Include="PrestoParameter.cs" />
     <Compile Include="PrestoResult.cs" />
@@ -48,5 +54,6 @@
       <Name>Presto.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

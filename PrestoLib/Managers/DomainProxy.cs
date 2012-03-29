@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Presto.Common;
 
-namespace Presto {
+namespace Presto.Managers {
 
     /// <summary>
     /// Allows for proxy access into a module or applications domain from the controlling Presto instance.

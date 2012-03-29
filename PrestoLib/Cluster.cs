@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Presto.Common;
+using Presto.Managers;
 
 namespace Presto {
     /// <summary>

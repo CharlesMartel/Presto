@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Presto.Common;
 using Presto.Remote;
 using Presto.Transfers;
+using Presto.Managers;
 
 namespace Presto.Managers {
 
@@ -18,7 +19,7 @@ namespace Presto.Managers {
         /// <summary>
         /// Internal hashmap of domains and their proxy instances.
         /// </summary>
-        private static Dictionary<string, Presto.DomainProxy> proxies = new Dictionary<string, Presto.DomainProxy>();
+        private static Dictionary<string, DomainProxy> proxies = new Dictionary<string, DomainProxy>();
         /// <summary>
         /// COFF images of assemblies according to their full names.
         /// </summary>
@@ -38,7 +39,7 @@ namespace Presto.Managers {
                 newDomain.Load(item);
             }
             //create the domain proxy
-            Presto.DomainProxy proxy = (Presto.DomainProxy)newDomain.CreateInstanceAndUnwrap(typeof(Presto.DomainProxy).Assembly.FullName, typeof(Presto.DomainProxy).FullName);
+            DomainProxy proxy = (DomainProxy)newDomain.CreateInstanceAndUnwrap(typeof(DomainProxy).Assembly.FullName, typeof(DomainProxy).FullName);
             //create the cluster proxy
             ClusterProxy cproxy = new ClusterProxy();
             proxy.ConfigureCluster(cproxy, domainKey);
