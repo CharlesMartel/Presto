@@ -11,15 +11,13 @@ namespace Presto.Common {
         //The queue of data
         private ConcurrentQueue<T> queue = new ConcurrentQueue<T>();
         //the queue count isnt persistent enough for us, we need another counter
-        private int counter = 0;
+        private long counter = 0;
         //the processing function
         private Func<T, bool> processor;
         //internal processing caller
         private Action internalProcessor;
         //is the data being processed
-        private bool isProcessing = false;
-        //an internal sync mutex to keep timing correct
-        private object mutex = new object();
+        private long isProcessing = 0;
 
         /// <summary>
         /// Create a new Synchronized Processing Queue with the specified processing function.
@@ -37,11 +35,9 @@ namespace Presto.Common {
         public void Add(T data) {
             //queue the data and signal the processor if it is not already running.
             queue.Enqueue(data);
-            lock (mutex) {
-                counter++;
-                if (!isProcessing) {
-                    internalProcessor.BeginInvoke(null, null);
-                }
+            Interlocked.Increment(ref counter);
+            if (Interlocked.Read(ref isProcessing) < 1) {
+                internalProcessor.BeginInvoke(null, null);
             }
         }
 
@@ -49,30 +45,24 @@ namespace Presto.Common {
         /// Process when data gets added to the queue.
         /// </summary>
         private void processQueue() {
-            lock (mutex) {
-                isProcessing = true;
-            }
+            Interlocked.Increment(ref isProcessing);
             bool stillData = true;
             while (stillData) {
                 T data;
                 bool isdata = queue.TryDequeue(out data);
                 if (isdata) {
+                    //process the data.
                     bool processed = processor(data);
-
-                    lock (mutex) {
-                        if (processed) {
-                            counter--;
-                        } else {
-                            //add data back into queue to be processed
-                            queue.Enqueue(data);
-                        }
+                    if (processed) {
+                        Interlocked.Decrement(ref counter);
+                    } else {
+                        //add data back into queue to be processed
+                        queue.Enqueue(data);
                     }
                 }
-                lock (mutex) {
-                    if (IsEmpty()) {
-                        stillData = false;
-                        isProcessing = false;
-                    }
+                if (IsEmpty()) {
+                    stillData = false;
+                    Interlocked.Decrement(ref isProcessing);
                 }
             }
 
@@ -84,7 +74,7 @@ namespace Presto.Common {
         /// </summary>
         /// <returns></returns>
         public bool IsEmpty() {
-            if (counter > 0) {
+            if (Interlocked.Read(ref counter) > 0) {
                 return false;
             }
             return true;
@@ -97,7 +87,7 @@ namespace Presto.Common {
         /// Please understand.. this is a work around because I suck.
         /// </summary>
         public void Wait() {
-            while (counter > 0) {
+            while (Interlocked.Read(ref counter) > 0) {
                 Thread.Sleep(1);
             }
         }

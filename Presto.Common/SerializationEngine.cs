@@ -13,9 +13,7 @@ namespace Presto.Common {
     public static class SerializationEngine {
 
         //an internal soap serializer
-        private static BinaryFormatter serializer = new BinaryFormatter();
-        //apparantly the serializer is not thread safe... found that out the hard way
-        private static object locker = new object();
+        public static BinaryFormatter serializer = new BinaryFormatter();
 
         /// <summary>
         /// Serializes the passed in object.
@@ -24,9 +22,7 @@ namespace Presto.Common {
         /// <returns>The serialization stream of the object.</returns>
         public static byte[] Serialize(Object obj) {
             MemoryStream stream = new MemoryStream();
-            lock (locker) {
-                serializer.Serialize(stream, obj);
-            }
+            serializer.Serialize(stream, obj);
             byte[] serialized = stream.ToArray();
             stream.Dispose();
             return serialized;
@@ -42,9 +38,7 @@ namespace Presto.Common {
             MemoryStream stream = new MemoryStream(bytes);
             serializer.AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;
             serializer.Binder = new VersionConfigToNamespaceAssemblyObjectBinder();
-            lock (locker) {
-                obj = (Object)serializer.Deserialize(stream);
-            }
+            obj = (Object)serializer.Deserialize(stream);
             stream.Dispose();
             return obj;
         }

@@ -138,7 +138,9 @@ namespace Presto {
         /// Trigger the unload event as a module or application has issued the Completion Signal.
         /// </summary>
         internal static void TriggerUnloading() {
-            Unloading();
+            if (Unloading != null) {
+                Unloading();
+            }
         }
 
         /// <summary>

@@ -10,6 +10,8 @@ namespace Presto.DataStructures {
     /// </summary>
     public static class DataStructures {
 
+        
+
         /// <summary>
         /// Load a map if one wiht the name specefied already exists in the cluster, otherwise
         /// create a new map with that name.

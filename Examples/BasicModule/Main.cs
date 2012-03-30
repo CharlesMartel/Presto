@@ -2,22 +2,31 @@
 using Presto;
 
 namespace BasicModule{
-    [Serializable]
+
     public class Main : PrestoModule {
+        public static long numjobs = 0;
         public override void Load() {
+            //get the start time of the operation
             DateTime begin = DateTime.Now;
-            for (int i = 0; i < 100; i++) {
+
+            //throw 100 jobs at the cluster.
+            for (int i = 0; i < 1000; i++) {
                 //push a new execution of the distributed function into the cluster
                 FunctionInput input = new FunctionInput();
                 input.value = i;
-                Cluster.Execute(distributedFunction, input, functionCallback);
+                Cluster.Execute(distributedFunction, input, callback);
             }
-            //We can force a block untill all jobs return from the cluster.
+
+            //We can force a block until all jobs return from the cluster.
             Cluster.Wait();
+
+            //get the end time of the operation.
             DateTime end = DateTime.Now;
             TimeSpan lot = end - begin;
+
             //Write the length of time to the console.
             Console.WriteLine("Time taken: " + lot.ToString());
+            Console.WriteLine("Number of jobs: " + System.Threading.Interlocked.Read(ref numjobs));
             //Cleanup and Complete.
             SignalComplete();
         }
@@ -31,9 +40,10 @@ namespace BasicModule{
         }
 
         //The callback called after the function completes.
-        public static void functionCallback(PrestoResult result) {
+        public static void callback(PrestoResult result) {
             FunctionOutput output = (FunctionOutput)result;
             Console.WriteLine("Execution number: " + output.value + " from node id: " + output.ExecutionNodeID);
+            System.Threading.Interlocked.Increment(ref numjobs);
         }
     }
 

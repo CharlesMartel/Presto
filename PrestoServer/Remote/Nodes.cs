@@ -47,7 +47,7 @@ namespace Presto.Remote {
             Node bestNode = null;
             float currentLoad = float.MaxValue;
             foreach (Node current in nodes) {
-                if (!current.Available) {
+                if (current.Available) {
                     float estLoad = current.EstimatedLoad();
                     if (estLoad < currentLoad) {
                         currentLoad = estLoad;
