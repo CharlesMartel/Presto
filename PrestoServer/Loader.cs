@@ -41,7 +41,8 @@ namespace Presto {
         /// <param id="state">The server state object recieved along with this event.</param>
         private static void recieveAssemblySlave(ServerState state) {
             //get the slave assembly struct
-            SlaveAssembly slaveAssembly = (SlaveAssembly)SerializationEngine.Deserialize(state.GetDataArray());
+            SerializationEngine serializer = new SerializationEngine ();
+            SlaveAssembly slaveAssembly = (SlaveAssembly)serializer.Deserialize(state.GetDataArray());
             //create the domain and add the assembly to it
             DomainManager.CreateDomain(slaveAssembly.DomainKey);
             DomainManager.LoadAssemblyIntoDomain(slaveAssembly.DomainKey, slaveAssembly.AssemblyImage);

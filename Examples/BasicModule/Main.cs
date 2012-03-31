@@ -10,7 +10,7 @@ namespace BasicModule{
             DateTime begin = DateTime.Now;
 
             //throw 100 jobs at the cluster.
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10000; i++) {
                 //push a new execution of the distributed function into the cluster
                 FunctionInput input = new FunctionInput();
                 input.value = i;

@@ -31,7 +31,8 @@ namespace Presto.Managers {
         /// <param id="state">The server state object.</param>
         private static void verifyResponse(ServerState state) {
             Transfers.Verification verification = new Transfers.Verification(NodeID, DPI.GetDPI(), CPU.GetCount(), Executor.RunningJobs());
-            state.Write(MessageType.VERIFICATION_RESPONSE, SerializationEngine.Serialize(verification).ToArray());
+            SerializationEngine serializer = new SerializationEngine ();
+            state.Write(MessageType.VERIFICATION_RESPONSE, serializer.Serialize(verification).ToArray());
         }
 
         /// <summary>
@@ -39,7 +40,8 @@ namespace Presto.Managers {
         /// </summary>
         /// <param name="state">The server state object of this transfer.</param>
         private static void receiveMessage(ServerState state) {
-            UserMessage message = (UserMessage)SerializationEngine.Deserialize(state.GetDataArray());
+            SerializationEngine serializer = new SerializationEngine ();
+            UserMessage message = (UserMessage)serializer.Deserialize(state.GetDataArray());
             DomainManager.DeliverMessage(message);
         }
     }

@@ -97,7 +97,8 @@ namespace Presto.Remote {
 
             if (NodeID != ClusterManager.NodeID) {
                 SlaveAssembly slavePackage = new SlaveAssembly(assemblyArray, domainKey);
-                client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, SerializationEngine.Serialize(slavePackage));
+                SerializationEngine serializer = new SerializationEngine ();
+                client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, serializer.Serialize(slavePackage));
                 assemblyLoadReset.Reset();
             }
         }
@@ -116,7 +117,8 @@ namespace Presto.Remote {
             assemblyLoadReset.WaitOne();
             //since we know that the other machine has the assembly loaded we can 
             //serialize the execution context and transport
-            client.Write(MessageType.EXECUTION_BEGIN, SerializationEngine.Serialize(executionContext));
+            SerializationEngine serializer = new SerializationEngine ();
+            client.Write(MessageType.EXECUTION_BEGIN, serializer.Serialize(executionContext));
             RunningJobs++;
             return true;
         }
@@ -223,7 +225,8 @@ namespace Presto.Remote {
         /// </summary>
         /// <param id="state">The state object of the response.</param>
         private void returnExecution(ClientState state) {
-            ExecutionResult res = (ExecutionResult)SerializationEngine.Deserialize(state.GetDataArray());
+            SerializationEngine serializer = new SerializationEngine ();
+            ExecutionResult res = (ExecutionResult)serializer.Deserialize(state.GetDataArray());
             DomainManager.ReturnExecution(res);
         }
 
@@ -248,7 +251,8 @@ namespace Presto.Remote {
         /// </summary>
         /// <param id="state">The state object of the response.</param>
         private void verificationResponse(ClientState state) {
-            Verification vResponse = (Verification)SerializationEngine.Deserialize(state.GetDataArray());
+            SerializationEngine serializer = new SerializationEngine ();
+            Verification vResponse = (Verification)serializer.Deserialize(state.GetDataArray());
             NodeID = vResponse.NodeID;
             DPI = vResponse.DPI;
             CPUCount = vResponse.CPUCount;
@@ -260,7 +264,8 @@ namespace Presto.Remote {
         /// </summary>
         /// <param name="message">The user message struct to be sent.</param>
         public void SendMessage(UserMessage message) {
-            client.Write(MessageType.USER_MESSAGE, SerializationEngine.Serialize(message));
+            SerializationEngine serializer = new SerializationEngine ();
+            client.Write(MessageType.USER_MESSAGE, serializer.Serialize(message));
         }
     }
 }

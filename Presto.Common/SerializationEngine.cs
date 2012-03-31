@@ -10,17 +10,17 @@ namespace Presto.Common {
     /// <summary>
     /// Handles serialization throughout the Presto Server
     /// </summary>
-    public static class SerializationEngine {
+    public class SerializationEngine {
 
         //an internal soap serializer
-        public static BinaryFormatter serializer = new BinaryFormatter();
+        private BinaryFormatter serializer = new BinaryFormatter();
 
         /// <summary>
         /// Serializes the passed in object.
         /// </summary>
         /// <param id="obj">The object to be serialized.</param>
         /// <returns>The serialization stream of the object.</returns>
-        public static byte[] Serialize(Object obj) {
+        public byte[] Serialize(Object obj) {
             MemoryStream stream = new MemoryStream();
             serializer.Serialize(stream, obj);
             byte[] serialized = stream.ToArray();
@@ -33,7 +33,7 @@ namespace Presto.Common {
         /// </summary>
         /// <param id="bytes">The byte array of the object to be deserialized.</param>
         /// <returns></returns>
-        public static Object Deserialize(byte[] bytes) {
+        public Object Deserialize(byte[] bytes) {
             Object obj = null;
             MemoryStream stream = new MemoryStream(bytes);
             serializer.AssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Simple;

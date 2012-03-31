@@ -98,7 +98,14 @@ namespace Presto.Managers {
             }
             proxies.Remove(domainKey);
             domains.Remove(domainKey);
+            Action<AppDomain> final = finalUnload;
+            final.BeginInvoke(domain, null, null);
+        }
+
+
+        private static void finalUnload(AppDomain domain){
             AppDomain.Unload(domain);
+            GC.Collect ();
         }
 
         /// <summary>

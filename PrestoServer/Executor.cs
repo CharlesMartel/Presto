@@ -60,10 +60,11 @@ namespace Presto {
         private static void execute(ServerState state) {
             Interlocked.Increment(ref runningJobs);
             //get the execution context 
-            Transfers.ExecutionContext context = (Transfers.ExecutionContext)SerializationEngine.Deserialize(state.GetDataArray());
+            SerializationEngine serializer = new SerializationEngine ();
+            Transfers.ExecutionContext context = (Transfers.ExecutionContext)serializer.Deserialize(state.GetDataArray());
             byte[] res = DomainManager.ExecuteIncoming(context);
             Transfers.ExecutionResult result = new Transfers.ExecutionResult(res, context.ContextID, context.DomainKey, ClusterManager.NodeID);
-            state.Write(MessageType.EXECUTION_COMPLETE, SerializationEngine.Serialize(result));
+            state.Write(MessageType.EXECUTION_COMPLETE, serializer.Serialize(result));
             Interlocked.Decrement(ref runningJobs);
         }
     }

@@ -87,12 +87,13 @@ namespace Presto.Managers {
         /// <param name="parameter">The parameter passed to the executed procedure.</param>
         /// <returns>The result of the execution serialized for transport.</returns>
         public byte[] ExecuteIncoming(string methodName, string typeName, string assemblyName, byte[] parameter) {
-            PrestoParameter param = (PrestoParameter)SerializationEngine.Deserialize(parameter);
+            SerializationEngine serializer = new SerializationEngine ();
+            PrestoParameter param = (PrestoParameter)serializer.Deserialize(parameter);
             Assembly assembly = assemblies[assemblyName];
             Type type = assembly.GetType(typeName, false, true);
             MethodInfo method = type.GetMethod(methodName);
             PrestoResult res = (PrestoResult)method.Invoke(null, new object[] { param });
-            return SerializationEngine.Serialize(res);
+            return serializer.Serialize(res);
         }
 
         /// <summary>
@@ -113,7 +114,8 @@ namespace Presto.Managers {
         /// <param name="nodeID">The node ID where the execution was run.</param>
         /// <param name="result">The serialized result of the excution.</param>
         public void ReturnExecution(string contextID, string nodeID, byte[] result) {
-            PrestoResult resultObj = (PrestoResult)SerializationEngine.Deserialize(result);
+            SerializationEngine serializer = new SerializationEngine ();
+            PrestoResult resultObj = (PrestoResult)serializer.Deserialize(result);
             resultObj.ExecutionNodeID = nodeID;
             Cluster.ReturnExecution(contextID, resultObj);
         }

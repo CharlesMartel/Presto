@@ -80,7 +80,8 @@ namespace Presto {
             //add the job to the scheduled jobs
             outboundJobs.Add(contextID, callback);
             //execute
-            byte[] stream = SerializationEngine.Serialize(parameter);
+            SerializationEngine serializer = new SerializationEngine ();
+            byte[] stream = serializer.Serialize(parameter);
             ClusterProxy.Execute(function.Method.DeclaringType.Assembly.FullName, function.Method.DeclaringType.FullName, function.Method.Name, stream, contextID, key);
         }
 

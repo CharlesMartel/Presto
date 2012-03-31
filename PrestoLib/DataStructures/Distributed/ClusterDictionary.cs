@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.Concurrent;
 using Presto.DataStructures.Distributed.Policies;
 
 namespace Presto.DataStructures.Distributed {
@@ -33,7 +31,7 @@ namespace Presto.DataStructures.Distributed {
         /// The cluster dictionary is more or less a simple wrapper for a standard dictionary that maintains state across many machines.
         /// This is the internal dictionary.
         /// </summary>
-        private Dictionary<string, T> map = new Dictionary<string,T>();
+        private ConcurrentDictionary<string, T> map = new ConcurrentDictionary<string,T>();
 
         /// <summary>
         /// The function assigned to act as the setter for the map.
