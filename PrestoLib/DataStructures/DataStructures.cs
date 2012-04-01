@@ -8,9 +8,7 @@ namespace Presto.DataStructures {
     /// <summary>
     /// The DataStructure Factory. Create, Load, and Manager Presto Specific DataStructures.
     /// </summary>
-    public static class DataStructures {
-
-        
+    public static class DataStructures {        
 
         /// <summary>
         /// Load a map if one wiht the name specefied already exists in the cluster, otherwise
@@ -18,8 +16,8 @@ namespace Presto.DataStructures {
         /// </summary>
         /// <typeparam name="T">The type of data stored in the value column of the map.</typeparam>
         /// <param name="name">The name of the map, will be used to link the map cluster wide.</param>
-        public static AsyncClusterDictionary<T> LoadCreateAsyncDictionary<T>(string name) where T : struct {
-            AsyncClusterDictionary<T> newDictionary = new AsyncClusterDictionary<T> ();
+        public static ClusterDictionary<T> LoadCreateClusterDictionary<T>(string name) where T : struct {
+            ClusterDictionary<T> newDictionary = new ClusterDictionary<T> ();
             return newDictionary;
         }
     }

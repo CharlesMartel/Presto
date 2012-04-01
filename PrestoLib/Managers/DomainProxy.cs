@@ -136,5 +136,7 @@ namespace Presto.Managers {
         public void DeliverMessage(string payload, string sender) {
             Cluster.DeliverMessage(payload, sender);
         }
+
+        
     }
 }

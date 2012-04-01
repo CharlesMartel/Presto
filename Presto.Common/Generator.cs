@@ -5,6 +5,7 @@ namespace Presto.Common {
     /// Generates different sequences and objects needed throughout the application.
     /// </summary>
     public static class Generator {
+
         /// <summary>
         /// The random number generator.
         /// </summary>

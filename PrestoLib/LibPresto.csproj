@@ -37,6 +37,10 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Cluster.cs" />
     <Compile Include="DataStructures\Distributed\ClusterDictionary.cs" />
+    <Compile Include="DataStructures\Distributed\ClusterDictionaryRequest.cs" />
+    <Compile Include="DataStructures\Distributed\ClusterDictionaryRequestResponse.cs" />
+    <Compile Include="DataStructures\Distributed\ClusterDictionaryUpdate.cs" />
+    <Compile Include="DataStructures\Distributed\ClusterDictionaryValue.cs" />
     <Compile Include="DataStructures\Distributed\Policies\ConflictResolution.cs" />
     <Compile Include="DataStructures\Distributed\Policies\DistributionMethod.cs" />
     <Compile Include="DataStructures\Distributed\Policies\Initialization.cs" />

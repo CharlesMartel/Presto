@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Presto.DataStructures.Distributed;
 
 namespace Presto.Managers {
 
@@ -9,5 +6,6 @@ namespace Presto.Managers {
     /// Provides an interface for an outgoing proxy that communicates data structure changes.
     /// </summary>
     public interface IDataProxy {
+
     }
 }

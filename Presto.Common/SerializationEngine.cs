@@ -45,7 +45,7 @@ namespace Presto.Common {
 
         //I took this from http://social.msdn.microsoft.com/forums/en-US/netfxbcl/thread/fec7ea31-5241-4fbd-a9c7-9ae602e172d4/
         //It does a lookup for the appropriate assembly at the time when the object deserialization is binding to 
-        // a type. it is useful because all of our assemblies are dynmically loaded and it would work otherwise...
+        // a type. it is useful because all of our assemblies are dynmically loaded and it would not work otherwise...
         internal sealed class VersionConfigToNamespaceAssemblyObjectBinder : SerializationBinder {
             public override Type BindToType(string assemblyName, string typeName) {
                 Type typeToDeserialize = null;

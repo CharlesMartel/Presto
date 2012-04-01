@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Presto.Managers;
+using Presto.Common;
 using Presto.DataStructures.Distributed.Policies;
 
 namespace Presto.DataStructures.Distributed {
     
-
-    public class AsyncClusterDictionary<T> where T : struct {
+    /// <summary>
+    /// A multi-purpose clustered dictionary.
+    /// </summary>
+    /// <typeparam name="T">The type of the values held in the dictionary, all keys must be strings.</typeparam>
+    public class ClusterDictionary<T> where T : struct {
 
         /// <summary>
         /// The conflict resolution policy for conflicting data.
@@ -31,7 +36,9 @@ namespace Presto.DataStructures.Distributed {
         /// The cluster dictionary is more or less a simple wrapper for a standard dictionary that maintains state across many machines.
         /// This is the internal dictionary.
         /// </summary>
-        private ConcurrentDictionary<string, T> map = new ConcurrentDictionary<string,T>();
+        private ConcurrentDictionary<string, ClusterDictionaryValue<T>> map = new ConcurrentDictionary<string,ClusterDictionaryValue<T>>();
+
+        private ConcurrentDictionary<string, Action<IAsyncResult>> callbacks = new ConcurrentDictionary<string, Action<IAsyncResult>> ();
 
         /// <summary>
         /// The function assigned to act as the setter for the map.
@@ -46,7 +53,7 @@ namespace Presto.DataStructures.Distributed {
         /// <summary>
         /// Create a new cluster map, only called internally.
         /// </summary>
-        internal AsyncClusterDictionary (ConflictResolution conflictResolutionPolicy = ConflictResolution.CHRONOLOGICAL,
+        internal ClusterDictionary (ConflictResolution conflictResolutionPolicy = ConflictResolution.CHRONOLOGICAL,
                                     DistributionMethod clusterDistributionMethod = DistributionMethod.FULLY_DISTRIBUTED,
                                     UpdateInterval updateIntervalPolicy = UpdateInterval.IMMEDIATE,
                                     Initialization initializationPolicy = Initialization.LAZY) {
@@ -71,5 +78,6 @@ namespace Presto.DataStructures.Distributed {
             
         }
 
+        
     }
 }
