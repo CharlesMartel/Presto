@@ -46,6 +46,7 @@
     <Compile Include="DataStructures\Distributed\Policies\Initialization.cs" />
     <Compile Include="DataStructures\Distributed\Policies\UpdateInterval.cs" />
     <Compile Include="DataStructures\DataStructures.cs" />
+    <Compile Include="DataStructures\DataStructureMessage.cs" />
     <Compile Include="Managers\DomainProxy.cs" />
     <Compile Include="Managers\IClusterProxy.cs" />
     <Compile Include="Managers\IDataProxy.cs" />
