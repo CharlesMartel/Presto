@@ -41,7 +41,7 @@ namespace Presto.DataStructures.Distributed {
         /// <summary>
         /// A listing of the callbacks associated with internetwork reads and writes.
         /// </summary>
-        private ConcurrentDictionary<string, Action<IAsyncResult>> callbacks = new ConcurrentDictionary<string, Action<IAsyncResult>> ();
+        private ConcurrentDictionary<string, Action<T, Object>> callbacks = new ConcurrentDictionary<string, Action<T, Object>> ();
 
         /// <summary>
         /// The function assigned to act as the setter for the map.
@@ -54,7 +54,7 @@ namespace Presto.DataStructures.Distributed {
         private Action<string, Action<Object, T>, Object> getter;
 
         /// <summary>
-        /// Create a new cluster map, only called internally.
+        /// Create a new cluster dictionary, only called internally.
         /// </summary>
         internal ClusterDictionary (ConflictResolution conflictResolutionPolicy = ConflictResolution.CHRONOLOGICAL,
                                     DistributionMethod clusterDistributionMethod = DistributionMethod.FULLY_DISTRIBUTED,
@@ -80,10 +80,23 @@ namespace Presto.DataStructures.Distributed {
             }
         }   
 
+        /// <summary>
+        /// Retrieve a value from the cluster dictionary. Being that this could invoke a call to another machine over the network, 
+        /// the retrieval must be asynchronous and invoke a callback upon completion. If retrieval does not need to go across the network,
+        /// the callback is immediately run.
+        /// </summary>
+        /// <param name="key">The key of the value to retrieve.</param>
+        /// <param name="callback">The callback to be run after the value is retrieved.</param>
+        /// <param name="state">A state to carry with the async call and passed into the callback.</param>
         public void Get (string key, Action<Object, T> callback, Object state) {
             getter.Invoke (key, callback, state);
         }
 
+        /// <summary>
+        /// Set a value in the cluster dictionary. If the key does not exist, one is created and the value added.
+        /// </summary>
+        /// <param name="key">The key of the value to set.</param>
+        /// <param name="value">The value.</param>
         public void Set (string key, T value) {
             setter.Invoke (key, value);
         }
