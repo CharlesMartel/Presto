@@ -1,5 +1,0 @@
-C:\GitHubProjects\Presto\Presto\bin\Debug\Basic.dll
-C:\GitHubProjects\Presto\Presto\bin\Debug\Basic.pdb
-C:\GitHubProjects\Presto\Examples\Basic\obj\Debug\ResolveAssemblyReference.cache
-C:\GitHubProjects\Presto\Examples\Basic\obj\Debug\Basic.dll
-C:\GitHubProjects\Presto\Examples\Basic\obj\Debug\Basic.pdb
