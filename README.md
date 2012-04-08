@@ -7,4 +7,4 @@ Requirements
 ------------
 
 - .NET v4.0 or later / Mono v2.10 or later
-- .NET compiler. Both the MonoDevelop MCS and Visual Studio compilers are supported.
+- .NET compiler. Both the MonoDevelop DMCS and Visual Studio compilers are supported.
