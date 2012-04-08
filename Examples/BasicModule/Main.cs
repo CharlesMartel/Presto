@@ -4,12 +4,13 @@ using Presto;
 namespace BasicModule{
 
     public class Main : PrestoModule {
+        
         public static long numjobs = 0;
         public override void Load() {
             //get the start time of the operation
             DateTime begin = DateTime.Now;
 
-            //throw 100 jobs at the cluster.
+            //throw 250 jobs at the cluster.
             for (int i = 0; i < 250; i++) {
                 //push a new execution of the distributed function into the cluster
                 FunctionInput input = new FunctionInput();
@@ -26,7 +27,6 @@ namespace BasicModule{
 
             //Write the length of time to the console.
             Console.WriteLine("Time taken: " + lot.ToString());
-            Console.WriteLine("Number of jobs: " + System.Threading.Interlocked.Read(ref numjobs));
             //Cleanup and Complete.
             SignalComplete();
         }
