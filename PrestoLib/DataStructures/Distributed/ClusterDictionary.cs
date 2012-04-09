@@ -9,6 +9,14 @@ namespace Presto.DataStructures.Distributed {
     /// <summary>
     /// A multi-purpose clustered dictionary.
     /// </summary>
+    /// <remarks>
+    /// The cluster dictionary is a hash table sychronized across many or 1 machine. Either one machine has all of the data
+    /// or all machines have all of the data. It is not a distributed table and should 
+    /// not be considered one. If you are in need of a distributed table where different areas of the map are on
+    /// different physical machines, look into the DistributedDictionary instead. The cluster dictionary is nothing more than 
+    /// a single dictionary that Presto constantly watches to maintain data coherency. Carefully guage what data structure your
+    /// application will need as more often than not, one will be better than the other for your scenario.
+    /// </remarks>
     /// <typeparam name="T">The type of the values held in the dictionary, all keys must be strings.</typeparam>
     public class ClusterDictionary<T> where T : struct {
 
@@ -41,7 +49,7 @@ namespace Presto.DataStructures.Distributed {
         /// <summary>
         /// A listing of the callbacks associated with internetwork reads and writes.
         /// </summary>
-        private ConcurrentDictionary<string, Action<T, Object>> callbacks = new ConcurrentDictionary<string, Action<T, Object>> ();
+        private ConcurrentDictionary<string, Action<ClusterDictionaryResult<T>>> callbacks = new ConcurrentDictionary<string, Action<ClusterDictionaryResult<T>>> ();
 
         /// <summary>
         /// The function assigned to act as the setter for the map.
@@ -51,7 +59,7 @@ namespace Presto.DataStructures.Distributed {
         /// <summary>
         /// The function assigned to act as the getter for the map.
         /// </summary>
-        private Action<string, Action<Object, T>, Object> getter;
+        private Action<string, Action<ClusterDictionaryResult<T>>, ClusterDictionaryResult<T>> getter;
 
         /// <summary>
         /// Create a new cluster dictionary, only called internally.
@@ -88,8 +96,13 @@ namespace Presto.DataStructures.Distributed {
         /// <param name="key">The key of the value to retrieve.</param>
         /// <param name="callback">The callback to be run after the value is retrieved.</param>
         /// <param name="state">A state to carry with the async call and passed into the callback.</param>
-        public void Get (string key, Action<Object, T> callback, Object state) {
-            getter.Invoke (key, callback, state);
+        public ClusterDictionaryResult<T> Get (string key, Action<ClusterDictionaryResult<T>> callback, Object state) {
+            ClusterDictionaryResult<T> result = new ClusterDictionaryResult<T>();
+            result.AsyncState = state;
+            result.IsCompleted = false;
+            result.ResultErrorState = AsyncResultErrorState.NONE;
+            getter.BeginInvoke(key, callback, result, null, null);
+            return result;
         }
 
         /// <summary>
@@ -106,9 +119,21 @@ namespace Presto.DataStructures.Distributed {
         //an exponential increase in the number of code paths, so what we do is just split it all up into different compact possibilities.
         //This way, there is only one code path, and that code path is simply created during initialization of the instance.
 
-        private void getLocal (string key, Action<Object, T> callback, Object state) {
-            
-        }
+        private void getLocal (string key, Action<ClusterDictionaryResult<T>> callback, ClusterDictionaryResult<T> result) {
+            if (map.ContainsKey(key))
+            {
+                //The internal map has the value and we can get local, get it immediately and return
+                T value = map[key].GetValue();
+                result.Value = value;
+                result.CompletedSynchronously = true;
+                result.IsCompleted = true;
+                callback.BeginInvoke(result, null, null);
+            }
+            else
+            {
+
+            }
+        } 
 
         
     }

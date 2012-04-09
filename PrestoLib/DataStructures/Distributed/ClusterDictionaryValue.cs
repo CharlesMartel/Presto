@@ -9,12 +9,21 @@ namespace Presto.DataStructures.Distributed {
     /// </summary>
     class ClusterDictionaryValue<T> where T : struct {
 
-        T Value;
-        long TimeStamp;
+        private T Value;
+        private long TimeStamp;
 
         public ClusterDictionaryValue (T value, long timeStamp) {
             Value = value;
             TimeStamp = timeStamp;
+        }
+
+        /// <summary>
+        /// Get the stored value.
+        /// </summary>
+        /// <returns>The stored value.</returns>
+        public T GetValue()
+        {
+            return Value;
         }
     }
 }

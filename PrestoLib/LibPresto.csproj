@@ -39,6 +39,7 @@
     <Compile Include="DataStructures\Distributed\ClusterDictionary.cs" />
     <Compile Include="DataStructures\Distributed\ClusterDictionaryRequest.cs" />
     <Compile Include="DataStructures\Distributed\ClusterDictionaryRequestResponse.cs" />
+    <Compile Include="DataStructures\Distributed\ClusterDictionaryResult.cs" />
     <Compile Include="DataStructures\Distributed\ClusterDictionaryUpdate.cs" />
     <Compile Include="DataStructures\Distributed\ClusterDictionaryValue.cs" />
     <Compile Include="DataStructures\Distributed\Policies\ConflictResolution.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="DataStructures\Distributed\Policies\UpdateInterval.cs" />
     <Compile Include="DataStructures\DataStructures.cs" />
     <Compile Include="DataStructures\DataStructureMessage.cs" />
+    <Compile Include="DataStructures\Distributed\AsyncResultErrorState.cs" />
     <Compile Include="Managers\DomainProxy.cs" />
     <Compile Include="Managers\IClusterProxy.cs" />
     <Compile Include="Managers\IDataProxy.cs" />
