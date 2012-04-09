@@ -6,7 +6,7 @@ namespace Presto.DataStructures.Distributed
     /// <summary>
     /// Result object for a data request from the cluster dictionary.
     /// </summary>
-    public class ClusterDictionaryResult<T> : IAsyncResult where T : struct
+    public class ClusterDictionaryResult<T> where T : struct
     {
 
         public object AsyncState
@@ -15,10 +15,6 @@ namespace Presto.DataStructures.Distributed
             internal set { AsyncState = value;}
         }
 
-        public WaitHandle AsyncWaitHandle
-        {
-            get { return AsyncWaitHandle; }
-        }
 
         public bool CompletedSynchronously
         {
@@ -34,7 +30,9 @@ namespace Presto.DataStructures.Distributed
 
         public T Value
         {
-            get { return Value; }
+            get {
+                return Value;
+            }
             internal set { Value = value; }
         }
 
