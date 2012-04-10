@@ -127,14 +127,31 @@ namespace Presto.DataStructures.Distributed {
                 result.Value = value;
                 result.LocallyObtained = true;
                 result.IsCompleted = true;
-                callback.BeginInvoke(result, null, null);
+                if (callback != null) {
+                    callback.BeginInvoke(result, null, null);
+                }
             }
             else
             {
 
             }
-        } 
+        }
 
-        
+
+
+
+
+        //-------------------------------Network update functions---------------------------------------------------------//
+        //These will handle incoming an doutgoing netowrk events.
+
+        private void broadcastUpdate(string key, T value){
+
+        }
+
+        private void receiveBroadcast(string key, T value) {
+
+        }
+
+
     }
 }

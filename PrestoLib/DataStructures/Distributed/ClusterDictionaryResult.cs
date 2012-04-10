@@ -8,6 +8,7 @@ namespace Presto.DataStructures.Distributed
     /// </summary>
     public class ClusterDictionaryResult<T> where T : struct
     {
+        private ManualResetEvent completionResetEvent = new ManualResetEvent(false);
 
         public object AsyncState
         {
@@ -25,7 +26,10 @@ namespace Presto.DataStructures.Distributed
         public bool IsCompleted
         {
             get { return IsCompleted; }
-            internal set { IsCompleted = value; }
+            internal set {
+                IsCompleted = value;
+                completionResetEvent.Set();
+            }
         }
 
         public T Value
@@ -44,6 +48,14 @@ namespace Presto.DataStructures.Distributed
   
         public ClusterDictionaryResult (){
 
+        }
+
+        public void WaitComplete() {
+            completionResetEvent.WaitOne();
+        }
+
+        public void WaitComplete(int waitMilliseconds) {
+            completionResetEvent.WaitOne(waitMilliseconds);
         }
     }
 }
