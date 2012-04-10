@@ -125,7 +125,7 @@ namespace Presto.DataStructures.Distributed {
                 //The internal map has the value and we can get local, get it immediately and return
                 T value = map[key].GetValue();
                 result.Value = value;
-                result.CompletedSynchronously = true;
+                result.LocallyObtained = true;
                 result.IsCompleted = true;
                 callback.BeginInvoke(result, null, null);
             }

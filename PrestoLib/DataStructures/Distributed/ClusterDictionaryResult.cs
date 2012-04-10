@@ -16,10 +16,10 @@ namespace Presto.DataStructures.Distributed
         }
 
 
-        public bool CompletedSynchronously
+        public bool LocallyObtained
         {
-            get { return CompletedSynchronously; }
-            internal set { CompletedSynchronously = value; }
+            get { return LocallyObtained; }
+            internal set { LocallyObtained = value; }
         }
 
         public bool IsCompleted
