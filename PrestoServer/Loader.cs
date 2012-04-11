@@ -55,7 +55,7 @@ namespace Presto {
         /// </summary>
         /// <param id="state">Server state object for request.</param>
         private static void unloadDomain(ServerState state) {
-            //get the key of the domain
+            //get the Key of the domain
             string domainKey = state.GetDataASCIIString();
             //tell the domain manager to delete the domain
             DomainManager.DestroyDomain(domainKey);

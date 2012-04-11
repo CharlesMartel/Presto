@@ -94,7 +94,7 @@ namespace Presto.Remote {
         /// Signal to all nodes who have the specefied domain loaded to unload that domain and purge all 
         /// resources associated with it.
         /// </summary>
-        /// <param name="domainKey">The key of the domain to be unloaded.</param>
+        /// <param name="domainKey">The Key of the domain to be unloaded.</param>
         /// <param name="assemblyNames">The names of the assemblies loaded for this domain.</param>
         public static void UnloadDomain(string domainKey, string[] assemblyNames) {
             foreach (Node currentNode in nodes) {
@@ -109,7 +109,7 @@ namespace Presto.Remote {
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
         /// <param name="message">The message to be sent.</param>
-        /// <param name="domainKey">The domain key to deliver the message to.</param>
+        /// <param name="domainKey">The domain Key to deliver the message to.</param>
         public static void SendMessage(string nodeID, string message, string domainKey) {
             Node remoteNode = getNodeByID(nodeID);
             if (remoteNode != null) {
@@ -139,7 +139,7 @@ namespace Presto.Remote {
         /// Get all nodes a particular cluster is allowed to access. Since the functionality for partial clusters has not yet been implemented,
         /// returns all nodes.
         /// </summary>
-        /// <param name="domainKey">The domain key to get associated nodes for.</param>
+        /// <param name="domainKey">The domain Key to get associated nodes for.</param>
         /// <returns>Array of nodes available to a single instance.</returns>
         public static Node[] GetAssociatedNodes(string domainKey){
             return nodes.ToArray();

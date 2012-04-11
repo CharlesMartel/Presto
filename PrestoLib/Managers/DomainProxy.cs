@@ -97,12 +97,12 @@ namespace Presto.Managers {
         }
 
         /// <summary>
-        /// Set up the cluster proxy instance for the domain and tell the domain what its key is.
+        /// Set up the cluster proxy instance for the domain and tell the domain what its Key is.
         /// </summary>
         /// <param name="clusterProxy">The cluster proxy instance to be set up.</param>
-        /// <param name="domainKey">The domain key of the domain.</param>
+        /// <param name="domainKey">The domain Key of the domain.</param>
         public void ConfigureCluster(IClusterProxy clusterProxy, string domainKey) {
-            Cluster.key = domainKey;
+            Cluster.Key = domainKey;
             Cluster.ClusterProxy = clusterProxy;
         }
 

@@ -37,7 +37,7 @@ namespace Presto {
         /// <summary>
         /// Starts up the execution of a new module, making this instance the master.
         /// </summary>
-        /// <param id="domainKey">The domain key of the domain that this module will be executed in.</param>
+        /// <param id="domainKey">The domain Key of the domain that this module will be executed in.</param>
         public static void ExecuteModule(string domainKey) {
             //finally execute the user module
             DomainManager.ExecuteLoad(domainKey);

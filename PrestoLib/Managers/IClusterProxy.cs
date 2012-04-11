@@ -12,7 +12,7 @@ namespace Presto.Managers {
         /// <param name="methodName">The full name of the method.</param>
         /// <param name="param">the serialized parameter object.</param>
         /// <param name="contextid">The context id of this execution.</param>
-        /// <param name="domainKey">The domain key of this domain.</param>
+        /// <param name="domainKey">The domain Key of this domain.</param>
         void Execute(string assemblyName, string typeName, string methodName, byte[] param, string contextid, string domainKey);
 
         /// <summary>
@@ -26,13 +26,13 @@ namespace Presto.Managers {
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
         /// <param name="message">The message to be sent.</param>
-        /// <param name="domainKey">The key of the domain to deliver the message to.</param>
+        /// <param name="domainKey">The Key of the domain to deliver the message to.</param>
         void SendMessage(string nodeID, string message, string domainKey);
 
         /// <summary>
         /// Get the IDs of all nodes available to this application or module.
         /// </summary>
-        /// <param name="domainKey">The domain key associated with the requesting domain.</param>
+        /// <param name="domainKey">The domain Key associated with the requesting domain.</param>
         /// <returns>List of all node IDs available to this application or module.</returns>
         string[] GetAvailableNodes(string domainKey);
     }

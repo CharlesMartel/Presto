@@ -15,7 +15,7 @@ namespace Presto.DataStructures.Distributed
         /// </summary>
         NONE,
         /// <summary>
-        /// The passed in key was not found.
+        /// The passed in Key was not found.
         /// </summary>
         KEY_NOT_FOUND
     }

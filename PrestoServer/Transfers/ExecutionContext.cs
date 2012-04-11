@@ -29,7 +29,7 @@ namespace Presto.Transfers {
         /// </summary>
         public string ContextID;
         /// <summary>
-        /// The key of the domain this execution will run in.
+        /// The Key of the domain this execution will run in.
         /// </summary>
         public string DomainKey;
 
@@ -41,7 +41,7 @@ namespace Presto.Transfers {
         /// <param name="methodName"> The full name of the method to be executed.</param>
         /// <param name="param">The PrestoParameter to be passed into the method.</param>
         /// <param name="contextid">The Gernerated ID of this distributed execution.</param>
-        /// <param name="domainKey">The domain key of the executing domain.</param>
+        /// <param name="domainKey">The domain Key of the executing domain.</param>
         public ExecutionContext(string assemblyName, string typeName, string methodName, byte[] param, string contextid, string domainKey) {
             AssemblyName = assemblyName;
             TypeName = typeName;

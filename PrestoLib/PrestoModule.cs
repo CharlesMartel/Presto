@@ -16,7 +16,7 @@ namespace Presto {
         /// </summary>
         public void SignalComplete() {
             Cluster.TriggerUnloading();
-            Cluster.ClusterProxy.SignalComplete(Cluster.GetInstanceKey());
+            Cluster.ClusterProxy.SignalComplete(Cluster.Key);
         }
     }
 }

@@ -135,7 +135,7 @@ namespace Presto.Remote {
         /// <summary>
         /// Tells whether or not this node has the specefied domain loaded.
         /// </summary>
-        /// <param name="domainKey">The key of the specefied domain.</param>
+        /// <param name="domainKey">The Key of the specefied domain.</param>
         /// <returns>Whether or not the node has the domain.</returns>
         public bool HasDomain(string domainKey) {
             return loadedDomains.Contains(domainKey);
@@ -150,9 +150,9 @@ namespace Presto.Remote {
         }
 
         /// <summary>
-        /// Will remove a domain from the node according to the domain key.
+        /// Will remove a domain from the node according to the domain Key.
         /// </summary>
-        /// <param name="domainKey">The domain key of the domain.</param>
+        /// <param name="domainKey">The domain Key of the domain.</param>
         /// <param name="assemblies">A string array of all the assemblies to be removed with the domain.</param>
         public void UnloadDomain(string domainKey, string[] assemblies) {
             if (loadedDomains.Contains(domainKey)) {

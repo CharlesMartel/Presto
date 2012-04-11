@@ -39,7 +39,14 @@ namespace Presto {
         /// processes runnable, and the performance of the clusters communications channel. It is a "score" for the cluster as 
         /// a whole.
         /// </summary>
-        public static long CDPI;
+        public static long CDPI {
+            get {
+                return CDPI;
+            }
+            internal set {
+                CDPI = value;
+            }
+        }
 
         /// <summary>
         /// A proxy out of the current domain and into the Presto server. 
@@ -49,7 +56,23 @@ namespace Presto {
         //we keep a list of all jobs currently out for processing
         private static Dictionary<string, Action<PrestoResult>> outboundJobs = new Dictionary<string, Action<PrestoResult>>();
         private static ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
-        internal static string key;
+
+        /// <summary>
+        /// Every presto module or application is assigned a unique identifier to separate itself from other applications or
+        /// modules also loaded into the cluster. This identifier is given to the Cluster object upon at its creation and will 
+        /// not change for the lifetime of this module or application, nor will it change between cluster nodes.
+        /// 
+        /// Consequently, this is the same ID given to the app domain under which this module or application will run.
+        /// 
+        /// </summary>
+        public static string Key {
+            get {
+                return Key;
+            }
+            internal set {
+                Key = value;
+            }
+        }
 
         //------------Methods-----------------------//
 
@@ -82,7 +105,7 @@ namespace Presto {
             //execute
             SerializationEngine serializer = new SerializationEngine ();
             byte[] stream = serializer.Serialize(parameter);
-            ClusterProxy.Execute(function.Method.DeclaringType.Assembly.FullName, function.Method.DeclaringType.FullName, function.Method.Name, stream, contextID, key);
+            ClusterProxy.Execute(function.Method.DeclaringType.Assembly.FullName, function.Method.DeclaringType.FullName, function.Method.Name, stream, contextID, Key);
         }
 
         /// <summary>
@@ -105,25 +128,13 @@ namespace Presto {
         }
 
         /// <summary>
-        /// Every presto module or application is assigned a unique identifier to separate itself from other applications or
-        /// modules also loaded into the cluster. This identifier is given to the Cluster object upon at its creation and will 
-        /// not change for the lifetime of this module or application, nor will it change between cluster nodes.
-        /// 
-        /// Consequently, this is the same ID given to the app domain under which this module or application will run.
-        /// 
-        /// </summary>
-        public static string GetInstanceKey() {
-            return key;
-        }
-
-        /// <summary>
         /// Send a message to the node with the specified ID. The message is delivered to 
         /// the receiving node and calls the MessageReceived event.
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
         /// <param name="message">The message to be sent.</param>
         public static void SendMessage(string nodeID, string message) {
-            ClusterProxy.SendMessage(nodeID, message, key);
+            ClusterProxy.SendMessage(nodeID, message, Key);
         }
 
         /// <summary>
@@ -149,7 +160,7 @@ namespace Presto {
         /// </summary>
         /// <returns>List of all node IDs available to this application or module.</returns>
         public static string[] GetAvailableNodes() {
-            return ClusterProxy.GetAvailableNodes(key);
+            return ClusterProxy.GetAvailableNodes(Key);
         }
     }
 }

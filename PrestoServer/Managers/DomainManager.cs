@@ -51,7 +51,7 @@ namespace Presto.Managers {
         /// <summary>
         /// Load an assembly into the specefied domain.
         /// </summary>
-        /// <param name="domainKey">The string key of the domain to be loaded into.</param>
+        /// <param name="domainKey">The string Key of the domain to be loaded into.</param>
         /// <param name="assemblyStream">The COFF byte array of the assembly.</param>
         /// <param name="createInstance">By default we also create a new module instance upon loading the assembly.</param>
         public static void LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream, bool createInstance = true) {
@@ -77,9 +77,9 @@ namespace Presto.Managers {
 
 
         /// <summary>
-        /// Unloads and destroys the domain with the specified key. Also deletes any assemblies associated with the domain.
+        /// Unloads and destroys the domain with the specified Key. Also deletes any assemblies associated with the domain.
         /// </summary>
-        /// <param name="domainKey">The key of the domain to be destroyed.</param>
+        /// <param name="domainKey">The Key of the domain to be destroyed.</param>
         /// <param name="instanceSignal">Specefies whether or not the Destroy domain signal came from a local instance.</param>
         public static void DestroyDomain(string domainKey, bool instanceSignal = false) {
             if (!domains.ContainsKey(domainKey)) {
@@ -109,9 +109,9 @@ namespace Presto.Managers {
         }
 
         /// <summary>
-        /// Whether or not a domain with a given key exists.
+        /// Whether or not a domain with a given Key exists.
         /// </summary>
-        /// <param name="domainKey">The key of the domain to check for.</param>
+        /// <param name="domainKey">The Key of the domain to check for.</param>
         /// <returns></returns>
         public static bool HasDomain(string domainKey) {
             if (domains.ContainsKey(domainKey)) {
@@ -121,10 +121,10 @@ namespace Presto.Managers {
         }
 
         /// <summary>
-        /// Tells whether the assembly with the given name is loaded into the domain with the given key.
-        /// Will return false if the given domain key does not correspond to a currently loaded domain.
+        /// Tells whether the assembly with the given name is loaded into the domain with the given Key.
+        /// Will return false if the given domain Key does not correspond to a currently loaded domain.
         /// </summary>
-        /// <param name="domainKey">The key of the domain to check in.</param>
+        /// <param name="domainKey">The Key of the domain to check in.</param>
         /// <param name="assemblyName">The name of the assembly to check for.</param>
         /// <returns>Whether or not the domain has the assembly.</returns>
         public static bool DomainHasAssembly(string domainKey, string assemblyName) {
@@ -147,7 +147,7 @@ namespace Presto.Managers {
         /// <summary>
         /// Execute the load procedure on the presto instance in the specefied domain.
         /// </summary>
-        /// <param name="domainKey">The key of the domain to execute in.</param>
+        /// <param name="domainKey">The Key of the domain to execute in.</param>
         public static void ExecuteLoad(string domainKey) {
             DomainProxy proxy = proxies[domainKey];
             proxy.ExecuteInstance();
@@ -181,7 +181,7 @@ namespace Presto.Managers {
                 DomainProxy proxy = proxies[message.DomainKey];
                 proxy.DeliverMessage(message.Message, message.Sender);
             } else {
-                Log.Error("No domain with key: " + message.DomainKey + " was found to deliver message: \"" + message.Message + "\" from: NodeID: " + message.Sender);
+                Log.Error("No domain with Key: " + message.DomainKey + " was found to deliver message: \"" + message.Message + "\" from: NodeID: " + message.Sender);
             }
         }
     }

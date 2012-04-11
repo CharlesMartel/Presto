@@ -25,7 +25,7 @@ namespace Presto.Transfers {
         /// </summary>
         /// <param name="message">The content of the message.</param>
         /// <param name="sender">The node id of the sender of the message.</param>
-        /// <param name="domainKey">The domain key for the domain to deliver to.</param>
+        /// <param name="domainKey">The domain Key for the domain to deliver to.</param>
         public UserMessage(string message, string sender, string domainKey) {
             Message = message;
             Sender = sender;
