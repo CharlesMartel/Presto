@@ -7,5 +7,7 @@ namespace Presto.Managers {
     /// </summary>
     public interface IDataProxy { 
 
+
+
     }
 }

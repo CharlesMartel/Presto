@@ -133,7 +133,8 @@ namespace Presto.DataStructures.Distributed {
             }
             else
             {
-
+                // 
+                
             }
         }
 
@@ -144,11 +145,23 @@ namespace Presto.DataStructures.Distributed {
         //-------------------------------Network update functions---------------------------------------------------------//
         //These will handle incoming an doutgoing netowrk events.
 
-        private void broadcastUpdate(string key, T value){
+        private void broadcastUpdate(string key, T value)
+        {
 
         }
 
-        private void receiveBroadcast(string key, T value) {
+        private void receiveBroadcast(string key, T value) 
+        {
+
+        }
+
+        private void requestValue()
+        {
+
+        }
+
+        private void receiveValue()
+        {
 
         }
 
