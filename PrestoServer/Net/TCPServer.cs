@@ -97,6 +97,9 @@ namespace Presto.Net {
         /// </summary>
         /// <param name="ar"></param>
         private void read(IAsyncResult ar) {
+
+            //I absolutely hate the implementation of this. I hate ti so much. Need to rewrite fully.
+
             try {
                 //Get the Server State Object
                 ServerState state = (ServerState)ar.AsyncState;

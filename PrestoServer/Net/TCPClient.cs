@@ -16,7 +16,6 @@ namespace Presto.Net {
 
         private IPEndPoint serverEndpoint;
         private TcpClient tcpClient;
-        private SynchronizedProcessingQueue<byte[]> sendQueue;
 
         // A hash table holding all dispatch references and pointer to their delegates
         private Dictionary<MessageType, Action<ClientState>> dispatchList = new Dictionary<MessageType, Action<ClientState>>();
@@ -30,7 +29,6 @@ namespace Presto.Net {
             //Get the endpoint from DNS and set it as the serverEnpoint
             IPAddress[] addresses = Dns.GetHostAddresses(host);
             serverEndpoint = new IPEndPoint(addresses[0], port);
-            sendQueue = new SynchronizedProcessingQueue<byte[]>(write);
         }
 
         /// <summary>
@@ -40,7 +38,6 @@ namespace Presto.Net {
         public TCPClient(IPEndPoint host) {
             //set the internal serverEnpoint to the provided one.
             serverEndpoint = host;
-            sendQueue = new SynchronizedProcessingQueue<byte[]>(write);
         }
 
         /// <summary>
@@ -128,7 +125,7 @@ namespace Presto.Net {
             }
 
             //Write the output
-            sendQueue.Add(output.ToArray());
+            write(output.ToArray());
         }
 
         /// <summary>
@@ -149,8 +146,7 @@ namespace Presto.Net {
             }
 
             //Write the output
-            sendQueue.Add(output.ToArray());
-            sendQueue.Wait();
+            write(output.ToArray());
         }
 
         /// <summary>
@@ -169,7 +165,7 @@ namespace Presto.Net {
                 //get the tcpClient network stream
                 NetworkStream nStream = tcpClient.GetStream();
                 //Start the synchronous Write
-                nStream.Write(data, 0, data.Length);
+                nStream.BeginWrite(data, 0, data.Length, null, null);
                 return true;
             } catch (Exception e) {
                 // the connection was closed return false and the synchronizer will take care of it

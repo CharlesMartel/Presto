@@ -10,7 +10,7 @@
     <ThreadBasedAnalysisSelected>true</ThreadBasedAnalysisSelected>
     <UniqueReport>Timestamp</UniqueReport>
     <SamplingMethod>Cycles</SamplingMethod>
-    <CycleCount>10000000</CycleCount>
+    <CycleCount>100000000</CycleCount>
     <PageFaultCount>10</PageFaultCount>
     <SysCallCount>10</SysCallCount>
     <SamplingCounter Name="InstructionsRetired" ReloadValue="00000000000f4240" DisplayName="Instructions Retired" />

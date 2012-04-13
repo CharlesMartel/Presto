@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading;
 using Presto.Common;
 using Presto.Managers;
@@ -54,7 +54,7 @@ namespace Presto {
         internal static IClusterProxy ClusterProxy;
 
         //we keep a list of all jobs currently out for processing
-        private static Dictionary<string, Action<PrestoResult>> outboundJobs = new Dictionary<string, Action<PrestoResult>>();
+        private static ConcurrentDictionary<string, Action<PrestoResult>> outboundJobs = new ConcurrentDictionary<string, Action<PrestoResult>>();
         private static ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Presto {
             DateTime now = DateTime.Now;
             string contextID = Generator.RandomAlphaNumeric(Config.UIDLength);
             //add the job to the scheduled jobs
-            outboundJobs.Add(contextID, callback);
+            outboundJobs[contextID] = callback;
             //execute
             SerializationEngine serializer = new SerializationEngine ();
             byte[] stream = serializer.Serialize(parameter);
@@ -109,8 +109,9 @@ namespace Presto {
         /// </summary>
         /// <param id="result">The execution result object.</param>
         internal static void ReturnExecution(string contextID, PrestoResult result) {
-            outboundJobs[contextID].Invoke(result);
-            outboundJobs.Remove(contextID);
+            Action<PrestoResult> removable;
+            outboundJobs.TryRemove(contextID, out removable);
+            removable.Invoke(result);
             if (outboundJobs.Count < 1) {
                 jobCompletionEvent.Set();
             }

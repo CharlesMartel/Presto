@@ -26,8 +26,6 @@ namespace Presto.Net {
         private List<byte> data = new List<byte>();
         //a boolean to tell if the message is fully recieved
         private bool messageFullyRecieved = false;
-        //processing queue for the writes
-        private SynchronizedProcessingQueue<byte[]> sendQueue;
 
         /// <summary>
         /// Create a new server state object to manage a currently running connection
@@ -36,7 +34,6 @@ namespace Presto.Net {
         internal ServerState(Socket socket) {
             //set the working socket
             this.socket = socket;
-            sendQueue = new SynchronizedProcessingQueue<byte[]>(write);
         }
 
         /// <summary>
@@ -112,7 +109,7 @@ namespace Presto.Net {
             }
 
             //send the data
-            sendQueue.Add(output.ToArray());
+            write(output.ToArray());
 
             //close the socket
             CloseSocket();
@@ -140,7 +137,7 @@ namespace Presto.Net {
             }
 
             //send the data
-            sendQueue.Add(output.ToArray());
+            write(output.ToArray());
         }
 
         /// <summary>
@@ -157,7 +154,7 @@ namespace Presto.Net {
                 data = holder.ToArray();
 
                 //send the data
-                socket.Send(data);
+                socket.BeginSend(data, 0, data.Length, 0, null, null);
                 return true;
             } catch (Exception e) {
                 //there was a problem sending the data, return false so it will be readded to the queue
@@ -171,7 +168,6 @@ namespace Presto.Net {
         /// Closes the ServerState's associated socket
         /// </summary>
         public void CloseSocket() {
-            sendQueue.Wait();
             socket.Close();
         }
 
