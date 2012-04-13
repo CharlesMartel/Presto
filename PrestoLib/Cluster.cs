@@ -66,12 +66,8 @@ namespace Presto {
         /// 
         /// </summary>
         public static string Key {
-            get {
-                return Key;
-            }
-            internal set {
-                Key = value;
-            }
+            get;
+            internal set;
         }
 
         //------------Methods-----------------------//
