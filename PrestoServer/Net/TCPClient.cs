@@ -178,6 +178,11 @@ namespace Presto.Net {
             }
         }
 
+
+        /// <summary>
+        /// Callback fired after a read operation completed on the socket
+        /// </summary>
+        /// <param name="result">The result of the read.</param>
         private void readCallback(IAsyncResult result) {
             int read = 0;
             NetworkStream nStream = null;

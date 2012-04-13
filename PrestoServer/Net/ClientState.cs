@@ -16,7 +16,7 @@ namespace Presto.Net {
         /// <summary>
         /// Size of the recieve buffer.
         /// </summary>
-        public const int BufferSize = 1024;
+        public const int BufferSize = 16384;
         /// <summary>
         /// The internal byte buffer.
         /// </summary>

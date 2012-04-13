@@ -55,7 +55,7 @@ namespace Presto.Net {
             try {
 
                 listener.Bind(ipEndpoint);
-                listener.Listen(256); // the integer passed to listen specifies a maximum backlag size. Im not entirely sure what that actually entails though. 
+                listener.Listen(2048); // the integer passed to listen specifies a maximum backlag size. Im not entirely sure what that actually entails though. 
                 //listener.NoDelay = true; // this is for nagles... bleh... i dont feel like explaining.
 
                 while (true) {

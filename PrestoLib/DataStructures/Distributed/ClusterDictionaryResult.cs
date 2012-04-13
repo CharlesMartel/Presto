@@ -10,40 +10,37 @@ namespace Presto.DataStructures.Distributed
     {
         private ManualResetEvent completionResetEvent = new ManualResetEvent(false);
 
-        public object AsyncState
-        {
-            get { return AsyncState; }
-            internal set { AsyncState = value;}
+        public object AsyncState {
+            get;
+            internal set;
         }
 
 
         public bool LocallyObtained
         {
-            get { return LocallyObtained; }
-            internal set { LocallyObtained = value; }
+            get;
+            internal set;
         }
 
+        private bool completed = false;
         public bool IsCompleted
         {
-            get { return IsCompleted; }
-            internal set {
-                IsCompleted = value;
+            get { return completed;}
+            internal set{
+                completed = value;
                 completionResetEvent.Set();
             }
         }
 
-        public T Value
-        {
-            get {
-                return Value;
-            }
-            internal set { Value = value; }
+        public T Value {
+            get;
+            internal set;
         }
 
         public AsyncResultErrorState ResultErrorState
         {
-            get { return ResultErrorState; }
-            internal set { ResultErrorState = value; }
+            get;
+            internal set;
         }
   
         public ClusterDictionaryResult (){
