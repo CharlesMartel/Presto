@@ -95,6 +95,7 @@ namespace Presto.Remote {
                 loadedDomains.Add(domainKey);
             }
 
+            //make sure we dont deliver the same assembly to ourselves
             if (NodeID != ClusterManager.NodeID) {
                 SlaveAssembly slavePackage = new SlaveAssembly(assemblyArray, domainKey);
                 SerializationEngine serializer = new SerializationEngine ();
@@ -108,6 +109,7 @@ namespace Presto.Remote {
         /// </summary>
         /// <param id="executionContext">The execution context of the job.</param>
         public bool Execute(ExecutionContext executionContext) {
+            RunningJobs++;
             //first be sure that this node has the appropriate assembly loaded
             if (!loadedAssemblies.Contains(executionContext.AssemblyName)) {
                 //get the assembly
@@ -118,8 +120,7 @@ namespace Presto.Remote {
             //since we know that the other machine has the assembly loaded we can 
             //serialize the execution context and transport
             SerializationEngine serializer = new SerializationEngine ();
-            client.Write(MessageType.EXECUTION_BEGIN, serializer.Serialize(executionContext));
-            RunningJobs++;
+            client.Write(MessageType.EXECUTION_BEGIN, serializer.Serialize(executionContext));            
             return true;
         }
 

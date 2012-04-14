@@ -44,7 +44,9 @@ namespace Presto.Remote {
         /// <returns></returns>
         public static Node BestNode() {
             //This needs to be smarter, drawing on DPI and such...
-            Node bestNode = null;
+            Node bestNode = nodes[0];
+
+
             float currentLoad = float.MaxValue;
             foreach (Node current in nodes) {
                 if (current.Available) {
