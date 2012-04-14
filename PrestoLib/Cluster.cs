@@ -55,6 +55,7 @@ namespace Presto {
 
         //we keep a list of all jobs currently out for processing
         private static ConcurrentDictionary<string, Action<PrestoResult>> outboundJobs = new ConcurrentDictionary<string, Action<PrestoResult>>();
+        private static ConcurrentDictionary<string, ManualResetEvent> waits = new ConcurrentDictionary<string, ManualResetEvent>();
         private static ManualResetEvent jobCompletionEvent = new ManualResetEvent(true);
 
         /// <summary>
@@ -85,7 +86,8 @@ namespace Presto {
         /// <param name="function">The function to be executed.</param>
         /// <param name="parameter">The parameter to be passed into the executed function.</param>
         /// <param name="callback">The callback to be executed when the function completes.</param>
-        public static void Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback) {
+        /// <returns>The execution ID of this particular execution.</returns>
+        public static string Execute(Func<PrestoParameter, PrestoResult> function, PrestoParameter parameter, Action<PrestoResult> callback) {
             //set the event to non signaled
             jobCompletionEvent.Reset();
 
@@ -96,12 +98,16 @@ namespace Presto {
             //Get a DateTime to mark the beginning of an execution
             DateTime now = DateTime.Now;
             string contextID = Generator.RandomAlphaNumeric(Config.UIDLength);
+            //Create a reset event and add it to the dictionary for this job
+            ManualResetEvent mre = new ManualResetEvent(false);
+            waits[contextID] = mre;
             //add the job to the scheduled jobs
             outboundJobs[contextID] = callback;
             //execute
             SerializationEngine serializer = new SerializationEngine ();
             byte[] stream = serializer.Serialize(parameter);
             ClusterProxy.Execute(function.Method.DeclaringType.Assembly.FullName, function.Method.DeclaringType.FullName, function.Method.Name, stream, contextID, Key);
+            return contextID;
         }
 
         /// <summary>
@@ -109,12 +115,20 @@ namespace Presto {
         /// </summary>
         /// <param id="result">The execution result object.</param>
         internal static void ReturnExecution(string contextID, PrestoResult result) {
-            Action<PrestoResult> removable;
-            outboundJobs.TryRemove(contextID, out removable);
-            removable.Invoke(result);
+            //get the callback
+            Action<PrestoResult> callback;
+            outboundJobs.TryRemove(contextID, out callback);
+            //get the respective reset event
+            ManualResetEvent mre;
+            waits.TryRemove(contextID, out mre);
+            //invoke the callback
+            callback.Invoke(result);
+            //set the execution reset event
+            mre.Set();
+            //and the generic reset event
             if (outboundJobs.Count < 1) {
                 jobCompletionEvent.Set();
-            }
+            }            
         }
 
         /// <summary>
@@ -122,6 +136,16 @@ namespace Presto {
         /// </summary>
         public static void Wait() {
             jobCompletionEvent.WaitOne();
+        }
+
+        /// <summary>
+        /// Blocks the currently running thread until the execution with the specefied execution id returns from the cluster.
+        /// </summary>
+        /// <param name="executionID">The id of the execution to wait on.</param>
+        public static void Wait(string executionID) {
+            if(waits.ContainsKey(executionID)){
+                waits[executionID].WaitOne();
+            }
         }
 
         /// <summary>
