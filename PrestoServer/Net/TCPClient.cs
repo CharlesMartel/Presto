@@ -180,6 +180,9 @@ namespace Presto.Net {
         /// </summary>
         /// <param name="result">The result of the read.</param>
         private void readCallback(IAsyncResult result) {
+
+            //Who wrote this method? I'm not claiming it... nope.
+
             int read = 0;
             NetworkStream nStream = null;
 
