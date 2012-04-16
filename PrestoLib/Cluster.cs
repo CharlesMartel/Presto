@@ -27,7 +27,7 @@ namespace Presto {
         /// </summary>
         public delegate void UnloadingHandler();
         /// <summary>
-        /// Event triggered directly before the deconstructiona and removal of a module or application from the cluster.
+        /// Event triggered directly before the deconstruction and removal of a module or application from the cluster.
         /// </summary>
         public static event UnloadingHandler Unloading;
 
@@ -118,28 +118,33 @@ namespace Presto {
             //get the callback
             Action<PrestoResult> callback;
             outboundJobs.TryRemove(contextID, out callback);
+            //invoke the callback
+            callback(result);
+            returnCallbackCleanup(contextID);
+        }
+
+        private static void returnCallbackCleanup(string contextID) {
             //get the respective reset event
             ManualResetEvent mre;
             waits.TryRemove(contextID, out mre);
-            //invoke the callback
-            callback.Invoke(result);
-            //set the execution reset event
             mre.Set();
             //and the generic reset event
             if (outboundJobs.Count < 1) {
                 jobCompletionEvent.Set();
-            }            
+            }   
         }
 
         /// <summary>
-        /// Blocks the currently running thread until all execution jobs return from the cluster. The thread will resume once all jobs return succesful.
+        /// Blocks the currently running thread until all execution jobs return from the cluster. The thread will resume once all jobs return succesful. And their
+        /// callbacks have been run.
         /// </summary>
         public static void Wait() {
             jobCompletionEvent.WaitOne();
         }
 
         /// <summary>
-        /// Blocks the currently running thread until the execution with the specefied execution id returns from the cluster.
+        /// Blocks the currently running thread until the execution with the specefied execution id returns from the cluster. Will release
+        /// the thread once the executions callback has been processed.
         /// </summary>
         /// <param name="executionID">The id of the execution to wait on.</param>
         public static void Wait(string executionID) {
