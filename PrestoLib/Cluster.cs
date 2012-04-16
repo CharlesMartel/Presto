@@ -184,8 +184,9 @@ namespace Presto {
         /// <summary>
         /// Get the IDs of all nodes available to this application or module.
         /// </summary>
+        /// <param name="includeSelf">Whether or not to include the local node id in the listing.</param>
         /// <returns>List of all node IDs available to this application or module.</returns>
-        public static string[] GetAvailableNodes() {
+        public static string[] GetAvailableNodes(bool includeSelf = true) {
             return ClusterProxy.GetAvailableNodes(Key);
         }
     }
