@@ -15,44 +15,96 @@ namespace Presto.Remote {
         /// <summary>
         /// Boolean telling whether or not this node is available for distribution.
         /// </summary>
-        public bool Available = false;
+        public bool Available
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// The generated id of this node.
         /// </summary>
-        public string NodeID;
+        public string NodeID
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// The calculated DPI of this node.
         /// </summary>
-        public double DPI;
+        public double DPI
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// The number of logical cpus in this node.
         /// </summary>
-        public int CPUCount;
+        public int CPUCount
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// The number of running jobs on this node.
         /// </summary>
-        public int RunningJobs;
+        public int RunningJobs
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// The time (milliseconds) this node is away from the current one.
+        /// </summary>
+        public int Distance
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// A number defining how busy with work this node is. A factor dependant on Number of jobs,
+        /// DPI, and total cpu count.
+        /// </summary>
+        public double Saturation
+        {
+            get
+            {
+                return (RunningJobs / CPUCount) / DPI;
+            }
+        }
+
+        /// <summary>
+        /// The string address of this node on the network.
+        /// </summary>
+        public string Address
+        {
+            get;
+            private set;
+        }
 
         private List<string> loadedAssemblies = new List<string>();
         private List<string> loadedDomains = new List<string>();
         private TCPClient client;
-        private string address;
         private Timer pingTimer;
         private System.Threading.ManualResetEvent assemblyLoadReset = new System.Threading.ManualResetEvent(true);
 
         /// <summary>
-        /// Instantiate a new Node object with the connection to the specefied address
+        /// Instantiate a new Node object with the connection to the specefied Address
         /// </summary>
-        /// <param id="connectionAddress">The connection address of the node</param>
+        /// <param id="connectionAddress">The connection Address of the node</param>
         public Node(string connectionAddress) {
+            //preset availability to false
+            Available = false;
+
             //setup node
-            address = connectionAddress;
+            Address = connectionAddress;
             int port = int.Parse(Config.GetParameter("SERVER_PORT"));
-            client = new TCPClient(address, port);
+            client = new TCPClient(Address, port);
 
             //attatch network events
             client.SetDispatchAction(MessageType.UNKOWN, unknowMessageType);
@@ -79,18 +131,20 @@ namespace Presto.Remote {
         }
 
         /// <summary>
-        /// Get the connection address of the node.
+        /// Get the connection Address of the node.
         /// </summary>
-        /// <returns>the connection address string</returns>
+        /// <returns>the connection Address string</returns>
         public string GetAddress() {
-            return address;
+            return Address;
         }
 
         /// <summary>
         /// Deliver an assembly to this node.
         /// </summary>
-        public void DeliverAssembly(string assemblyFullName, byte[] assemblyArray, string domainKey) {
-            loadedAssemblies.Add(assemblyFullName);
+        private void deliverAssembly(string assemblyFullName, byte[] assemblyArray, string domainKey) {
+            if(!HasAssembly(assemblyFullName)){
+                loadedAssemblies.Add(assemblyFullName);
+            }
             if (!loadedDomains.Contains(domainKey)) {
                 loadedDomains.Add(domainKey);
             }
@@ -111,10 +165,10 @@ namespace Presto.Remote {
         public bool Execute(ExecutionContext executionContext) {
             RunningJobs++;
             //first be sure that this node has the appropriate assembly loaded
-            if (!loadedAssemblies.Contains(executionContext.AssemblyName)) {
+            if (!HasAssembly(executionContext.AssemblyName)) {
                 //get the assembly
                 byte[] assembly = DomainManager.GetAssemblyStream(executionContext.AssemblyName);
-                DeliverAssembly(executionContext.AssemblyName, assembly, executionContext.DomainKey);
+                deliverAssembly(executionContext.AssemblyName, assembly, executionContext.DomainKey);
             }
             assemblyLoadReset.WaitOne();
             //since we know that the other machine has the assembly loaded we can 
@@ -203,15 +257,6 @@ namespace Presto.Remote {
             return false;
         }
 
-        /// <summary>
-        /// Estimates the current load on the node using the verifcation response data.
-        /// </summary>
-        /// <returns>The estimated load on the node.</returns>
-        public float EstimatedLoad() {
-            return (float)RunningJobs / CPUCount;
-        }
-
-
         //----------------------Response Functions-----------------------//
 
         /// <summary>
@@ -219,6 +264,7 @@ namespace Presto.Remote {
         /// </summary>
         /// <param id="state">The state object of the response.</param>
         private void unknowMessageType(ClientState state) {
+            //TODO: handle unknown message type
         }
 
         /// <summary>
@@ -265,6 +311,16 @@ namespace Presto.Remote {
         /// </summary>
         /// <param name="message">The user message struct to be sent.</param>
         public void SendMessage(UserMessage message) {
+            if (!HasDomain(message.DomainKey))
+            {
+                //get the assemblies
+                Dictionary<string, byte[]> assemblies = DomainManager.GetDomainAssemblies(message.DomainKey);
+                foreach (KeyValuePair<string, byte[]> assem in assemblies)
+                {
+                    deliverAssembly(assem.Key, assem.Value, message.DomainKey);
+                }
+            }
+            assemblyLoadReset.WaitOne();
             SerializationEngine serializer = new SerializationEngine ();
             client.Write(MessageType.USER_MESSAGE, serializer.Serialize(message));
         }

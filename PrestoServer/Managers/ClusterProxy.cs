@@ -21,7 +21,7 @@ namespace Presto.Managers {
         /// <param name="domainKey">The domain Key of this domain.</param>
         public void Execute(string assemblyName, string typeName, string methodName, byte[] param, string contextid, string domainKey) {
             ExecutionContext context = new ExecutionContext(assemblyName, typeName, methodName, param, contextid, domainKey);
-            Nodes.BestNode().Execute(context);
+            Nodes.BestNode(domainKey).Execute(context);
         }
 
         /// <summary>

@@ -7,9 +7,15 @@ namespace Presto {
     [Serializable()]
     public abstract class PrestoModule {
         /// <summary>
-        /// After a new instance of the module is created. The Load method is immediately called to begin processing.
+        /// After a new instance of the module is created. The Startup method is immediately called to begin processing.
+        /// This happens on one and only one node and it happens after the init function has been run.
         /// </summary>
-        public abstract void Load();
+        public abstract void Startup();
+        /// <summary>
+        /// Before the module load, a module must be initialized. This function is run on all nodes, regardless of whether
+        /// or not that node is the slave or the master.
+        /// </summary>
+        public abstract void Init();
         /// <summary>
         /// Signal to the controlling presto server that the currently running module has finished its work
         /// and is ready to be disposed.

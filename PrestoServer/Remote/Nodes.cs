@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Presto.Common;
 using Presto.Managers;
 using Presto.Transfers;
@@ -29,7 +30,7 @@ namespace Presto.Remote {
         /// Initializes the node listing.
         /// </summary>
         public static void Initialize() {
-            //get the list of nodes and attempt a connection to them by passing the address into the Node Object
+            //get the list of nodes and attempt a connection to them by passing the Address into the Node Object
             string[] hosts = Config.GetHosts();
             foreach (string host in hosts) {
                 nodes.Add(new Node(host));
@@ -41,20 +42,18 @@ namespace Presto.Remote {
         /// Gets the node that is best for a new cluster job. If there are no other nodes, or all other nodes are not available
         /// or possibly even not connected, then the default self node is returned.
         /// </summary>
-        /// <returns></returns>
-        public static Node BestNode() {
-            //This needs to be smarter, drawing on DPI and such...
-            Node bestNode = nodes[0];
-
-
-            float currentLoad = float.MaxValue;
-            foreach (Node current in nodes) {
-                if (current.Available) {
-                    float estLoad = current.EstimatedLoad();
-                    if (estLoad < currentLoad) {
-                        currentLoad = estLoad;
-                        bestNode = current;
-                    }
+        /// <param name="domainKey">The domain key to find a node for.</param>
+        /// <returns>The best node to take on a cluster job.</returns>
+        public static Node BestNode(string domainKey) {
+            //get all nodes associated with this domain
+            Node[] listing = GetAssociatedNodes(domainKey);
+            //the node with the lowest saturation will be the best candidate for distribution.
+            Node bestNode = listing[0];
+            foreach (Node current in listing)
+            {
+                if (bestNode.Saturation > current.Saturation)
+                {
+                    bestNode = current;
                 }
             }
             return bestNode;

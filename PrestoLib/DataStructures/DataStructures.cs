@@ -6,12 +6,12 @@ using Presto.DataStructures.Distributed;
 
 namespace Presto.DataStructures {
     /// <summary>
-    /// The DataStructure Factory. Create, Load, and Manager Presto Specific DataStructures.
+    /// The DataStructure Factory. Create, Startup, and Manager Presto Specific DataStructures.
     /// </summary>
     public static class DataStructures {        
 
         /// <summary>
-        /// Load a map if one wiht the name specefied already exists in the cluster, otherwise
+        /// Startup a map if one wiht the name specefied already exists in the cluster, otherwise
         /// create a new map with that name.
         /// </summary>
         /// <typeparam name="T">The type of data stored in the value column of the map.</typeparam>

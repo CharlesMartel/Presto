@@ -7,7 +7,12 @@ namespace BasicModule{
         
         public static long numjobs = 0;
 
-        public override void Load() {
+        public override void Init()
+        {
+            //Nothing to initialize
+        }
+
+        public override void Startup() {
             //get the start time of the operation
             DateTime begin = DateTime.Now;
 
@@ -47,6 +52,7 @@ namespace BasicModule{
             Console.WriteLine("Execution number: " + output.value + " from node id: " + output.ExecutionNodeID);
             System.Threading.Interlocked.Increment(ref numjobs);
         }
+
     }
 
 

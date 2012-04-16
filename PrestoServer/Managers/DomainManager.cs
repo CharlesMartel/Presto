@@ -49,32 +49,18 @@ namespace Presto.Managers {
         }
 
         /// <summary>
-        /// Load an assembly into the specefied domain.
+        /// Startup an assembly into the specefied domain.
         /// </summary>
         /// <param name="domainKey">The string Key of the domain to be loaded into.</param>
         /// <param name="assemblyStream">The COFF byte array of the assembly.</param>
-        /// <param name="createInstance">By default we also create a new module instance upon loading the assembly.</param>
-        public static void LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream, bool createInstance = true) {
+        public static void LoadAssemblyIntoDomain(string domainKey, byte[] assemblyStream) {
             DomainProxy proxy = proxies[domainKey];
             string assemblyName = proxy.LoadAssembly(assemblyStream);
             if (assemblies.ContainsKey(assemblyName)) {
                 assemblies.Remove(assemblyName);
             }
             assemblies.Add(assemblyName, assemblyStream);
-            if (createInstance) {
-                createPrestoInstance(assemblyName, domainKey);
-            }
         }
-
-        /// <summary>
-        /// Initializes the presto module instance 
-        /// </summary>
-        private static void createPrestoInstance(string assemblyName, string domainKey) {
-            DomainProxy proxy = proxies[domainKey];
-
-            proxy.CreatePrestoInstance(assemblyName);
-        }
-
 
         /// <summary>
         /// Unloads and destroys the domain with the specified Key. Also deletes any assemblies associated with the domain.
@@ -102,7 +88,10 @@ namespace Presto.Managers {
             final.BeginInvoke(domain, null, null);
         }
 
-
+        /// <summary>
+        /// The final destruction of a domain followed by a garbage collection.
+        /// </summary>
+        /// <param name="domain">The domain to be destroyed.</param>
         private static void finalUnload(AppDomain domain){
             AppDomain.Unload(domain);
             GC.Collect ();
@@ -145,10 +134,10 @@ namespace Presto.Managers {
         }
 
         /// <summary>
-        /// Execute the load procedure on the presto instance in the specefied domain.
+        /// Execute the startup procedure on the presto instance in the specefied domain.
         /// </summary>
         /// <param name="domainKey">The Key of the domain to execute in.</param>
-        public static void ExecuteLoad(string domainKey) {
+        public static void ExecuteStartup(string domainKey) {
             DomainProxy proxy = proxies[domainKey];
             proxy.ExecuteInstance();
         }
@@ -183,6 +172,29 @@ namespace Presto.Managers {
             } else {
                 Log.Error("No domain with Key: " + message.DomainKey + " was found to deliver message: \"" + message.Message + "\" from: NodeID: " + message.Sender);
             }
+        }
+
+        /// <summary>
+        /// Retrieve the COFF based images of all assemblies loaded into a domain along with the assemblies full names as keys.
+        /// </summary>
+        /// <param name="domainKey">The domain key associated with the requested domain.</param>
+        /// <returns>The COFF based images of all assemblies loaded into a domain along with their full names as keys.</returns>
+        public static Dictionary<string, byte[]> GetDomainAssemblies(string domainKey)
+        {
+            Dictionary<string, byte[]> assemblyListing = new Dictionary<string, byte[]>();
+            if (!HasDomain(domainKey))
+            {
+                return assemblyListing;
+            }
+            DomainProxy proxy = proxies[domainKey];
+            string[] assemblyNames = proxy.GetAssemblyNames();
+            foreach (string name in assemblyNames)
+            {
+                if (assemblies.ContainsKey(name)){
+                    assemblyListing.Add(name, assemblies[name]);
+                }
+            }
+            return assemblyListing;
         }
     }
 }

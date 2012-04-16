@@ -43,5 +43,7 @@ PrestoLib/bin/
 PrestoLib/obj/
 Examples/BasicModule/bin
 Examples/BasicModule/obj
+Examples/MessagePassing/bin
+Examples/MessagePassing/obj
 #for those stupid suo files
 *.suo

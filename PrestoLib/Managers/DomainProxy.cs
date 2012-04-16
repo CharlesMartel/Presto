@@ -23,7 +23,7 @@ namespace Presto.Managers {
         /// <summary>
         /// The module instance inside this domain.
         /// </summary>
-        private PrestoModule moduleInstance;
+        private PrestoModule moduleInstance = null;
 
         /// <summary>
         /// Direct the surrounding app domain to load a new assembly.
@@ -34,6 +34,7 @@ namespace Presto.Managers {
             Assembly newAssembly = currentDomain.Load(assemblyImage);
             assemblyNames.Add(newAssembly.FullName);
             assemblies.Add(newAssembly.FullName, newAssembly);
+            createPrestoInstance(newAssembly.FullName);
             return newAssembly.FullName;
         }
 
@@ -41,9 +42,14 @@ namespace Presto.Managers {
         /// Creates the presto instance housed in assembly with the given name.
         /// </summary>
         /// <param name="assemblyName">The full name of the assembly that the Presto object resides in.</param>
-        public void CreatePrestoInstance(string assemblyName) {
+        private void createPrestoInstance(string assemblyName) {
+            //do not create an instance if one already exists
+            if (moduleInstance != null)
+            {
+                return;
+            }
+
             Assembly assembly = assemblies[assemblyName];
-            ;
             //get all types housed in the assembly
             Type[] assemblyTypes = assembly.GetTypes();
             //create an instance of the PrestoModule
@@ -51,6 +57,7 @@ namespace Presto.Managers {
             foreach (Type type in assemblyTypes) {
                 if (type.IsSubclassOf(typeof(PrestoModule))) {
                     module = (PrestoModule)Activator.CreateInstance(type);
+                    module.Init();
                     break;
                 }
             }
@@ -73,7 +80,7 @@ namespace Presto.Managers {
         /// Execute the load procedure for this domains residing instance.
         /// </summary>
         public void ExecuteInstance() {
-            Action moduleLoad = new Action(moduleInstance.Load);
+            Action moduleLoad = new Action(moduleInstance.Startup);
             moduleLoad.BeginInvoke(null, null);
         }
 
@@ -136,7 +143,5 @@ namespace Presto.Managers {
         public void DeliverMessage(string payload, string sender) {
             Cluster.DeliverMessage(payload, sender);
         }
-
-        
     }
 }
