@@ -17,8 +17,9 @@ namespace Presto.Remote {
         /// </summary>
         public bool Available
         {
-            get;
-            private set;
+            get {
+                return client.IsConnected();
+            }
         }
 
         /// <summary>
@@ -98,9 +99,6 @@ namespace Presto.Remote {
         /// </summary>
         /// <param id="connectionAddress">The connection Address of the node</param>
         public Node(string connectionAddress) {
-            //preset availability to false
-            Available = false;
-
             //setup node
             Address = connectionAddress;
             int port = int.Parse(Config.GetParameter("SERVER_PORT"));
@@ -114,10 +112,7 @@ namespace Presto.Remote {
             client.SetDispatchAction(MessageType.VERIFICATION_RESPONSE, verificationResponse);
 
             //connect
-            if (client.Connect()) {
-                Available = true;
-            }
-                
+            client.Connect();
 
             //Send first verification.
             verify();
@@ -151,7 +146,7 @@ namespace Presto.Remote {
 
             //make sure we dont deliver the same assembly to ourselves
             if (NodeID != ClusterManager.NodeID) {
-                SlaveAssembly slavePackage = new SlaveAssembly(assemblyArray, domainKey);
+                SlaveAssembly slavePackage = new SlaveAssembly(assemblyArray, domainKey, assemblyFullName);
                 SerializationEngine serializer = new SerializationEngine ();
                 client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, serializer.Serialize(slavePackage));
                 assemblyLoadReset.Reset();
@@ -226,14 +221,10 @@ namespace Presto.Remote {
         /// Internal function to ping the recieving server and verify that there is an active connection to it.
         /// </summary>
         private void verify() {
-            if (client.IsConnected()) {
+            if (Available) {
                 client.Write(MessageType.VERIFY);
             } else {
-                Available = false;
-                bool connected = client.ReConnect();
-                if (connected) {
-                    Available = true;
-                }
+                client.ReConnect();
             }
         }
 

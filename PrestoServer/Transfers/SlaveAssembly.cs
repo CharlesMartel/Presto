@@ -9,15 +9,17 @@ namespace Presto.Transfers {
     struct SlaveAssembly {
         public byte[] AssemblyImage;
         public string DomainKey;
+        public string AssemblyName;
 
         /// <summary>
         /// Create a new Slave Assembly structure.
         /// </summary>
         /// <param name="assemblyImage">The COFF based image of the assembly.</param>
         /// <param name="domainKey">The domain Key generated for the assembly.</param>
-        public SlaveAssembly(byte[] assemblyImage, string domainKey) {
+        public SlaveAssembly(byte[] assemblyImage, string domainKey, string assemblyName) {
             AssemblyImage = assemblyImage;
             DomainKey = domainKey;
+            AssemblyName = assemblyName;
         }
     }
 }

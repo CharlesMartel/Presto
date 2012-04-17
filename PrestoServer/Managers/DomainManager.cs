@@ -86,6 +86,7 @@ namespace Presto.Managers {
             domains.Remove(domainKey);
             Action<AppDomain> final = finalUnload;
             final.BeginInvoke(domain, null, null);
+            Console.WriteLine("Destroyed domain: " + domainKey + " : Triggered by instance? " + instanceSignal); 
         }
 
         /// <summary>

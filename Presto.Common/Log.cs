@@ -67,5 +67,13 @@ namespace Presto.Common {
             }
         }
 
+        /// <summary>
+        /// Write text to the console, will only work if debug mode is active.
+        /// </summary>
+        /// <param name="text">The text to write to the console.</param>
+        public static void DebugConsole(string text) {
+            Console.WriteLine(text);
+        }
+
     }
 }

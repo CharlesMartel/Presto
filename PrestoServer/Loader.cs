@@ -45,7 +45,9 @@ namespace Presto {
             SlaveAssembly slaveAssembly = (SlaveAssembly)serializer.Deserialize(state.GetDataArray());
             //create the domain and add the assembly to it
             DomainManager.CreateDomain(slaveAssembly.DomainKey);
-            DomainManager.LoadAssemblyIntoDomain(slaveAssembly.DomainKey, slaveAssembly.AssemblyImage);
+            if(!DomainManager.DomainHasAssembly(slaveAssembly.DomainKey, slaveAssembly.AssemblyName)){
+                DomainManager.LoadAssemblyIntoDomain(slaveAssembly.DomainKey, slaveAssembly.AssemblyImage);
+            }
             //send back assembly transfer complete message
             state.Write(MessageType.ASSEMBLY_TRANSFER_COMPLETE);
         }
