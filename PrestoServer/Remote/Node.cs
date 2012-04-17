@@ -146,7 +146,7 @@ namespace Presto.Remote {
 
             //make sure we dont deliver the same assembly to ourselves
             if (NodeID != ClusterManager.NodeID) {
-                SlaveAssembly slavePackage = new SlaveAssembly(assemblyArray, domainKey, assemblyFullName);
+                SlaveAssembly slavePackage = new SlaveAssembly(assemblyArray, domainKey, assemblyFullName, ClusterManager.NodeID);
                 SerializationEngine serializer = new SerializationEngine ();
                 client.Write(MessageType.ASSEMBLY_TRANSFER_SLAVE, serializer.Serialize(slavePackage));
                 assemblyLoadReset.Reset();
@@ -295,6 +295,20 @@ namespace Presto.Remote {
             DPI = vResponse.DPI;
             CPUCount = vResponse.CPUCount;
             RunningJobs = vResponse.JobCount;
+            //make sure the assembly and domain listing is good
+            foreach (string assembly in loadedAssemblies)
+            {
+                if(!loadedAssemblies.Contains(assembly)){
+                    loadedAssemblies.Add(assembly);
+                }
+            }
+            foreach (string domain in loadedDomains)
+            {
+                if (!loadedDomains.Contains(domain))
+                {
+                    loadedDomains.Add(domain);
+                }
+            }
         }
 
         /// <summary>
@@ -314,6 +328,30 @@ namespace Presto.Remote {
             assemblyLoadReset.WaitOne();
             SerializationEngine serializer = new SerializationEngine ();
             client.Write(MessageType.USER_MESSAGE, serializer.Serialize(message));
+        }
+
+        /// <summary>
+        /// Adds an assembly name to the list of loaded assemblies for this node.
+        /// </summary>
+        /// <param name="assemblyName">The assembly name to add.</param>
+        public void SetLoadedAssembly(string assemblyName)
+        {
+            if (!loadedAssemblies.Contains(assemblyName))
+            {
+                loadedAssemblies.Add(assemblyName);
+            }
+        }
+
+        /// <summary>
+        /// Adds a domain to the list of loaded domains for this node.
+        /// </summary>
+        /// <param name="domainKey">The key of the domain to be added.</param>
+        public void SetLoadedDomain(string domainKey)
+        {
+            if (!loadedDomains.Contains(domainKey))
+            {
+                loadedDomains.Add(domainKey);
+            }
         }
     }
 }

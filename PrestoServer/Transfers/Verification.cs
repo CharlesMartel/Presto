@@ -22,6 +22,14 @@ namespace Presto.Transfers {
         /// The number of execution jobs the node currently has processing.
         /// </summary>
         public int JobCount;
+        /// <summary>
+        /// The domains currently loaded into this node.
+        /// </summary>
+        public string[] Domains;
+        /// <summary>
+        /// The assemblies currently loaded into this node.
+        /// </summary>
+        public string[] Assemblies;
 
         /// <summary>
         /// Create a new verification structure to be passed back from a verification request.
@@ -30,11 +38,13 @@ namespace Presto.Transfers {
         /// <param name="dpi">The Distribution Performance Indicator for this node.</param>
         /// <param name="cpuCount">The number of logical processors this node has.</param>
         /// <param name="jobCount">The number of execution jobs the node currently has processing.</param>
-        public Verification(string id, double dpi, int cpuCount, int jobCount) {
+        public Verification(string id, double dpi, int cpuCount, int jobCount, string[] domains, string[] assemblies) {
             NodeID = id;
             DPI = dpi;
             CPUCount = cpuCount;
             JobCount = jobCount;
+            Domains = domains;
+            Assemblies = assemblies;
         }
     }
 }

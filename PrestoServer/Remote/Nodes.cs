@@ -145,5 +145,21 @@ namespace Presto.Remote {
         public static Node[] GetAssociatedNodes(string domainKey){
             return nodes.ToArray();
         }
+
+        /// <summary>
+        /// Retrieve the node with the specified id.
+        /// </summary>
+        /// <param name="id">The id of the node to retrieve.</param>
+        /// <returns>The node with the specefied id.</returns>
+        public static Node GetNodeByID(string id){
+            foreach (Node node in nodes)
+            {
+                if (node.NodeID == id)
+                {
+                    return node;
+                }
+            }
+            return null;
+        }
     }
 }

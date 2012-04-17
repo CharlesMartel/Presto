@@ -197,5 +197,33 @@ namespace Presto.Managers {
             }
             return assemblyListing;
         }
+
+        /// <summary>
+        /// Get the name of all assemblies currently loaded into this instance.
+        /// </summary>
+        /// <returns>The name of all assemblies currently loaded into this instance.</returns>
+        public static string[] GetAllAssemblyNames()
+        {
+            List<string> keys = new List<string>();
+            foreach (KeyValuePair<string, byte[]> assembly in assemblies)
+            {
+                keys.Add(assembly.Key);
+            }
+            return keys.ToArray();
+        }
+
+        /// <summary>
+        /// Get the keys of all domains loaded into this node.
+        /// </summary>
+        /// <returns>The keys of all domains loaded into this node.</returns>
+        public static string[] GetAllDomainKeys()
+        {
+            List<string> keys = new List<string>();
+            foreach (KeyValuePair<string, AppDomain> domain in domains)
+            {
+                keys.Add(domain.Key);
+            }
+            return keys.ToArray();
+        }
     }
 }

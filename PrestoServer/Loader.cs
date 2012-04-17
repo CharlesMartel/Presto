@@ -2,6 +2,7 @@
 using Presto.Managers;
 using Presto.Net;
 using Presto.Transfers;
+using Presto.Remote;
 
 namespace Presto {
 
@@ -47,6 +48,12 @@ namespace Presto {
             DomainManager.CreateDomain(slaveAssembly.DomainKey);
             if(!DomainManager.DomainHasAssembly(slaveAssembly.DomainKey, slaveAssembly.AssemblyName)){
                 DomainManager.LoadAssemblyIntoDomain(slaveAssembly.DomainKey, slaveAssembly.AssemblyImage);
+            }
+            Node from = Nodes.GetNodeByID(slaveAssembly.NodeID);
+            if (from != null)
+            {
+                from.SetLoadedAssembly(slaveAssembly.AssemblyName);
+                from.SetLoadedDomain(slaveAssembly.DomainKey);
             }
             //send back assembly transfer complete message
             state.Write(MessageType.ASSEMBLY_TRANSFER_COMPLETE);

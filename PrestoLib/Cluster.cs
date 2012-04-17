@@ -131,7 +131,7 @@ namespace Presto {
             //and the generic reset event
             if (outboundJobs.Count < 1) {
                 jobCompletionEvent.Set();
-            }   
+            }
         }
 
         /// <summary>
