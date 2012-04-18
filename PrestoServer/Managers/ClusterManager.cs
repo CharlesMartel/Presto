@@ -15,7 +15,9 @@ namespace Presto.Managers {
         /// <summary>
         /// The generated node id of this node.
         /// </summary>
-        public static string NodeID = Generator.RandomAlphaNumeric(Config.UIDLength);
+        public static readonly string NodeID = Generator.RandomAlphaNumeric(Config.UIDLength);
+
+        public static readonly string HostName = System.Net.Dns.GetHostName();
 
         /// <summary>
         /// Initialize the servers cluster instance.
@@ -30,7 +32,7 @@ namespace Presto.Managers {
         /// </summary>
         /// <param id="state">The server state object.</param>
         private static void verifyResponse(ServerState state) {
-            Transfers.Verification verification = new Transfers.Verification(NodeID, DPI.GetDPI(), Memory.GetTotalSize(), CPU.GetCount(), Executor.RunningJobs(), DomainManager.GetAllDomainKeys(), DomainManager.GetAllAssemblyNames());
+            Transfers.Verification verification = new Transfers.Verification(NodeID, ClusterManager.HostName, DPI.GetDPI(), Memory.GetTotalSize(), CPU.GetCount(), Executor.RunningJobs(), DomainManager.GetAllDomainKeys(), DomainManager.GetAllAssemblyNames());
             SerializationEngine serializer = new SerializationEngine ();
             state.Write(MessageType.VERIFICATION_RESPONSE, serializer.Serialize(verification).ToArray());
         }

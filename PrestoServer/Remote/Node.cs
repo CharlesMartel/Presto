@@ -88,6 +88,15 @@ namespace Presto.Remote {
         }
 
         /// <summary>
+        /// The host name of this node.
+        /// </summary>
+        public string HostName
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// The string address of this node on the network.
         /// </summary>
         public string Address
@@ -300,6 +309,7 @@ namespace Presto.Remote {
             SerializationEngine serializer = new SerializationEngine ();
             Verification vResponse = (Verification)serializer.Deserialize(state.GetDataArray());
             NodeID = vResponse.NodeID;
+            HostName = vResponse.HostName;
             DPI = vResponse.DPI;
             CPUCount = vResponse.CPUCount;
             RunningJobs = vResponse.JobCount;

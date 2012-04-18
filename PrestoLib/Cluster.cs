@@ -78,10 +78,11 @@ namespace Presto {
         /// 
         /// The method passed in as "function" MUST be static. If it is not, an error will be thrown and added to the error log.
         /// Instance data is not preserved outside of the running ApplicationDomain and indeed all data not instantiated within the 
-        /// method or not globally synchronized by the SynchronizationFactory is considered volatile, mutable, inconsitent and untrustworthy.
+        /// method or not globally synchronized using a cluster data structure is considered volatile, mutable, inconsitent and untrustworthy.
         /// 
         /// DO NOT write code that will depend on instance or static class variables in order to do processing
-        /// unless those variables are declared constant.
+        /// unless those variables are declared constant from the start of the module. Write functions as if they are black boxes,
+        /// the only thing you see is input and output.
         /// </summary>
         /// <param name="function">The function to be executed.</param>
         /// <param name="parameter">The parameter to be passed into the executed function.</param>
