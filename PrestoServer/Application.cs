@@ -33,8 +33,23 @@ namespace Presto {
             Executor.Initialize();
             //Start the server listening thread
             ControlServer.Start();
+            ControlServer.RegisterDispatchAction(MessageType.STATUS_TERMINAL, status);
             //Initialize the Node Listing
             Nodes.Initialize();
+        }
+
+        /// <summary>
+        /// The dispatch action called when a status request is signaled.
+        /// </summary>
+        /// <param name="state">The server state object of the network connection.</param>
+        public static void status (ServerState state){
+            ServerStatus status = new ServerStatus();
+            status.NodeCount = Nodes.GetTotalAvailableNodeCount();
+            status.CPUCount = Nodes.GetCPUCount();
+            status.CDPI = Nodes.GetCDPI();
+            status.TotalMemory = Nodes.GetTotalMemory();
+            SerializationEngine serializer = new SerializationEngine();
+            state.WriteAndClose(MessageType.STATUS_TERMINAL, serializer.Serialize(status));
         }
 
     }

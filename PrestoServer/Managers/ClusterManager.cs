@@ -30,7 +30,7 @@ namespace Presto.Managers {
         /// </summary>
         /// <param id="state">The server state object.</param>
         private static void verifyResponse(ServerState state) {
-            Transfers.Verification verification = new Transfers.Verification(NodeID, DPI.GetDPI(), CPU.GetCount(), Executor.RunningJobs(), DomainManager.GetAllDomainKeys(), DomainManager.GetAllAssemblyNames());
+            Transfers.Verification verification = new Transfers.Verification(NodeID, DPI.GetDPI(), Memory.GetTotalSize(), CPU.GetCount(), Executor.RunningJobs(), DomainManager.GetAllDomainKeys(), DomainManager.GetAllAssemblyNames());
             SerializationEngine serializer = new SerializationEngine ();
             state.Write(MessageType.VERIFICATION_RESPONSE, serializer.Serialize(verification).ToArray());
         }

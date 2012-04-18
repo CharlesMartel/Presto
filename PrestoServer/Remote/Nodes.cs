@@ -161,5 +161,45 @@ namespace Presto.Remote {
             }
             return null;
         }
+
+        /// <summary>
+        /// Get all available nodes in the cluster.
+        /// </summary>
+        /// <returns>An array of all available nodes in the cluster.</returns>
+        public static Node[] GetAllAvailableNodes() {
+            List<Node> listing = new List<Node>();
+            foreach (Node node in nodes) {
+                if (node.Available) {
+                    listing.Add(node);
+                }
+            }
+            return listing.ToArray();
+        }
+
+        /// <summary>
+        /// Get the total number of logical cpus in the cluster.
+        /// </summary>
+        /// <returns>The total number of logical cpus in the cluster.</returns>
+        public static int GetCPUCount() {
+            Node[] listing = GetAllAvailableNodes();
+            int cpuCount = 0;
+            foreach (Node node in listing) {
+                cpuCount += node.CPUCount;
+            }
+            return cpuCount;
+        }
+
+        /// <summary>
+        /// Get the total amount of memory in the cluster.
+        /// </summary>
+        /// <returns>The total amount of memory in the cluster.</returns>
+        public static long GetTotalMemory() {
+            Node[] listing = GetAllAvailableNodes();
+            long total = 0;
+            foreach (Node node in listing) {
+                total += node.TotalMemory;
+            }
+            return total;
+        }
     }
 }

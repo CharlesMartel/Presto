@@ -21,10 +21,11 @@ namespace Presto.Machine {
         public static long GetTotalSize() {
             if (ramCounter == null) {
                 if (Config.Platform == ExecutionPlatform.DOTNET) {
-                    ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+                    ramCounter = new PerformanceCounter("Memory", "Available Bytes");
                 } else if (Config.Platform == ExecutionPlatform.MONO) {
                     ramCounter = new PerformanceCounter("Mono Memory", "Total Physical Memory");
                 }
+                ramCounter.NextValue();
             }
 
             return (long)ramCounter.NextValue();

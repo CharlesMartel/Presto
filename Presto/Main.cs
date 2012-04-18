@@ -82,7 +82,30 @@ namespace Presto {
         /// Write the status of the cluster to the console.
         /// </summary>
         public static void status() {
-            //TODO: get cluster status and Write to console	
+            TcpClient client = new TcpClient();
+            client.Connect("127.0.0.1", Int32.Parse(Config.GetParameter("SERVER_PORT")));
+            NetworkStream stream = client.GetStream();
+            byte[] messageTypeEncoded = ASCIIEncoding.ASCII.GetBytes(MessageType.STATUS_TERMINAL);
+            List<byte> message = new List<byte>(BitConverter.GetBytes((long)(8)));
+            message.AddRange(messageTypeEncoded);
+            stream.Write(message.ToArray(), 0, message.ToArray().Length);
+            byte[] messageSize = new byte[8];
+            stream.Read(messageSize, 0, 8);
+            long size = BitConverter.ToInt64(messageSize, 0);
+            int sizeInt = (int)size;
+            byte[] dataArray = new byte[sizeInt];
+            stream.Read(dataArray, 0, sizeInt);
+            List<byte> datas = new List<byte>(dataArray);
+            datas.RemoveRange(0, 8);
+            SerializationEngine serializer = new SerializationEngine();
+            ServerStatus status = (ServerStatus)serializer.Deserialize(datas.ToArray());
+
+            
+            //Console Writes
+            Console.WriteLine("Node Count: " + status.NodeCount);
+            Console.WriteLine("Cluster DPI: " + status.CDPI);
+            Console.WriteLine("Total CPU Count: " + status.CPUCount);
+            Console.WriteLine("Total Memory: " + status.TotalMemory);
         }
 
         /// <summary>

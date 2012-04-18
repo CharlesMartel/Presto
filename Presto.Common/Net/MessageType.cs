@@ -77,6 +77,10 @@ namespace Presto.Net {
         /// The response from a verification.
         /// </summary>
         public static readonly MessageType VERIFICATION_RESPONSE;
+        /// <summary>
+        /// A status request from the command line presto app.
+        /// </summary>
+        public static readonly MessageType STATUS_TERMINAL;
 
         //---------User Scheduled Directives -----------//
         /// <summary>
@@ -104,6 +108,7 @@ namespace Presto.Net {
             EXECUTION_DENIED = new MessageType("20000003");
             VERIFY = new MessageType("30000001");
             VERIFICATION_RESPONSE = new MessageType("30000002");
+            STATUS_TERMINAL = new MessageType("30000003");
             USER_MESSAGE = new MessageType("40000001");
         }
 

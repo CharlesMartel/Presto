@@ -68,6 +68,14 @@ namespace Presto.Remote {
         }
 
         /// <summary>
+        /// The total amount of memory in this node.
+        /// </summary>
+        public long TotalMemory {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// A number defining how busy with work this node is. A factor dependant on Number of jobs,
         /// DPI, and total cpu count.
         /// </summary>
@@ -295,6 +303,7 @@ namespace Presto.Remote {
             DPI = vResponse.DPI;
             CPUCount = vResponse.CPUCount;
             RunningJobs = vResponse.JobCount;
+            TotalMemory = vResponse.TotalMemory;
             //make sure the assembly and domain listing is good
             foreach (string assembly in loadedAssemblies)
             {
