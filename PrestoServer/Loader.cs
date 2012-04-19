@@ -49,7 +49,7 @@ namespace Presto {
             if(!DomainManager.DomainHasAssembly(slaveAssembly.DomainKey, slaveAssembly.AssemblyName)){
                 DomainManager.LoadAssemblyIntoDomain(slaveAssembly.DomainKey, slaveAssembly.AssemblyImage);
             }
-            Node from = Nodes.GetNodeByID(slaveAssembly.NodeID);
+            Presto.Remote.Node from = Nodes.GetNodeByID(slaveAssembly.NodeID);
             if (from != null)
             {
                 from.SetLoadedAssembly(slaveAssembly.AssemblyName);

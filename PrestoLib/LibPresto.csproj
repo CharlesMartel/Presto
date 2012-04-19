@@ -52,6 +52,7 @@
     <Compile Include="Managers\DomainProxy.cs" />
     <Compile Include="Managers\IClusterProxy.cs" />
     <Compile Include="Managers\IDataProxy.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="PrestoModule.cs" />
     <Compile Include="PrestoParameter.cs" />
     <Compile Include="PrestoResult.cs" />

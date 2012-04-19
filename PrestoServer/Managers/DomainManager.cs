@@ -169,7 +169,9 @@ namespace Presto.Managers {
         public static void DeliverMessage(UserMessage message) {
             if (domains.ContainsKey(message.DomainKey)) {
                 DomainProxy proxy = proxies[message.DomainKey];
-                proxy.DeliverMessage(message.Message, message.Sender);
+                Presto.Remote.Node noooode = Nodes.GetNodeByID(message.Sender);
+                Presto.Node node = Presto.Node.GetNodeByID(message.Sender, noooode.HostName);
+                proxy.DeliverMessage(message.Message, node);
             } else {
                 Log.Error("No domain with Key: " + message.DomainKey + " was found to deliver message: \"" + message.Message + "\" from: NodeID: " + message.Sender);
             }

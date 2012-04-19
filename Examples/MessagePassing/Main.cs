@@ -19,10 +19,10 @@ namespace MessagePassing
         public override void Startup()
         {
             //get all nodes in this cluster and send them a message
-            string[] nodes = Cluster.GetAvailableNodes();
-            foreach (string node in nodes)
+            Node[] nodes = Cluster.GetAvailableNodes();
+            foreach (Node node in nodes)
             {
-                Cluster.SendMessage(node, "Hello!");
+                node.SendMessage("Hello!");
             }
 
             //since messages do not necessarily need to be returned or even responded to
@@ -32,7 +32,7 @@ namespace MessagePassing
             SignalComplete();
         }
 
-        void Cluster_MessageRecieved(string payload, string sender)
+        void Cluster_MessageRecieved(string payload, Node sender)
         {
             //if this is the response message, write the response to the console.
             if (payload == "response")

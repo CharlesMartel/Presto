@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Presto;
 using Presto.Remote;
 using Presto.Transfers;
 
@@ -47,21 +48,21 @@ namespace Presto.Managers {
         /// </summary>
         /// <param name="domainKey">The domain Key associated with the requesting domain.</param>
         /// /// <param name="includeSelf">Whether or not to include the local node id in the listing.</param>
-        /// <returns>List of all node IDs available to this application or module.</returns>
-        public string[] GetAvailableNodes(string domainKey, bool includeSelf = true) {
-            Node[] associatedNodes = Nodes.GetAssociatedNodes(domainKey);
-            List<string> NodeIDs = new List<string>();
-            foreach (Node node in associatedNodes) {
+        /// <returns>All Nodes available to this application or module.</returns>
+        public Presto.Node[] GetAvailableNodes(string domainKey, bool includeSelf = true) {
+            Presto.Remote.Node[] associatedNodes = Nodes.GetAssociatedNodes(domainKey);
+            List<Presto.Node> NodeList = new List<Presto.Node>();
+            foreach (Presto.Remote.Node node in associatedNodes) {
                 if (includeSelf == false) {
                     if (node.NodeID == ClusterManager.NodeID) {
                         continue;
                     }
                 }
                 if (node.Available) {
-                    NodeIDs.Add(node.NodeID);
+                    NodeList.Add(Presto.Node.GetNodeByID(node.NodeID, node.HostName));
                 }
             }
-            return NodeIDs.ToArray();
+            return NodeList.ToArray();
         }
     }
 }

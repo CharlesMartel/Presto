@@ -139,8 +139,8 @@ namespace Presto.Managers {
         /// Deliver the message sent from an outside node.
         /// </summary>
         /// <param name="payload">The message sent from the outside node.</param>
-        /// <param name="sender"> The node ID of the sending Node.</param>
-        public void DeliverMessage(string payload, string sender) {
+        /// <param name="sender"> The node object of the sending Node.</param>
+        public void DeliverMessage(string payload, Node sender) {
             Cluster.DeliverMessage(payload, sender);
         }
     }
