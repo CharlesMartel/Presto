@@ -93,7 +93,7 @@ namespace Presto.DataStructures.Distributed {
         /// the retrieval must be asynchronous and invoke a callback upon completion. If retrieval does not need to go across the network,
         /// the callback is immediately run.
         /// </summary>
-        /// <param name="Key">The Key of the value to retrieve.</param>
+        /// <param name="key">The Key of the value to retrieve.</param>
         /// <param name="callback">The callback to be run after the value is retrieved.</param>
         /// <param name="state">A state to carry with the async call and passed into the callback.</param>
         public ClusterDictionaryResult<T> Get (string key, Action<ClusterDictionaryResult<T>> callback, Object state) {
@@ -108,7 +108,7 @@ namespace Presto.DataStructures.Distributed {
         /// <summary>
         /// Set a value in the cluster dictionary. If the Key does not exist, one is created and the value added.
         /// </summary>
-        /// <param name="Key">The Key of the value to set.</param>
+        /// <param name="key">The Key of the value to set.</param>
         /// <param name="value">The value.</param>
         public void Set (string key, T value) {
             setter.Invoke (key, value);

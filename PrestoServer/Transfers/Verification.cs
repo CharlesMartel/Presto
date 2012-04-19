@@ -43,6 +43,7 @@ namespace Presto.Transfers {
         /// Create a new verification structure to be passed back from a verification request.
         /// </summary>
         /// <param name="id">The nodes Generated cluster ID.</param>
+        /// <param name="hostname">The hostame of the node responding with this Verfication.</param>
         /// <param name="totalMem">The total amount of memory in this node.</param>
         /// <param name="assemblies">The assemblies currently loaded into this node.</param>
         /// <param name="domains">The domains currently loaded into this node.</param>

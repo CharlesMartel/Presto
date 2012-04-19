@@ -12,7 +12,7 @@ namespace Presto.Net {
     /// 
     /// *Note The actual connection is left synchronous to avoid timing issues with the stream writes.
     /// </summary>
-    public class TCPClient {
+    public class TCPClient : IDisposable {
 
         private IPEndPoint serverEndpoint;
         private TcpClient tcpClient;
@@ -197,7 +197,7 @@ namespace Presto.Net {
                 read = 0;
             } catch (System.IO.IOException e) {
                 //the client got disconnected, that is fine, we simply need to re open with the reconnect, that will happen with the verify interval
-                Log.Warning("Client: '" + tcpClient.Client.AddressFamily.ToString() + "' disconnected!");
+                Log.Warning("Client: '" + tcpClient.Client.AddressFamily.ToString() + "' disconnected! Exception: " + e.ToString());
                 read = 0;
             }
 
@@ -275,6 +275,14 @@ namespace Presto.Net {
         /// </summary>
         public void close() {
             tcpClient.Close();
+        }
+
+        /// <summary>
+        /// Closes and disposes the TCP client.
+        /// </summary>
+        public void Dispose() {
+            close();
+            GC.SuppressFinalize(this);
         }
     }
 }

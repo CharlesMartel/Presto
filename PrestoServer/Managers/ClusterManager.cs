@@ -17,6 +17,9 @@ namespace Presto.Managers {
         /// </summary>
         public static readonly string NodeID = Generator.RandomAlphaNumeric(Config.UIDLength);
 
+        /// <summary>
+        /// The hostname of this node.
+        /// </summary>
         public static readonly string HostName = System.Net.Dns.GetHostName();
 
         /// <summary>
