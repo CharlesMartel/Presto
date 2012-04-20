@@ -86,7 +86,6 @@ namespace Presto.Managers {
             domains.Remove(domainKey);
             Action<AppDomain> final = finalUnload;
             final.BeginInvoke(domain, null, null);
-            Console.WriteLine("Destroyed domain: " + domainKey + " : Triggered by instance? " + instanceSignal); 
         }
 
         /// <summary>
@@ -159,7 +158,8 @@ namespace Presto.Managers {
         /// <param name="result">The Result object of the execution.</param>
         public static void ReturnExecution(ExecutionResult result) {
             DomainProxy proxy = proxies[result.DomainKey];
-            proxy.ReturnExecution(result.ContextID, result.ExecutingNodeID, result.Result);
+            Node executor = Nodes.GetNodeByID(result.ExecutingNodeID);
+            proxy.ReturnExecution(result.ContextID, executor, result.Result);
         }
 
         /// <summary>
@@ -169,8 +169,7 @@ namespace Presto.Managers {
         public static void DeliverMessage(UserMessage message) {
             if (domains.ContainsKey(message.DomainKey)) {
                 DomainProxy proxy = proxies[message.DomainKey];
-                Presto.Remote.Node noooode = Nodes.GetNodeByID(message.Sender);
-                Presto.Node node = Presto.Node.GetNodeByID(message.Sender, noooode.HostName);
+                Node node = Nodes.GetNodeByID(message.Sender);
                 proxy.DeliverMessage(message.Message, node);
             } else {
                 Log.Error("No domain with Key: " + message.DomainKey + " was found to deliver message: \"" + message.Message + "\" from: NodeID: " + message.Sender);

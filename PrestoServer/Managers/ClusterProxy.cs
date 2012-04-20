@@ -49,20 +49,30 @@ namespace Presto.Managers {
         /// <param name="domainKey">The domain Key associated with the requesting domain.</param>
         /// /// <param name="includeSelf">Whether or not to include the local node id in the listing.</param>
         /// <returns>All Nodes available to this application or module.</returns>
-        public Presto.Node[] GetAvailableNodes(string domainKey, bool includeSelf = true) {
-            Presto.Remote.Node[] associatedNodes = Nodes.GetAssociatedNodes(domainKey);
-            List<Presto.Node> NodeList = new List<Presto.Node>();
-            foreach (Presto.Remote.Node node in associatedNodes) {
+        public ClusterNode[] GetAvailableNodes(string domainKey, bool includeSelf = true) {
+            Node[] associatedNodes = Nodes.GetAssociatedNodes(domainKey);
+            List<ClusterNode> NodeList = new List<ClusterNode>();
+            foreach (Node node in associatedNodes) {
                 if (includeSelf == false) {
                     if (node.NodeID == ClusterManager.NodeID) {
                         continue;
                     }
                 }
                 if (node.Available) {
-                    NodeList.Add(Presto.Node.GetNodeByID(node.NodeID, node.HostName));
+                    NodeList.Add(node);
                 }
             }
             return NodeList.ToArray();
+        }
+
+        /// <summary>
+        /// Retrieve a particular node by its node id.
+        /// </summary>
+        /// <param name="id">The string id of the node.</param>
+        /// <returns>The node with the specified id or null.</returns>
+        public ClusterNode GetNodeByID(string id)
+        {
+            return Nodes.GetNodeByID(id);
         }
     }
 }

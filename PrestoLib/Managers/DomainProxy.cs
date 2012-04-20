@@ -120,10 +120,10 @@ namespace Presto.Managers {
         /// <param name="contextID">The context ID of the execution.</param>
         /// <param name="nodeID">The node ID where the execution was run.</param>
         /// <param name="result">The serialized result of the excution.</param>
-        public void ReturnExecution(string contextID, string nodeID, byte[] result) {
+        public void ReturnExecution(string contextID, ClusterNode node, byte[] result) {
             SerializationEngine serializer = new SerializationEngine ();
             PrestoResult resultObj = (PrestoResult)serializer.Deserialize(result);
-            resultObj.ExecutionNodeID = nodeID;
+            resultObj.ExecutionNode = node;
             Cluster.ReturnExecution(contextID, resultObj);
         }
 
@@ -140,7 +140,7 @@ namespace Presto.Managers {
         /// </summary>
         /// <param name="payload">The message sent from the outside node.</param>
         /// <param name="sender"> The node object of the sending Node.</param>
-        public void DeliverMessage(string payload, Node sender) {
+        public void DeliverMessage(string payload, ClusterNode sender) {
             Cluster.DeliverMessage(payload, sender);
         }
     }

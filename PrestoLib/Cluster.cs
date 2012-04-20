@@ -16,7 +16,7 @@ namespace Presto {
         /// </summary>
         /// <param name="payload">The message sent.</param>
         /// <param name="sender"> The node ID of the sending Node.</param>
-        public delegate void MessageReceivedHandler(string payload, Node sender);
+        public delegate void MessageReceivedHandler(string payload, ClusterNode sender);
         /// <summary>
         /// The events called whenever a message is received from an outside node.
         /// </summary>
@@ -160,7 +160,7 @@ namespace Presto {
         /// </summary>
         /// <param name="nodeID">The node ID of the node to send the message to.</param>
         /// <param name="message">The message to be sent.</param>
-        public static void SendMessage(Node node, string message) {
+        public static void SendMessage(ClusterNode node, string message) {
             ClusterProxy.SendMessage(node.NodeID, message, Key);
         }
 
@@ -169,7 +169,7 @@ namespace Presto {
         /// </summary>
         /// <param name="payload">The message sent.</param>
         /// <param name="sender"> The Node ID of the sending node.</param>
-        internal static void DeliverMessage(string payload, Node sender) {
+        internal static void DeliverMessage(string payload, ClusterNode sender) {
             MessageRecieved(payload, sender);
         }
 
@@ -187,7 +187,7 @@ namespace Presto {
         /// </summary>
         /// <param name="includeSelf">Whether or not to include the local node id in the listing.</param>
         /// <returns>List of all node IDs available to this application or module.</returns>
-        public static Node[] GetAvailableNodes(bool includeSelf = true) {
+        public static ClusterNode[] GetAvailableNodes(bool includeSelf = true) {
             return ClusterProxy.GetAvailableNodes(Key);
         }
     }

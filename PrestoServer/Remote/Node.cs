@@ -10,7 +10,7 @@ namespace Presto.Remote {
     /// <summary>
     /// Holds each instance of connected Presto Servers, the connection to them, and information about the instance.
     /// </summary>
-    public class Node {
+    public class Node : ClusterNode {
 
         /// <summary>
         /// Boolean telling whether or not this node is available for distribution.
@@ -20,24 +20,6 @@ namespace Presto.Remote {
             get {
                 return client.IsConnected();
             }
-        }
-
-        /// <summary>
-        /// The generated id of this node.
-        /// </summary>
-        public string NodeID
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// The calculated DPI of this node.
-        /// </summary>
-        public double DPI
-        {
-            get;
-            private set;
         }
 
         /// <summary>
@@ -85,24 +67,6 @@ namespace Presto.Remote {
             {
                 return (RunningJobs / CPUCount) / DPI;
             }
-        }
-
-        /// <summary>
-        /// The host name of this node.
-        /// </summary>
-        public string HostName
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// The string address of this node on the network.
-        /// </summary>
-        public string Address
-        {
-            get;
-            private set;
         }
 
         private List<string> loadedAssemblies = new List<string>();

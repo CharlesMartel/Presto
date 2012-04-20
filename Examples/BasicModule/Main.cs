@@ -49,7 +49,7 @@ namespace BasicModule{
         //The callback called after the function completes.
         public static void callback(PrestoResult result) {
             FunctionOutput output = (FunctionOutput)result;
-            Console.WriteLine("Execution number: " + output.value + " from node id: " + output.ExecutionNodeID);
+            Console.WriteLine("Execution number: " + output.value + " from node id: " + output.ExecutionNode.HostName);
             System.Threading.Interlocked.Increment(ref numjobs);
         }
 

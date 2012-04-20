@@ -35,6 +35,13 @@ namespace Presto.Managers {
         /// <param name="domainKey">The domain Key associated with the requesting domain.</param>
         /// /// <param name="includeSelf">Whether or not to include the local node id in the listing.</param>
         /// <returns>All Nodes available to this application or module.</returns>
-        Presto.Node[] GetAvailableNodes(string domainKey, bool includeSelf = true);
+        ClusterNode[] GetAvailableNodes(string domainKey, bool includeSelf = true);
+
+        /// <summary>
+        /// Retrieve a particular node by its node id.
+        /// </summary>
+        /// <param name="id">The string id of the node.</param>
+        /// <returns>The node with the specified id or null.</returns>
+        ClusterNode GetNodeByID(string id);
     }
 }

@@ -19,25 +19,25 @@ namespace MessagePassing
         public override void Startup()
         {
             //get all nodes in this cluster and send them a message
-            Node[] nodes = Cluster.GetAvailableNodes();
-            foreach (Node node in nodes)
+            ClusterNode[] nodes = Cluster.GetAvailableNodes();
+            foreach (ClusterNode node in nodes)
             {
-                node.SendMessage("Hello!");
+                Cluster.SendMessage(node, "Hello!");
             }
 
             //since messages do not necessarily need to be returned or even responded to
             //we simply need to force a thread sleep and wait for all to return
             //other threads will handle the message passing
-            System.Threading.Thread.Sleep(5000);
+            System.Threading.Thread.Sleep(1000);
             SignalComplete();
         }
 
-        void Cluster_MessageRecieved(string payload, Node sender)
+        void Cluster_MessageRecieved(string payload, ClusterNode sender)
         {
             //if this is the response message, write the response to the console.
             if (payload == "response")
             {
-                Console.WriteLine("Response from: " + sender);
+                Console.WriteLine("Response from: " + sender.HostName);
             }
             else
             {

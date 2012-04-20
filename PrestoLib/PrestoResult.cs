@@ -10,6 +10,6 @@ namespace Presto {
         /// The node that this result comes from. This node is the node that ran the execution that produced this result.
         /// This value is null during the execution and only set after the execution is run and returned to the origin.
         /// </summary>
-        public string ExecutionNodeID;
+        [NonSerialized] public ClusterNode ExecutionNode;
     }
 }
